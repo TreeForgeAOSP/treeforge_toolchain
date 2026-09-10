@@ -1,0 +1,412 @@
+{
+  "android_release": "android-15.0.0_r36",
+  "policy_authority": "AOSP build/tools/compliance compliance_listshare",
+  "projects": [
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/bionic",
+      "project_path": "bionic",
+      "revision": "8d67ca893c1523eb926b9080dbe4e2ffd2a27ba1",
+      "source_url": "https://android.googlesource.com/platform/bionic/+/8d67ca893c1523eb926b9080dbe4e2ffd2a27ba1/"
+    },
+    {
+      "conditions": [
+        "restricted"
+      ],
+      "project_name": "platform/bootable/recovery",
+      "project_path": "bootable/recovery",
+      "revision": "e7c364b630b241adcb6c7726a21055250b91fdac",
+      "source_url": "https://android.googlesource.com/platform/bootable/recovery/+/e7c364b630b241adcb6c7726a21055250b91fdac/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/build/soong",
+      "project_path": "build/soong",
+      "revision": "333d2b3687b3a337dbcca9d65000bca186795e39",
+      "source_url": "https://android.googlesource.com/platform/build/soong/+/333d2b3687b3a337dbcca9d65000bca186795e39/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/arm-optimized-routines",
+      "project_path": "external/arm-optimized-routines",
+      "revision": "412f47f9e737e10ed5cc46ec6a8d7fa2264f8a14",
+      "source_url": "https://android.googlesource.com/platform/external/arm-optimized-routines/+/412f47f9e737e10ed5cc46ec6a8d7fa2264f8a14/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/avb",
+      "project_path": "external/avb",
+      "revision": "d289c2ba6de359471b23d594623b906876bc48a0",
+      "source_url": "https://android.googlesource.com/platform/external/avb/+/d289c2ba6de359471b23d594623b906876bc48a0/"
+    },
+    {
+      "conditions": [
+        "restricted"
+      ],
+      "project_name": "platform/external/boringssl",
+      "project_path": "external/boringssl",
+      "revision": "8fb009dc861624b67b6cdb62ea21f0f22d0c584b",
+      "source_url": "https://android.googlesource.com/platform/external/boringssl/+/8fb009dc861624b67b6cdb62ea21f0f22d0c584b/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/brotli",
+      "project_path": "external/brotli",
+      "revision": "f4ee7fba7774faf2a30f13154332c0a06550dbc4",
+      "source_url": "https://android.googlesource.com/platform/external/brotli/+/f4ee7fba7774faf2a30f13154332c0a06550dbc4/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/e2fsprogs",
+      "project_path": "external/e2fsprogs",
+      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "source_url": "https://android.googlesource.com/platform/external/e2fsprogs/+/6a54128f25917bfc36a8a6e9d722c04a0b4641b6/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/fec",
+      "project_path": "external/fec",
+      "revision": "638691a093b4f9473cd6ee8f3e0139deef159a86",
+      "source_url": "https://android.googlesource.com/platform/external/fec/+/638691a093b4f9473cd6ee8f3e0139deef159a86/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/fmtlib",
+      "project_path": "external/fmtlib",
+      "revision": "5c90c05cd622c0a81b57953a4d343e0e489f2e08",
+      "source_url": "https://android.googlesource.com/platform/external/fmtlib/+/5c90c05cd622c0a81b57953a4d343e0e489f2e08/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/googletest",
+      "project_path": "external/googletest",
+      "revision": "481dde660366d6f317d242b6974ef1b20adb843c",
+      "source_url": "https://android.googlesource.com/platform/external/googletest/+/481dde660366d6f317d242b6974ef1b20adb843c/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/gwp_asan",
+      "project_path": "external/gwp_asan",
+      "revision": "b302aa5039729da396909ef03e815160dab4448c",
+      "source_url": "https://android.googlesource.com/platform/external/gwp_asan/+/b302aa5039729da396909ef03e815160dab4448c/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/liburing",
+      "project_path": "external/liburing",
+      "revision": "25da2bea747f3a93b4c30fd9708b0618ef55a0e6",
+      "source_url": "https://android.googlesource.com/platform/external/liburing/+/25da2bea747f3a93b4c30fd9708b0618ef55a0e6/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/llvm-libc",
+      "project_path": "external/llvm-libc",
+      "revision": "71db0c75aadcf003ffe3238005f61d7618a3fead",
+      "source_url": "https://android.googlesource.com/platform/external/llvm-libc/+/71db0c75aadcf003ffe3238005f61d7618a3fead/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/lz4",
+      "project_path": "external/lz4",
+      "revision": "27162e4e17433d5aa7cb38e7b6a433a09405fc7f",
+      "source_url": "https://android.googlesource.com/platform/external/lz4/+/27162e4e17433d5aa7cb38e7b6a433a09405fc7f/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/lzma",
+      "project_path": "external/lzma",
+      "revision": "f6dc9357d832569d4d1f5d24eacdb3935a1ae8e6",
+      "source_url": "https://android.googlesource.com/platform/external/lzma/+/f6dc9357d832569d4d1f5d24eacdb3935a1ae8e6/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/pcre",
+      "project_path": "external/pcre",
+      "revision": "22dc650d8ae982c6770746019a6f94af92b0f024",
+      "source_url": "https://android.googlesource.com/platform/external/pcre/+/22dc650d8ae982c6770746019a6f94af92b0f024/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/protobuf",
+      "project_path": "external/protobuf",
+      "revision": "1b3f573f81763fcece89efc2b6a5209149e44ab8",
+      "source_url": "https://android.googlesource.com/platform/external/protobuf/+/1b3f573f81763fcece89efc2b6a5209149e44ab8/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/rust/android-crates-io",
+      "project_path": "external/rust/android-crates-io",
+      "revision": "f60105c8b2e14be839495a57a22e0c704e4679aa",
+      "source_url": "https://android.googlesource.com/platform/external/rust/android-crates-io/+/f60105c8b2e14be839495a57a22e0c704e4679aa/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/scudo",
+      "project_path": "external/scudo",
+      "revision": "76559068c068bd27e82aff38fac3bfc865233bca",
+      "source_url": "https://android.googlesource.com/platform/external/scudo/+/76559068c068bd27e82aff38fac3bfc865233bca/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/selinux",
+      "project_path": "external/selinux",
+      "revision": "2d543d20722ada2425b5bdab9d0d1d29470e7bba",
+      "source_url": "https://android.googlesource.com/platform/external/selinux/+/2d543d20722ada2425b5bdab9d0d1d29470e7bba/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/zlib",
+      "project_path": "external/zlib",
+      "revision": "86ee64e75fa5f8bce2c8c356138035642429cd05",
+      "source_url": "https://android.googlesource.com/platform/external/zlib/+/86ee64e75fa5f8bce2c8c356138035642429cd05/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/external/zstd",
+      "project_path": "external/zstd",
+      "revision": "01826a4963a0d8a59bc3812d29bdf0fb76416722",
+      "source_url": "https://android.googlesource.com/platform/external/zstd/+/01826a4963a0d8a59bc3812d29bdf0fb76416722/"
+    },
+    {
+      "conditions": [
+        "restricted"
+      ],
+      "project_name": "platform/frameworks/native",
+      "project_path": "frameworks/native",
+      "revision": "cdca1e2000347ce2f2b25ab5d0f2dffa81f30e01",
+      "source_url": "https://android.googlesource.com/platform/frameworks/native/+/cdca1e2000347ce2f2b25ab5d0f2dffa81f30e01/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/hardware/interfaces",
+      "project_path": "hardware/interfaces",
+      "revision": "4d7e907c777eeecc4c5bd7cf640a754fac206ff7",
+      "source_url": "https://android.googlesource.com/platform/hardware/interfaces/+/4d7e907c777eeecc4c5bd7cf640a754fac206ff7/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/libnativehelper",
+      "project_path": "libnativehelper",
+      "revision": "0797b24ee566c78eb48500180cb4bf71f81c8aab",
+      "source_url": "https://android.googlesource.com/platform/libnativehelper/+/0797b24ee566c78eb48500180cb4bf71f81c8aab/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/prebuilts/clang/host/linux-x86",
+      "project_path": "prebuilts/clang/host/linux-x86",
+      "revision": "96266255abde668f1bf100bf2c47363b96b7a21e",
+      "source_url": "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+/96266255abde668f1bf100bf2c47363b96b7a21e/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/prebuilts/module_sdk/art",
+      "project_path": "prebuilts/module_sdk/art",
+      "revision": "c3a3f8110c7425991db548da68e390a07e623c8f",
+      "source_url": "https://android.googlesource.com/platform/prebuilts/module_sdk/art/+/c3a3f8110c7425991db548da68e390a07e623c8f/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/prebuilts/rust",
+      "project_path": "prebuilts/rust",
+      "revision": "b40554a23088fb75aa6945dfe8e65169c8484da3",
+      "source_url": "https://android.googlesource.com/platform/prebuilts/rust/+/b40554a23088fb75aa6945dfe8e65169c8484da3/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/system/core",
+      "project_path": "system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "source_url": "https://android.googlesource.com/platform/system/core/+/00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/system/extras",
+      "project_path": "system/extras",
+      "revision": "288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5",
+      "source_url": "https://android.googlesource.com/platform/system/extras/+/288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/system/gsid",
+      "project_path": "system/gsid",
+      "revision": "4e2b41f188908a2ae9d9a2089f1f10779d080021",
+      "source_url": "https://android.googlesource.com/platform/system/gsid/+/4e2b41f188908a2ae9d9a2089f1f10779d080021/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/system/libbase",
+      "project_path": "system/libbase",
+      "revision": "8f0ba417480079999ba552f1087ae592091b9d02",
+      "source_url": "https://android.googlesource.com/platform/system/libbase/+/8f0ba417480079999ba552f1087ae592091b9d02/"
+    },
+    {
+      "conditions": [
+        "restricted"
+      ],
+      "project_name": "platform/system/libfmq",
+      "project_path": "system/libfmq",
+      "revision": "be431cd81a9a2349eaea34eb56fcf6d1608da596",
+      "source_url": "https://android.googlesource.com/platform/system/libfmq/+/be431cd81a9a2349eaea34eb56fcf6d1608da596/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/system/libhidl",
+      "project_path": "system/libhidl",
+      "revision": "8222fbe171c3d6fadfe95119c180cf3010c392a8",
+      "source_url": "https://android.googlesource.com/platform/system/libhidl/+/8222fbe171c3d6fadfe95119c180cf3010c392a8/"
+    },
+    {
+      "conditions": [
+        "restricted"
+      ],
+      "project_name": "platform/system/libhwbinder",
+      "project_path": "system/libhwbinder",
+      "revision": "77b80299c8bdfeca3ae6d0ce27ae1ad3db289be3",
+      "source_url": "https://android.googlesource.com/platform/system/libhwbinder/+/77b80299c8bdfeca3ae6d0ce27ae1ad3db289be3/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/system/libprocinfo",
+      "project_path": "system/libprocinfo",
+      "revision": "e7c5e80fc9b28c04f5db9de8d2855377d05126c5",
+      "source_url": "https://android.googlesource.com/platform/system/libprocinfo/+/e7c5e80fc9b28c04f5db9de8d2855377d05126c5/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/system/libziparchive",
+      "project_path": "system/libziparchive",
+      "revision": "adcb0a6279ea715828f9bc5e351569419e478774",
+      "source_url": "https://android.googlesource.com/platform/system/libziparchive/+/adcb0a6279ea715828f9bc5e351569419e478774/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/system/logging",
+      "project_path": "system/logging",
+      "revision": "598139dc91b21518d67c408eaea2644226490971",
+      "source_url": "https://android.googlesource.com/platform/system/logging/+/598139dc91b21518d67c408eaea2644226490971/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/system/unwinding",
+      "project_path": "system/unwinding",
+      "revision": "eb293b8f56ee8303637c5595cfcdeef8039e85c6",
+      "source_url": "https://android.googlesource.com/platform/system/unwinding/+/eb293b8f56ee8303637c5595cfcdeef8039e85c6/"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project_name": "platform/system/update_engine",
+      "project_path": "system/update_engine",
+      "revision": "5a9231315b4521097b8dc3750bc806fcafe0c72f",
+      "source_url": "https://android.googlesource.com/platform/system/update_engine/+/5a9231315b4521097b8dc3750bc806fcafe0c72f/"
+    }
+  ],
+  "schema": 1
+}

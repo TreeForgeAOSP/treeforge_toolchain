@@ -1,0 +1,808 @@
+{
+  "architecture": "arm64",
+  "canonical_sdk_level": "35",
+  "compliance": {
+    "android_release": "android-15.0.0_r36",
+    "checkshare": {
+      "result": "PASS",
+      "tool": "compliance_checkshare"
+    },
+    "listshare": {
+      "project_count": 41,
+      "record": "SOURCE/SOURCE-SHARE.json",
+      "tool": "compliance_listshare"
+    },
+    "notice": {
+      "path": "NOTICE/NOTICE.txt",
+      "sha256": "90fbea0db0aeec85d7d9f9a79cfa92816cf29a9542d90551fb39e60fe5934377",
+      "tool": "textnotice"
+    },
+    "runtime_roots": 42
+  },
+  "components": {
+    "bionic": {
+      "git_revision": "8d67ca893c1523eb926b9080dbe4e2ffd2a27ba1",
+      "module": "ld-android.recovery / libc.recovery / libdl.recovery / libm.recovery / linker.recovery",
+      "modules": [
+        "ld-android.recovery",
+        "libc.recovery",
+        "libdl.recovery",
+        "libm.recovery",
+        "linker.recovery"
+      ],
+      "repo_name": "platform/bionic",
+      "source_root": "bionic"
+    },
+    "bootable-recovery": {
+      "git_revision": "e7c364b630b241adcb6c7726a21055250b91fdac",
+      "module": "libbootloader_message.recovery",
+      "modules": [
+        "libbootloader_message.recovery"
+      ],
+      "repo_name": "platform/bootable/recovery",
+      "source_root": "bootable/recovery"
+    },
+    "external-boringssl": {
+      "git_revision": "8fb009dc861624b67b6cdb62ea21f0f22d0c584b",
+      "module": "libcrypto.recovery",
+      "modules": [
+        "libcrypto.recovery"
+      ],
+      "repo_name": "platform/external/boringssl",
+      "source_root": "external/boringssl"
+    },
+    "external-e2fsprogs": {
+      "git_revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "module": "libext2_uuid.recovery",
+      "modules": [
+        "libext2_uuid.recovery"
+      ],
+      "repo_name": "platform/external/e2fsprogs",
+      "source_root": "external/e2fsprogs"
+    },
+    "external-pcre": {
+      "git_revision": "22dc650d8ae982c6770746019a6f94af92b0f024",
+      "module": "libpcre2.recovery",
+      "modules": [
+        "libpcre2.recovery"
+      ],
+      "repo_name": "platform/external/pcre",
+      "source_root": "external/pcre"
+    },
+    "external-protobuf": {
+      "git_revision": "1b3f573f81763fcece89efc2b6a5209149e44ab8",
+      "module": "libprotobuf-cpp-lite.recovery",
+      "modules": [
+        "libprotobuf-cpp-lite.recovery"
+      ],
+      "repo_name": "platform/external/protobuf",
+      "source_root": "external/protobuf"
+    },
+    "external-selinux": {
+      "git_revision": "2d543d20722ada2425b5bdab9d0d1d29470e7bba",
+      "module": "libselinux.recovery",
+      "modules": [
+        "libselinux.recovery"
+      ],
+      "repo_name": "platform/external/selinux",
+      "source_root": "external/selinux"
+    },
+    "external-zlib": {
+      "git_revision": "86ee64e75fa5f8bce2c8c356138035642429cd05",
+      "module": "libz.recovery",
+      "modules": [
+        "libz.recovery"
+      ],
+      "repo_name": "platform/external/zlib",
+      "source_root": "external/zlib"
+    },
+    "frameworks-native": {
+      "git_revision": "cdca1e2000347ce2f2b25ab5d0f2dffa81f30e01",
+      "module": "libbinder.recovery / libbinder_ndk.recovery",
+      "modules": [
+        "libbinder.recovery",
+        "libbinder_ndk.recovery"
+      ],
+      "repo_name": "platform/frameworks/native",
+      "source_root": "frameworks/native"
+    },
+    "hardware-interfaces": {
+      "git_revision": "4d7e907c777eeecc4c5bd7cf640a754fac206ff7",
+      "module": "android.hardware.boot-V1-ndk.recovery / android.hardware.boot@1.0.recovery / android.hardware.boot@1.1.recovery / android.hardware.boot@1.2.recovery / android.hardware.fastboot-V1-ndk.recovery / android.hardware.fastboot@1.0.recovery / android.hardware.fastboot@1.1.recovery / android.hardware.health-V4-ndk.recovery / android.hardware.health@1.0.recovery / android.hardware.health@2.0.recovery / libboot_control_client.recovery",
+      "modules": [
+        "android.hardware.boot-V1-ndk.recovery",
+        "android.hardware.boot@1.0.recovery",
+        "android.hardware.boot@1.1.recovery",
+        "android.hardware.boot@1.2.recovery",
+        "android.hardware.fastboot-V1-ndk.recovery",
+        "android.hardware.fastboot@1.0.recovery",
+        "android.hardware.fastboot@1.1.recovery",
+        "android.hardware.health-V4-ndk.recovery",
+        "android.hardware.health@1.0.recovery",
+        "android.hardware.health@2.0.recovery",
+        "libboot_control_client.recovery"
+      ],
+      "repo_name": "platform/hardware/interfaces",
+      "source_root": "hardware/interfaces"
+    },
+    "prebuilts-clang-host-linux-x86": {
+      "git_revision": "96266255abde668f1bf100bf2c47363b96b7a21e",
+      "module": "libc++.recovery",
+      "modules": [
+        "libc++.recovery"
+      ],
+      "repo_name": "platform/prebuilts/clang/host/linux-x86",
+      "source_root": "prebuilts/clang/host/linux-x86"
+    },
+    "system-core": {
+      "git_revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "module": "fastbootd / libasyncio.recovery / libcrypto_utils.recovery / libcutils.recovery / libfs_mgr.recovery / liblp.recovery / libpackagelistparser.recovery / libsparse.recovery / libutils.recovery",
+      "modules": [
+        "fastbootd",
+        "libasyncio.recovery",
+        "libcrypto_utils.recovery",
+        "libcutils.recovery",
+        "libfs_mgr.recovery",
+        "liblp.recovery",
+        "libpackagelistparser.recovery",
+        "libsparse.recovery",
+        "libutils.recovery"
+      ],
+      "repo_name": "platform/system/core",
+      "source_root": "system/core"
+    },
+    "system-extras": {
+      "git_revision": "288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5",
+      "module": "libext4_utils.recovery / libfec.recovery / libsquashfs_utils.recovery",
+      "modules": [
+        "libext4_utils.recovery",
+        "libfec.recovery",
+        "libsquashfs_utils.recovery"
+      ],
+      "repo_name": "platform/system/extras",
+      "source_root": "system/extras"
+    },
+    "system-gsid": {
+      "git_revision": "4e2b41f188908a2ae9d9a2089f1f10779d080021",
+      "module": "libgsi.recovery",
+      "modules": [
+        "libgsi.recovery"
+      ],
+      "repo_name": "platform/system/gsid",
+      "source_root": "system/gsid"
+    },
+    "system-libbase": {
+      "git_revision": "8f0ba417480079999ba552f1087ae592091b9d02",
+      "module": "libbase.recovery",
+      "modules": [
+        "libbase.recovery"
+      ],
+      "repo_name": "platform/system/libbase",
+      "source_root": "system/libbase"
+    },
+    "system-libhidl": {
+      "git_revision": "8222fbe171c3d6fadfe95119c180cf3010c392a8",
+      "module": "libhidlbase.recovery",
+      "modules": [
+        "libhidlbase.recovery"
+      ],
+      "repo_name": "platform/system/libhidl",
+      "source_root": "system/libhidl"
+    },
+    "system-logging": {
+      "git_revision": "598139dc91b21518d67c408eaea2644226490971",
+      "module": "liblog.recovery",
+      "modules": [
+        "liblog.recovery"
+      ],
+      "repo_name": "platform/system/logging",
+      "source_root": "system/logging"
+    }
+  },
+  "files": [
+    {
+      "android_path": "/system/bin/fastbootd",
+      "module": "fastbootd",
+      "path": "rootfs/system/bin/fastbootd",
+      "sha256": "36079d453dda5f10a23dcf7f09b5dcb886f59fe983f12b658a1c0830c2f75bec"
+    },
+    {
+      "android_path": "/system/bin/linker64",
+      "module": "linker.recovery",
+      "path": "rootfs/system/bin/linker64",
+      "sha256": "4da962679b0102b7648f86eb4b56a543247dac4ff159f74952eb15053e5a8608"
+    },
+    {
+      "android_path": "/system/lib64/android.hardware.boot-V1-ndk.so",
+      "module": "android.hardware.boot-V1-ndk.recovery",
+      "path": "rootfs/system/lib64/android.hardware.boot-V1-ndk.so",
+      "sha256": "eed55b47d7d01de56a137ff2a1f0be645368bf0cbfa3654b4baaaacb1cbc3ab4"
+    },
+    {
+      "android_path": "/system/lib64/android.hardware.boot@1.0.so",
+      "module": "android.hardware.boot@1.0.recovery",
+      "path": "rootfs/system/lib64/android.hardware.boot@1.0.so",
+      "sha256": "5f983462044754070236b14c5058e628b2e2b339fad0d42dbfa109cdb7dd5b30"
+    },
+    {
+      "android_path": "/system/lib64/android.hardware.boot@1.1.so",
+      "module": "android.hardware.boot@1.1.recovery",
+      "path": "rootfs/system/lib64/android.hardware.boot@1.1.so",
+      "sha256": "f7b516c4821c2b7e0998e171b45641ae903aacc9b512b3678b7b7e148ad48bc5"
+    },
+    {
+      "android_path": "/system/lib64/android.hardware.boot@1.2.so",
+      "module": "android.hardware.boot@1.2.recovery",
+      "path": "rootfs/system/lib64/android.hardware.boot@1.2.so",
+      "sha256": "54824141afbed78087d5915f08063ea66a363ca8f389ab1f3008a8f2812be6f6"
+    },
+    {
+      "android_path": "/system/lib64/android.hardware.fastboot-V1-ndk.so",
+      "module": "android.hardware.fastboot-V1-ndk.recovery",
+      "path": "rootfs/system/lib64/android.hardware.fastboot-V1-ndk.so",
+      "sha256": "5d9e5feefcdae545eae36c58917223c7a958658df8faafd769c1d2ff8141fb07"
+    },
+    {
+      "android_path": "/system/lib64/android.hardware.fastboot@1.0.so",
+      "module": "android.hardware.fastboot@1.0.recovery",
+      "path": "rootfs/system/lib64/android.hardware.fastboot@1.0.so",
+      "sha256": "9bc6ca88ab9ea2734923c40d15f80616f1f3fe07a747635ec318333681c67a4c"
+    },
+    {
+      "android_path": "/system/lib64/android.hardware.fastboot@1.1.so",
+      "module": "android.hardware.fastboot@1.1.recovery",
+      "path": "rootfs/system/lib64/android.hardware.fastboot@1.1.so",
+      "sha256": "7893c094f1d5146db3fc66361fd0ec699b2ae602d7b37f3781f77ca3cdef1713"
+    },
+    {
+      "android_path": "/system/lib64/android.hardware.health-V4-ndk.so",
+      "module": "android.hardware.health-V4-ndk.recovery",
+      "path": "rootfs/system/lib64/android.hardware.health-V4-ndk.so",
+      "sha256": "fd69c8a3cd1d395b90f4e8d3d951e49cb214507bc7ba3d232e482096725f328e"
+    },
+    {
+      "android_path": "/system/lib64/android.hardware.health@1.0.so",
+      "module": "android.hardware.health@1.0.recovery",
+      "path": "rootfs/system/lib64/android.hardware.health@1.0.so",
+      "sha256": "75d5f0acf6781b541a7298953409b5a33c5164bb82e3ee846fceaf24fa2becf4"
+    },
+    {
+      "android_path": "/system/lib64/android.hardware.health@2.0.so",
+      "module": "android.hardware.health@2.0.recovery",
+      "path": "rootfs/system/lib64/android.hardware.health@2.0.so",
+      "sha256": "712cd0a5a4de2d2c5a8e9def645aa391fa231c2174a5501491f9dedb656e0f86"
+    },
+    {
+      "android_path": "/system/lib64/ld-android.so",
+      "module": "ld-android.recovery",
+      "path": "rootfs/system/lib64/ld-android.so",
+      "sha256": "8c0f39337049618b77a7c3beaa4fedc9519852f4bb32ca0e7e71766fc89a0633"
+    },
+    {
+      "android_path": "/system/lib64/libasyncio.so",
+      "module": "libasyncio.recovery",
+      "path": "rootfs/system/lib64/libasyncio.so",
+      "sha256": "3564a4f2b71108ca2f6b40423bbee49b5508238f007a2e80cacc54f2aca3b87f"
+    },
+    {
+      "android_path": "/system/lib64/libbase.so",
+      "module": "libbase.recovery",
+      "path": "rootfs/system/lib64/libbase.so",
+      "sha256": "025705fb34c825d2cc74856e7605153aa5254a0b8ae57f6406df46cd917e0303"
+    },
+    {
+      "android_path": "/system/lib64/libbinder.so",
+      "module": "libbinder.recovery",
+      "path": "rootfs/system/lib64/libbinder.so",
+      "sha256": "690082f29a3c0ea2d0a0ac2118d0eb7a505c940ee3b85498b360fddd3b694282"
+    },
+    {
+      "android_path": "/system/lib64/libbinder_ndk.so",
+      "module": "libbinder_ndk.recovery",
+      "path": "rootfs/system/lib64/libbinder_ndk.so",
+      "sha256": "99102de714c7cf3a872c339f10e89bd85ea1b5a47313eeaeb496742e46f0e818"
+    },
+    {
+      "android_path": "/system/lib64/libboot_control_client.so",
+      "module": "libboot_control_client.recovery",
+      "path": "rootfs/system/lib64/libboot_control_client.so",
+      "sha256": "3ce6b4db0ab93225ab2a3a779b5492c796cac90b593e409027f5a4c1c32acaac"
+    },
+    {
+      "android_path": "/system/lib64/libbootloader_message.so",
+      "module": "libbootloader_message.recovery",
+      "path": "rootfs/system/lib64/libbootloader_message.so",
+      "sha256": "1c96d784cd440253e654633adb04c2d2231e20f49d11f375d98829d215ea1948"
+    },
+    {
+      "android_path": "/system/lib64/libc++.so",
+      "module": "libc++.recovery",
+      "path": "rootfs/system/lib64/libc++.so",
+      "sha256": "9c049c3162c05531936ff4b3d78473e9daddc06b5c501f5384a7413975058217"
+    },
+    {
+      "android_path": "/system/lib64/libc.so",
+      "module": "libc.recovery",
+      "path": "rootfs/system/lib64/libc.so",
+      "sha256": "eadd38f2c9ce29c0c96ff5f6b1f4146d070ed6567fc8c67cef6de1898ef3b06f"
+    },
+    {
+      "android_path": "/system/lib64/libcrypto.so",
+      "module": "libcrypto.recovery",
+      "path": "rootfs/system/lib64/libcrypto.so",
+      "sha256": "552cf68e1712a07806303a8e501bc54d7a3d6866b3aa75d6278a165dbdb66529"
+    },
+    {
+      "android_path": "/system/lib64/libcrypto_utils.so",
+      "module": "libcrypto_utils.recovery",
+      "path": "rootfs/system/lib64/libcrypto_utils.so",
+      "sha256": "ae317c43f8c54561e9b1811086be1637eb5295ae02c22b068a82f37a18a7c3c6"
+    },
+    {
+      "android_path": "/system/lib64/libcutils.so",
+      "module": "libcutils.recovery",
+      "path": "rootfs/system/lib64/libcutils.so",
+      "sha256": "40984d4e91edca3bde2dafc2bace4cd8dcc6172c06a765d023b38e2d4ddb719c"
+    },
+    {
+      "android_path": "/system/lib64/libdl.so",
+      "module": "libdl.recovery",
+      "path": "rootfs/system/lib64/libdl.so",
+      "sha256": "a108ab3d81159e94dcde32e2888aa3fd90aa355a194ab0480318568386bb02fd"
+    },
+    {
+      "android_path": "/system/lib64/libext2_uuid.so",
+      "module": "libext2_uuid.recovery",
+      "path": "rootfs/system/lib64/libext2_uuid.so",
+      "sha256": "378e49933e24826421da0bb1b20430fad3fa47e1785751fb186ce247a8bf6530"
+    },
+    {
+      "android_path": "/system/lib64/libext4_utils.so",
+      "module": "libext4_utils.recovery",
+      "path": "rootfs/system/lib64/libext4_utils.so",
+      "sha256": "c218f63556b4aac0b7f95bc9765cccfb5fecf031dfc832c59ca7d27250c44b34"
+    },
+    {
+      "android_path": "/system/lib64/libfec.so",
+      "module": "libfec.recovery",
+      "path": "rootfs/system/lib64/libfec.so",
+      "sha256": "ee3dd8f64f2d9ee9ca3bf89ccfbfd40cda6efe5e4fdbf3c2b1282ee78ef7e69c"
+    },
+    {
+      "android_path": "/system/lib64/libfs_mgr.so",
+      "module": "libfs_mgr.recovery",
+      "path": "rootfs/system/lib64/libfs_mgr.so",
+      "sha256": "d82bcfc9b987cd3601f60224dca18b1c2a80152f36c2b86cc45fe615e3cb5c20"
+    },
+    {
+      "android_path": "/system/lib64/libgsi.so",
+      "module": "libgsi.recovery",
+      "path": "rootfs/system/lib64/libgsi.so",
+      "sha256": "c5ccfdc85749956fea916cd377d286b5978687897c0738866b09531ba9ee0570"
+    },
+    {
+      "android_path": "/system/lib64/libhidlbase.so",
+      "module": "libhidlbase.recovery",
+      "path": "rootfs/system/lib64/libhidlbase.so",
+      "sha256": "5fa2a657208ac949153d8b2bb0ac14018a874f52d295af2f8298bf72c5912454"
+    },
+    {
+      "android_path": "/system/lib64/liblog.so",
+      "module": "liblog.recovery",
+      "path": "rootfs/system/lib64/liblog.so",
+      "sha256": "2b31c1aa1759f9ccdd1f717282e09b9a5bc60e826d4e04c7aacd9eccba4d7297"
+    },
+    {
+      "android_path": "/system/lib64/liblp.so",
+      "module": "liblp.recovery",
+      "path": "rootfs/system/lib64/liblp.so",
+      "sha256": "3979106074af8a5a57810bfd530846125913fe342632ad11c652fbe226df16b8"
+    },
+    {
+      "android_path": "/system/lib64/libm.so",
+      "module": "libm.recovery",
+      "path": "rootfs/system/lib64/libm.so",
+      "sha256": "4f801773d48b7357fffcdd15ea41d3e4d740cfeffafb20e85dd5dbe7e7a9840d"
+    },
+    {
+      "android_path": "/system/lib64/libpackagelistparser.so",
+      "module": "libpackagelistparser.recovery",
+      "path": "rootfs/system/lib64/libpackagelistparser.so",
+      "sha256": "d061cd95ab21dbfd1c055a9c7d74c49688e5675d1aba1e1e244450c683aa4b0e"
+    },
+    {
+      "android_path": "/system/lib64/libpcre2.so",
+      "module": "libpcre2.recovery",
+      "path": "rootfs/system/lib64/libpcre2.so",
+      "sha256": "d27b86d1edaed439047520dc5fcfd39665d3bcb96c9f2d815d4efb17780238c3"
+    },
+    {
+      "android_path": "/system/lib64/libprotobuf-cpp-lite.so",
+      "module": "libprotobuf-cpp-lite.recovery",
+      "path": "rootfs/system/lib64/libprotobuf-cpp-lite.so",
+      "sha256": "190f1d4185756774b3b3eab69c4e14c5dcc11194b4367879290a8decb2c235c8"
+    },
+    {
+      "android_path": "/system/lib64/libselinux.so",
+      "module": "libselinux.recovery",
+      "path": "rootfs/system/lib64/libselinux.so",
+      "sha256": "5fa0ba66d65c0581824c2496661166b13861b63e7e2571b75d0fb4610f0a70ae"
+    },
+    {
+      "android_path": "/system/lib64/libsparse.so",
+      "module": "libsparse.recovery",
+      "path": "rootfs/system/lib64/libsparse.so",
+      "sha256": "292ef4fd778ef7cca1309b146d3e9b418235af453efa978bfd8ea51fdafa3ea0"
+    },
+    {
+      "android_path": "/system/lib64/libsquashfs_utils.so",
+      "module": "libsquashfs_utils.recovery",
+      "path": "rootfs/system/lib64/libsquashfs_utils.so",
+      "sha256": "e0587288698a46f74aa73f60c3c9cb734c76c60d894d0b3bed6f209bd126ba1b"
+    },
+    {
+      "android_path": "/system/lib64/libutils.so",
+      "module": "libutils.recovery",
+      "path": "rootfs/system/lib64/libutils.so",
+      "sha256": "807d2e27ff62608d27adf0bc187f8aeee57b8d0c647791dbf56904cb665f6502"
+    },
+    {
+      "android_path": "/system/lib64/libz.so",
+      "module": "libz.recovery",
+      "path": "rootfs/system/lib64/libz.so",
+      "sha256": "32c539d5c6cf270fa6fbba6779cd666d381c6ad2c6981b81758f5425cb679c0e"
+    }
+  ],
+  "name": "aosp-fastbootd",
+  "provider_source": {
+    "build_modules": [
+      "fastbootd",
+      "linker.recovery"
+    ],
+    "platform": "AOSP",
+    "platform_release": "android-15.0.0_r36",
+    "product": "aosp_arm64-trunk_staging-eng",
+    "provider_kind": "recovery-fastbootd-elf-runtime",
+    "source_out_dir": "out-treeforge-adb-fastboot-baseline"
+  },
+  "release": "android-15.0.0_r36-arm64",
+  "runtime_modules": {
+    "android.hardware.boot-V1-ndk.recovery": {
+      "android_path": "/system/lib64/android.hardware.boot-V1-ndk.so",
+      "git_revision": "4d7e907c777eeecc4c5bd7cf640a754fac206ff7",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/android.hardware.boot-V1-ndk.recovery_intermediates/android.hardware.boot-V1-ndk.recovery.meta_lic",
+      "repo_name": "platform/hardware/interfaces",
+      "repo_path": "hardware/interfaces",
+      "source_path": "hardware/interfaces/boot/aidl"
+    },
+    "android.hardware.boot@1.0.recovery": {
+      "android_path": "/system/lib64/android.hardware.boot@1.0.so",
+      "git_revision": "4d7e907c777eeecc4c5bd7cf640a754fac206ff7",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/android.hardware.boot@1.0.recovery_intermediates/android.hardware.boot@1.0.recovery.meta_lic",
+      "repo_name": "platform/hardware/interfaces",
+      "repo_path": "hardware/interfaces",
+      "source_path": "hardware/interfaces/boot/1.0"
+    },
+    "android.hardware.boot@1.1.recovery": {
+      "android_path": "/system/lib64/android.hardware.boot@1.1.so",
+      "git_revision": "4d7e907c777eeecc4c5bd7cf640a754fac206ff7",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/android.hardware.boot@1.1.recovery_intermediates/android.hardware.boot@1.1.recovery.meta_lic",
+      "repo_name": "platform/hardware/interfaces",
+      "repo_path": "hardware/interfaces",
+      "source_path": "hardware/interfaces/boot/1.1"
+    },
+    "android.hardware.boot@1.2.recovery": {
+      "android_path": "/system/lib64/android.hardware.boot@1.2.so",
+      "git_revision": "4d7e907c777eeecc4c5bd7cf640a754fac206ff7",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/android.hardware.boot@1.2.recovery_intermediates/android.hardware.boot@1.2.recovery.meta_lic",
+      "repo_name": "platform/hardware/interfaces",
+      "repo_path": "hardware/interfaces",
+      "source_path": "hardware/interfaces/boot/1.2"
+    },
+    "android.hardware.fastboot-V1-ndk.recovery": {
+      "android_path": "/system/lib64/android.hardware.fastboot-V1-ndk.so",
+      "git_revision": "4d7e907c777eeecc4c5bd7cf640a754fac206ff7",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/android.hardware.fastboot-V1-ndk.recovery_intermediates/android.hardware.fastboot-V1-ndk.recovery.meta_lic",
+      "repo_name": "platform/hardware/interfaces",
+      "repo_path": "hardware/interfaces",
+      "source_path": "hardware/interfaces/fastboot/aidl"
+    },
+    "android.hardware.fastboot@1.0.recovery": {
+      "android_path": "/system/lib64/android.hardware.fastboot@1.0.so",
+      "git_revision": "4d7e907c777eeecc4c5bd7cf640a754fac206ff7",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/android.hardware.fastboot@1.0.recovery_intermediates/android.hardware.fastboot@1.0.recovery.meta_lic",
+      "repo_name": "platform/hardware/interfaces",
+      "repo_path": "hardware/interfaces",
+      "source_path": "hardware/interfaces/fastboot/1.0"
+    },
+    "android.hardware.fastboot@1.1.recovery": {
+      "android_path": "/system/lib64/android.hardware.fastboot@1.1.so",
+      "git_revision": "4d7e907c777eeecc4c5bd7cf640a754fac206ff7",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/android.hardware.fastboot@1.1.recovery_intermediates/android.hardware.fastboot@1.1.recovery.meta_lic",
+      "repo_name": "platform/hardware/interfaces",
+      "repo_path": "hardware/interfaces",
+      "source_path": "hardware/interfaces/fastboot/1.1"
+    },
+    "android.hardware.health-V4-ndk.recovery": {
+      "android_path": "/system/lib64/android.hardware.health-V4-ndk.so",
+      "git_revision": "4d7e907c777eeecc4c5bd7cf640a754fac206ff7",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/android.hardware.health-V4-ndk.recovery_intermediates/android.hardware.health-V4-ndk.recovery.meta_lic",
+      "repo_name": "platform/hardware/interfaces",
+      "repo_path": "hardware/interfaces",
+      "source_path": "hardware/interfaces/health/aidl"
+    },
+    "android.hardware.health@1.0.recovery": {
+      "android_path": "/system/lib64/android.hardware.health@1.0.so",
+      "git_revision": "4d7e907c777eeecc4c5bd7cf640a754fac206ff7",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/android.hardware.health@1.0.recovery_intermediates/android.hardware.health@1.0.recovery.meta_lic",
+      "repo_name": "platform/hardware/interfaces",
+      "repo_path": "hardware/interfaces",
+      "source_path": "hardware/interfaces/health/1.0"
+    },
+    "android.hardware.health@2.0.recovery": {
+      "android_path": "/system/lib64/android.hardware.health@2.0.so",
+      "git_revision": "4d7e907c777eeecc4c5bd7cf640a754fac206ff7",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/android.hardware.health@2.0.recovery_intermediates/android.hardware.health@2.0.recovery.meta_lic",
+      "repo_name": "platform/hardware/interfaces",
+      "repo_path": "hardware/interfaces",
+      "source_path": "hardware/interfaces/health/2.0"
+    },
+    "fastbootd": {
+      "android_path": "/system/bin/fastbootd",
+      "git_revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "license_metadata": "target/product/generic_arm64/obj/METAEXECUTABLES/fastbootd_intermediates/fastbootd.meta_lic",
+      "repo_name": "platform/system/core",
+      "repo_path": "system/core",
+      "source_path": "system/core/fastboot"
+    },
+    "ld-android.recovery": {
+      "android_path": "/system/lib64/ld-android.so",
+      "git_revision": "8d67ca893c1523eb926b9080dbe4e2ffd2a27ba1",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/ld-android.recovery_intermediates/ld-android.recovery.meta_lic",
+      "repo_name": "platform/bionic",
+      "repo_path": "bionic",
+      "source_path": "bionic/linker"
+    },
+    "libasyncio.recovery": {
+      "android_path": "/system/lib64/libasyncio.so",
+      "git_revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libasyncio.recovery_intermediates/libasyncio.recovery.meta_lic",
+      "repo_name": "platform/system/core",
+      "repo_path": "system/core",
+      "source_path": "system/core/libasyncio"
+    },
+    "libbase.recovery": {
+      "android_path": "/system/lib64/libbase.so",
+      "git_revision": "8f0ba417480079999ba552f1087ae592091b9d02",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libbase.recovery_intermediates/libbase.recovery.meta_lic",
+      "repo_name": "platform/system/libbase",
+      "repo_path": "system/libbase",
+      "source_path": "system/libbase"
+    },
+    "libbinder.recovery": {
+      "android_path": "/system/lib64/libbinder.so",
+      "git_revision": "cdca1e2000347ce2f2b25ab5d0f2dffa81f30e01",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libbinder.recovery_intermediates/libbinder.recovery.meta_lic",
+      "repo_name": "platform/frameworks/native",
+      "repo_path": "frameworks/native",
+      "source_path": "frameworks/native/libs/binder"
+    },
+    "libbinder_ndk.recovery": {
+      "android_path": "/system/lib64/libbinder_ndk.so",
+      "git_revision": "cdca1e2000347ce2f2b25ab5d0f2dffa81f30e01",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libbinder_ndk.recovery_intermediates/libbinder_ndk.recovery.meta_lic",
+      "repo_name": "platform/frameworks/native",
+      "repo_path": "frameworks/native",
+      "source_path": "frameworks/native/libs/binder/ndk"
+    },
+    "libboot_control_client.recovery": {
+      "android_path": "/system/lib64/libboot_control_client.so",
+      "git_revision": "4d7e907c777eeecc4c5bd7cf640a754fac206ff7",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libboot_control_client.recovery_intermediates/libboot_control_client.recovery.meta_lic",
+      "repo_name": "platform/hardware/interfaces",
+      "repo_path": "hardware/interfaces",
+      "source_path": "hardware/interfaces/boot/aidl/client"
+    },
+    "libbootloader_message.recovery": {
+      "android_path": "/system/lib64/libbootloader_message.so",
+      "git_revision": "e7c364b630b241adcb6c7726a21055250b91fdac",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libbootloader_message.recovery_intermediates/libbootloader_message.recovery.meta_lic",
+      "repo_name": "platform/bootable/recovery",
+      "repo_path": "bootable/recovery",
+      "source_path": "bootable/recovery/bootloader_message"
+    },
+    "libc++.recovery": {
+      "android_path": "/system/lib64/libc++.so",
+      "git_revision": "96266255abde668f1bf100bf2c47363b96b7a21e",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libc++.recovery_intermediates/libc++.recovery.meta_lic",
+      "repo_name": "platform/prebuilts/clang/host/linux-x86",
+      "repo_path": "prebuilts/clang/host/linux-x86",
+      "source_path": "prebuilts/clang/host/linux-x86"
+    },
+    "libc.recovery": {
+      "android_path": "/system/lib64/libc.so",
+      "git_revision": "8d67ca893c1523eb926b9080dbe4e2ffd2a27ba1",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libc.recovery_intermediates/libc.recovery.meta_lic",
+      "repo_name": "platform/bionic",
+      "repo_path": "bionic",
+      "source_path": "bionic/libc"
+    },
+    "libcrypto.recovery": {
+      "android_path": "/system/lib64/libcrypto.so",
+      "git_revision": "8fb009dc861624b67b6cdb62ea21f0f22d0c584b",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libcrypto.recovery_intermediates/libcrypto.recovery.meta_lic",
+      "repo_name": "platform/external/boringssl",
+      "repo_path": "external/boringssl",
+      "source_path": "external/boringssl"
+    },
+    "libcrypto_utils.recovery": {
+      "android_path": "/system/lib64/libcrypto_utils.so",
+      "git_revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libcrypto_utils.recovery_intermediates/libcrypto_utils.recovery.meta_lic",
+      "repo_name": "platform/system/core",
+      "repo_path": "system/core",
+      "source_path": "system/core/libcrypto_utils"
+    },
+    "libcutils.recovery": {
+      "android_path": "/system/lib64/libcutils.so",
+      "git_revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libcutils.recovery_intermediates/libcutils.recovery.meta_lic",
+      "repo_name": "platform/system/core",
+      "repo_path": "system/core",
+      "source_path": "system/core/libcutils"
+    },
+    "libdl.recovery": {
+      "android_path": "/system/lib64/libdl.so",
+      "git_revision": "8d67ca893c1523eb926b9080dbe4e2ffd2a27ba1",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libdl.recovery_intermediates/libdl.recovery.meta_lic",
+      "repo_name": "platform/bionic",
+      "repo_path": "bionic",
+      "source_path": "bionic/libdl"
+    },
+    "libext2_uuid.recovery": {
+      "android_path": "/system/lib64/libext2_uuid.so",
+      "git_revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libext2_uuid.recovery_intermediates/libext2_uuid.recovery.meta_lic",
+      "repo_name": "platform/external/e2fsprogs",
+      "repo_path": "external/e2fsprogs",
+      "source_path": "external/e2fsprogs/lib/uuid"
+    },
+    "libext4_utils.recovery": {
+      "android_path": "/system/lib64/libext4_utils.so",
+      "git_revision": "288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libext4_utils.recovery_intermediates/libext4_utils.recovery.meta_lic",
+      "repo_name": "platform/system/extras",
+      "repo_path": "system/extras",
+      "source_path": "system/extras/ext4_utils"
+    },
+    "libfec.recovery": {
+      "android_path": "/system/lib64/libfec.so",
+      "git_revision": "288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libfec.recovery_intermediates/libfec.recovery.meta_lic",
+      "repo_name": "platform/system/extras",
+      "repo_path": "system/extras",
+      "source_path": "system/extras/libfec"
+    },
+    "libfs_mgr.recovery": {
+      "android_path": "/system/lib64/libfs_mgr.so",
+      "git_revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libfs_mgr.recovery_intermediates/libfs_mgr.recovery.meta_lic",
+      "repo_name": "platform/system/core",
+      "repo_path": "system/core",
+      "source_path": "system/core/fs_mgr"
+    },
+    "libgsi.recovery": {
+      "android_path": "/system/lib64/libgsi.so",
+      "git_revision": "4e2b41f188908a2ae9d9a2089f1f10779d080021",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libgsi.recovery_intermediates/libgsi.recovery.meta_lic",
+      "repo_name": "platform/system/gsid",
+      "repo_path": "system/gsid",
+      "source_path": "system/gsid"
+    },
+    "libhidlbase.recovery": {
+      "android_path": "/system/lib64/libhidlbase.so",
+      "git_revision": "8222fbe171c3d6fadfe95119c180cf3010c392a8",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libhidlbase.recovery_intermediates/libhidlbase.recovery.meta_lic",
+      "repo_name": "platform/system/libhidl",
+      "repo_path": "system/libhidl",
+      "source_path": "system/libhidl"
+    },
+    "liblog.recovery": {
+      "android_path": "/system/lib64/liblog.so",
+      "git_revision": "598139dc91b21518d67c408eaea2644226490971",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/liblog.recovery_intermediates/liblog.recovery.meta_lic",
+      "repo_name": "platform/system/logging",
+      "repo_path": "system/logging",
+      "source_path": "system/logging/liblog"
+    },
+    "liblp.recovery": {
+      "android_path": "/system/lib64/liblp.so",
+      "git_revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/liblp.recovery_intermediates/liblp.recovery.meta_lic",
+      "repo_name": "platform/system/core",
+      "repo_path": "system/core",
+      "source_path": "system/core/fs_mgr/liblp"
+    },
+    "libm.recovery": {
+      "android_path": "/system/lib64/libm.so",
+      "git_revision": "8d67ca893c1523eb926b9080dbe4e2ffd2a27ba1",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libm.recovery_intermediates/libm.recovery.meta_lic",
+      "repo_name": "platform/bionic",
+      "repo_path": "bionic",
+      "source_path": "bionic/libm"
+    },
+    "libpackagelistparser.recovery": {
+      "android_path": "/system/lib64/libpackagelistparser.so",
+      "git_revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libpackagelistparser.recovery_intermediates/libpackagelistparser.recovery.meta_lic",
+      "repo_name": "platform/system/core",
+      "repo_path": "system/core",
+      "source_path": "system/core/libpackagelistparser"
+    },
+    "libpcre2.recovery": {
+      "android_path": "/system/lib64/libpcre2.so",
+      "git_revision": "22dc650d8ae982c6770746019a6f94af92b0f024",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libpcre2.recovery_intermediates/libpcre2.recovery.meta_lic",
+      "repo_name": "platform/external/pcre",
+      "repo_path": "external/pcre",
+      "source_path": "external/pcre"
+    },
+    "libprotobuf-cpp-lite.recovery": {
+      "android_path": "/system/lib64/libprotobuf-cpp-lite.so",
+      "git_revision": "1b3f573f81763fcece89efc2b6a5209149e44ab8",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libprotobuf-cpp-lite.recovery_intermediates/libprotobuf-cpp-lite.recovery.meta_lic",
+      "repo_name": "platform/external/protobuf",
+      "repo_path": "external/protobuf",
+      "source_path": "external/protobuf"
+    },
+    "libselinux.recovery": {
+      "android_path": "/system/lib64/libselinux.so",
+      "git_revision": "2d543d20722ada2425b5bdab9d0d1d29470e7bba",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libselinux.recovery_intermediates/libselinux.recovery.meta_lic",
+      "repo_name": "platform/external/selinux",
+      "repo_path": "external/selinux",
+      "source_path": "external/selinux/libselinux"
+    },
+    "libsparse.recovery": {
+      "android_path": "/system/lib64/libsparse.so",
+      "git_revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libsparse.recovery_intermediates/libsparse.recovery.meta_lic",
+      "repo_name": "platform/system/core",
+      "repo_path": "system/core",
+      "source_path": "system/core/libsparse"
+    },
+    "libsquashfs_utils.recovery": {
+      "android_path": "/system/lib64/libsquashfs_utils.so",
+      "git_revision": "288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libsquashfs_utils.recovery_intermediates/libsquashfs_utils.recovery.meta_lic",
+      "repo_name": "platform/system/extras",
+      "repo_path": "system/extras",
+      "source_path": "system/extras/squashfs_utils"
+    },
+    "libutils.recovery": {
+      "android_path": "/system/lib64/libutils.so",
+      "git_revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libutils.recovery_intermediates/libutils.recovery.meta_lic",
+      "repo_name": "platform/system/core",
+      "repo_path": "system/core",
+      "source_path": "system/core/libutils"
+    },
+    "libz.recovery": {
+      "android_path": "/system/lib64/libz.so",
+      "git_revision": "86ee64e75fa5f8bce2c8c356138035642429cd05",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libz.recovery_intermediates/libz.recovery.meta_lic",
+      "repo_name": "platform/external/zlib",
+      "repo_path": "external/zlib",
+      "source_path": "external/zlib"
+    },
+    "linker.recovery": {
+      "android_path": "/system/bin/linker64",
+      "git_revision": "8d67ca893c1523eb926b9080dbe4e2ffd2a27ba1",
+      "license_metadata": "target/product/generic_arm64/obj/METAEXECUTABLES/linker.recovery_intermediates/linker.recovery.meta_lic",
+      "repo_name": "platform/bionic",
+      "repo_path": "bionic",
+      "source_path": "bionic/linker"
+    }
+  },
+  "schema": 1
+}

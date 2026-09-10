@@ -1,0 +1,31 @@
+{
+  "architecture": "x86_64",
+  "artifacts": [
+    {
+      "build_target": "fastboot",
+      "name": "fastboot",
+      "path": "bin/fastboot",
+      "sha256": "340c23293ee6f3fb60d689e8c2042d23ef969d511981c2df3c423973d6ff4898",
+      "source_build_output": "host/linux-x86/bin/fastboot"
+    }
+  ],
+  "compliance": {
+    "checkshare": "PASS",
+    "notice_sha256": "258a51001a29780bcd4efc9afd7b65532238f13e51e065c7026eb29becb104fb",
+    "source_share_projects": 1
+  },
+  "name": "aosp-fastboot",
+  "platform": "linux",
+  "platform_release": "android-15.0.0_r36",
+  "release": "android-15.0.0_r36-linux-x86_64",
+  "schema": 1,
+  "sources": [
+    {
+      "module": "fastboot",
+      "project": "platform/system/core",
+      "remote": "https://android.googlesource.com/platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "source_path": "system/core/fastboot"
+    }
+  ]
+}

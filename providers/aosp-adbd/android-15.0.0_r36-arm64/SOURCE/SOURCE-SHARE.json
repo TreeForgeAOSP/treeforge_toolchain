@@ -1,0 +1,6 @@
+{
+  "android_release": "android-15.0.0_r36",
+  "policy_authority": "AOSP build/tools/compliance compliance_listshare",
+  "projects": [],
+  "schema": 1
+}

@@ -1,0 +1,86 @@
+{
+  "architecture": "arm64",
+  "canonical_sdk_level": "35",
+  "compliance": {
+    "android_release": "android-15.0.0_r36",
+    "checkshare": {
+      "result": "PASS",
+      "tool": "compliance_checkshare"
+    },
+    "listshare": {
+      "project_count": 25,
+      "record": "SOURCE/SOURCE-SHARE.json",
+      "tool": "compliance_listshare"
+    },
+    "notice": {
+      "path": "NOTICE/NOTICE.txt",
+      "sha256": "33963402f481ee6a9d3b2ab3c91b3986cace6b1a2eb1a53aafa355d4096b592c",
+      "tool": "textnotice"
+    },
+    "runtime_roots": 4
+  },
+  "files": [
+    {
+      "android_path": "/system/bin/treeforge-vabc-coordinator",
+      "component": "libsnapshot",
+      "module": "treeforge-vabc-coordinator",
+      "path": "rootfs/system/bin/treeforge-vabc-coordinator",
+      "sha256": "666417386eb6c0ba9d1c3e197b585879d3bc05cdb9ed4c9f1d40944ed969d393"
+    },
+    {
+      "android_path": "/system/lib64/libchrome.so",
+      "component": "libchrome",
+      "module": "libchrome",
+      "path": "rootfs/system/lib64/libchrome.so",
+      "sha256": "799025c87a893a6052d49b7d99b5bbc56c1dd41767c3eb08f136b9ed65c54c44"
+    },
+    {
+      "android_path": "/system/lib64/libcutils.so",
+      "component": "libcutils",
+      "module": "libcutils",
+      "path": "rootfs/system/lib64/libcutils.so",
+      "sha256": "40984d4e91edca3bde2dafc2bace4cd8dcc6172c06a765d023b38e2d4ddb719c"
+    },
+    {
+      "android_path": "/system/lib64/libevent.so",
+      "component": "libevent",
+      "module": "libevent",
+      "path": "rootfs/system/lib64/libevent.so",
+      "sha256": "6bc98f323736888d22ff1b83adb330bb1278b921f79a56517f6edfc3092ec84c"
+    }
+  ],
+  "license_files": [
+    "system-core-MODULE_LICENSE_APACHE2",
+    "libchrome-MODULE_LICENSE_BSD",
+    "libchrome-NOTICE",
+    "libevent-LICENSE",
+    "libevent-MODULE_LICENSE_BSD_LIKE"
+  ],
+  "name": "treeforge-vabc-coordinator",
+  "provider_source": {
+    "build_modules": [
+      "treeforge-vabc-coordinator"
+    ],
+    "clang_default_version": "clang-r536225",
+    "platform": "AOSP",
+    "platform_release": "android-15.0.0_r36",
+    "product": "aosp_arm64-trunk_staging-eng",
+    "recovery_output_root": "out/target/product/generic_arm64/recovery/root"
+  },
+  "release": "android-15.0.0_r36-arm64",
+  "runtime_dependencies": {
+    "provider": "aosp-adbd-recovery/android-15.0.0_r36-arm64",
+    "reused_identical_android_paths": [
+      "/system/bin/linker64",
+      "/system/lib64/libbase.so",
+      "/system/lib64/liblog.so",
+      "/system/lib64/libcrypto.so",
+      "/system/lib64/libc++.so",
+      "/system/lib64/libc.so",
+      "/system/lib64/libm.so",
+      "/system/lib64/libdl.so",
+      "/system/lib64/ld-android.so"
+    ]
+  },
+  "schema": 1
+}

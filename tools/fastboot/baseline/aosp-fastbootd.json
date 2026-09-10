@@ -1,0 +1,220 @@
+{
+  "android_release": "android-15.0.0_r36",
+  "canonical_payload": "rootfs/system/bin/fastbootd",
+  "canonical_payload_sha256": "36079d453dda5f10a23dcf7f09b5dcb886f59fe983f12b658a1c0830c2f75bec",
+  "classification": "AOSP_REFERENCE_PROVIDER",
+  "compliance": {
+    "android_release": "android-15.0.0_r36",
+    "checkshare": {
+      "result": "PASS",
+      "tool": "compliance_checkshare"
+    },
+    "listshare": {
+      "project_count": 41,
+      "record": "SOURCE/SOURCE-SHARE.json",
+      "tool": "compliance_listshare"
+    },
+    "notice": {
+      "path": "NOTICE/NOTICE.txt",
+      "sha256": "90fbea0db0aeec85d7d9f9a79cfa92816cf29a9542d90551fb39e60fe5934377",
+      "tool": "textnotice"
+    },
+    "runtime_roots": 42
+  },
+  "components": {
+    "bionic": {
+      "git_revision": "8d67ca893c1523eb926b9080dbe4e2ffd2a27ba1",
+      "module": "ld-android.recovery / libc.recovery / libdl.recovery / libm.recovery / linker.recovery",
+      "modules": [
+        "ld-android.recovery",
+        "libc.recovery",
+        "libdl.recovery",
+        "libm.recovery",
+        "linker.recovery"
+      ],
+      "repo_name": "platform/bionic",
+      "source_root": "bionic"
+    },
+    "bootable-recovery": {
+      "git_revision": "e7c364b630b241adcb6c7726a21055250b91fdac",
+      "module": "libbootloader_message.recovery",
+      "modules": [
+        "libbootloader_message.recovery"
+      ],
+      "repo_name": "platform/bootable/recovery",
+      "source_root": "bootable/recovery"
+    },
+    "external-boringssl": {
+      "git_revision": "8fb009dc861624b67b6cdb62ea21f0f22d0c584b",
+      "module": "libcrypto.recovery",
+      "modules": [
+        "libcrypto.recovery"
+      ],
+      "repo_name": "platform/external/boringssl",
+      "source_root": "external/boringssl"
+    },
+    "external-e2fsprogs": {
+      "git_revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "module": "libext2_uuid.recovery",
+      "modules": [
+        "libext2_uuid.recovery"
+      ],
+      "repo_name": "platform/external/e2fsprogs",
+      "source_root": "external/e2fsprogs"
+    },
+    "external-pcre": {
+      "git_revision": "22dc650d8ae982c6770746019a6f94af92b0f024",
+      "module": "libpcre2.recovery",
+      "modules": [
+        "libpcre2.recovery"
+      ],
+      "repo_name": "platform/external/pcre",
+      "source_root": "external/pcre"
+    },
+    "external-protobuf": {
+      "git_revision": "1b3f573f81763fcece89efc2b6a5209149e44ab8",
+      "module": "libprotobuf-cpp-lite.recovery",
+      "modules": [
+        "libprotobuf-cpp-lite.recovery"
+      ],
+      "repo_name": "platform/external/protobuf",
+      "source_root": "external/protobuf"
+    },
+    "external-selinux": {
+      "git_revision": "2d543d20722ada2425b5bdab9d0d1d29470e7bba",
+      "module": "libselinux.recovery",
+      "modules": [
+        "libselinux.recovery"
+      ],
+      "repo_name": "platform/external/selinux",
+      "source_root": "external/selinux"
+    },
+    "external-zlib": {
+      "git_revision": "86ee64e75fa5f8bce2c8c356138035642429cd05",
+      "module": "libz.recovery",
+      "modules": [
+        "libz.recovery"
+      ],
+      "repo_name": "platform/external/zlib",
+      "source_root": "external/zlib"
+    },
+    "frameworks-native": {
+      "git_revision": "cdca1e2000347ce2f2b25ab5d0f2dffa81f30e01",
+      "module": "libbinder.recovery / libbinder_ndk.recovery",
+      "modules": [
+        "libbinder.recovery",
+        "libbinder_ndk.recovery"
+      ],
+      "repo_name": "platform/frameworks/native",
+      "source_root": "frameworks/native"
+    },
+    "hardware-interfaces": {
+      "git_revision": "4d7e907c777eeecc4c5bd7cf640a754fac206ff7",
+      "module": "android.hardware.boot-V1-ndk.recovery / android.hardware.boot@1.0.recovery / android.hardware.boot@1.1.recovery / android.hardware.boot@1.2.recovery / android.hardware.fastboot-V1-ndk.recovery / android.hardware.fastboot@1.0.recovery / android.hardware.fastboot@1.1.recovery / android.hardware.health-V4-ndk.recovery / android.hardware.health@1.0.recovery / android.hardware.health@2.0.recovery / libboot_control_client.recovery",
+      "modules": [
+        "android.hardware.boot-V1-ndk.recovery",
+        "android.hardware.boot@1.0.recovery",
+        "android.hardware.boot@1.1.recovery",
+        "android.hardware.boot@1.2.recovery",
+        "android.hardware.fastboot-V1-ndk.recovery",
+        "android.hardware.fastboot@1.0.recovery",
+        "android.hardware.fastboot@1.1.recovery",
+        "android.hardware.health-V4-ndk.recovery",
+        "android.hardware.health@1.0.recovery",
+        "android.hardware.health@2.0.recovery",
+        "libboot_control_client.recovery"
+      ],
+      "repo_name": "platform/hardware/interfaces",
+      "source_root": "hardware/interfaces"
+    },
+    "prebuilts-clang-host-linux-x86": {
+      "git_revision": "96266255abde668f1bf100bf2c47363b96b7a21e",
+      "module": "libc++.recovery",
+      "modules": [
+        "libc++.recovery"
+      ],
+      "repo_name": "platform/prebuilts/clang/host/linux-x86",
+      "source_root": "prebuilts/clang/host/linux-x86"
+    },
+    "system-core": {
+      "git_revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "module": "fastbootd / libasyncio.recovery / libcrypto_utils.recovery / libcutils.recovery / libfs_mgr.recovery / liblp.recovery / libpackagelistparser.recovery / libsparse.recovery / libutils.recovery",
+      "modules": [
+        "fastbootd",
+        "libasyncio.recovery",
+        "libcrypto_utils.recovery",
+        "libcutils.recovery",
+        "libfs_mgr.recovery",
+        "liblp.recovery",
+        "libpackagelistparser.recovery",
+        "libsparse.recovery",
+        "libutils.recovery"
+      ],
+      "repo_name": "platform/system/core",
+      "source_root": "system/core"
+    },
+    "system-extras": {
+      "git_revision": "288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5",
+      "module": "libext4_utils.recovery / libfec.recovery / libsquashfs_utils.recovery",
+      "modules": [
+        "libext4_utils.recovery",
+        "libfec.recovery",
+        "libsquashfs_utils.recovery"
+      ],
+      "repo_name": "platform/system/extras",
+      "source_root": "system/extras"
+    },
+    "system-gsid": {
+      "git_revision": "4e2b41f188908a2ae9d9a2089f1f10779d080021",
+      "module": "libgsi.recovery",
+      "modules": [
+        "libgsi.recovery"
+      ],
+      "repo_name": "platform/system/gsid",
+      "source_root": "system/gsid"
+    },
+    "system-libbase": {
+      "git_revision": "8f0ba417480079999ba552f1087ae592091b9d02",
+      "module": "libbase.recovery",
+      "modules": [
+        "libbase.recovery"
+      ],
+      "repo_name": "platform/system/libbase",
+      "source_root": "system/libbase"
+    },
+    "system-libhidl": {
+      "git_revision": "8222fbe171c3d6fadfe95119c180cf3010c392a8",
+      "module": "libhidlbase.recovery",
+      "modules": [
+        "libhidlbase.recovery"
+      ],
+      "repo_name": "platform/system/libhidl",
+      "source_root": "system/libhidl"
+    },
+    "system-logging": {
+      "git_revision": "598139dc91b21518d67c408eaea2644226490971",
+      "module": "liblog.recovery",
+      "modules": [
+        "liblog.recovery"
+      ],
+      "repo_name": "platform/system/logging",
+      "source_root": "system/logging"
+    }
+  },
+  "provider": "aosp-fastbootd",
+  "provider_kind": "runtime",
+  "provider_release": "android-15.0.0_r36-arm64",
+  "provider_source": {
+    "build_modules": [
+      "fastbootd",
+      "linker.recovery"
+    ],
+    "platform": "AOSP",
+    "platform_release": "android-15.0.0_r36",
+    "product": "aosp_arm64-trunk_staging-eng",
+    "provider_kind": "recovery-fastbootd-elf-runtime",
+    "source_out_dir": "out-treeforge-adb-fastboot-baseline"
+  },
+  "schema": 1,
+  "upstream_manifest": "manifests/android-15.0.0_r36/manifest.xml"
+}

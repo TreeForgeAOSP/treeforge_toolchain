@@ -1,0 +1,40 @@
+TreeForge Virtual A/B Recovery Coordinator Runtime Provider
+
+Provider: treeforge-vabc-coordinator
+Release: android-15.0.0_r36-arm64
+Canonical SDK: 35
+Architecture: arm64
+Upstream platform: AOSP android-15.0.0_r36
+Build product: aosp_arm64-trunk_staging-eng
+Build module: treeforge-vabc-coordinator
+
+AOSP is used only as the developer build workspace for producing this
+bundled provider. TreeForge runtime use of this provider does not require
+an AOSP checkout.
+
+The coordinator embeds the full COW-capable libsnapshot implementation.
+TreeForge keeps normal Recovery semantics while narrowly allowing
+Virtual A/B creation from TreeForge Recovery through
+AllowVirtualAbInRecovery().
+
+The current provider is intentionally probe-only. Snapshot creation,
+COW writes, and slot activation remain disabled until their separate
+Recovery safety milestones are accepted.
+
+The coordinator reuses byte-identical Android r36 runtime files already
+bundled by the aosp-adbd-recovery runtime provider. Its provider bundle owns
+only the coordinator executable and the additional libchrome, libcutils,
+and libevent runtime libraries.
+
+Publication compliance:
+- Source platform: AOSP android-15.0.0_r36
+- Build configuration: aosp_arm64-trunk_staging-eng
+- Build release identity: Baklava / BP1A.250505.005.D1
+- compliance_checkshare: PASS
+- compliance_listshare projects: 25
+- compliance roots: 4
+- Generated NOTICE: NOTICE/NOTICE.txt
+- NOTICE SHA-256: 33963402f481ee6a9d3b2ab3c91b3986cace6b1a2eb1a53aafa355d4096b592c
+- Source-sharing record: SOURCE/SOURCE-SHARE.json
+- Source revisions resolved from the locked android-15.0.0_r36 Repo manifest.
+- TreeForge modifications remain documented in MODIFICATIONS.txt and PATCHES/treeforge-vabc-recovery.patch.

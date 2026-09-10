@@ -1,0 +1,6 @@
+aosp-adbd source-sharing provenance
+================================================================
+
+Android release: android-15.0.0_r36
+Compliance authority: AOSP compliance_listshare
+

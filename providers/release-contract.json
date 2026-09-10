@@ -1,0 +1,15 @@
+{
+  "distribution": "GITHUB_RELEASE_ASSET",
+  "floating_latest_allowed": false,
+  "repository": "Skellyaosp/treeforge_toolchain",
+  "requirements": {
+    "archive_sha256": true,
+    "exact_release_tag": true,
+    "internal_manifest": true,
+    "offline_cache_supported": true,
+    "per_file_sha256": true,
+    "provider_specific_release": true,
+    "source_rebuild_records_required": true
+  },
+  "schema": 1
+}

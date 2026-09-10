@@ -1,0 +1,31 @@
+{
+  "architecture": "x86_64",
+  "artifacts": [
+    {
+      "build_target": "adb",
+      "name": "adb",
+      "path": "bin/adb",
+      "sha256": "1cf16f6b87dc63e95a83b3b6dce6711fc778b1c04565beb58e182fc21a6910f3",
+      "source_build_output": "host/linux-x86/bin/adb"
+    }
+  ],
+  "compliance": {
+    "checkshare": "PASS",
+    "notice_sha256": "996d0c952c3d44fed1143edaf08ceb1c2a8148f760ee9f71b6a2e56fe5a78749",
+    "source_share_projects": 24
+  },
+  "name": "aosp-adb",
+  "platform": "linux",
+  "platform_release": "android-15.0.0_r36",
+  "release": "android-15.0.0_r36-linux-x86_64",
+  "schema": 1,
+  "sources": [
+    {
+      "module": "adb",
+      "project": "platform/packages/modules/adb",
+      "remote": "https://android.googlesource.com/platform/packages/modules/adb",
+      "revision": "a877adddefdf011bfb5d4045919c6df3d3727ed3",
+      "source_path": "packages/modules/adb"
+    }
+  ]
+}

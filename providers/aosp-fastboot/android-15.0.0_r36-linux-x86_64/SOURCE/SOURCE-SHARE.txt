@@ -1,0 +1,12 @@
+aosp-fastboot source-sharing provenance
+================================================================
+
+Android release: android-15.0.0_r36
+Compliance authority: AOSP compliance_listshare
+
+development
+  repository: platform/development
+  revision: 90c8c64db3049935a07c6143d7fd006e26f8ecca
+  conditions: reciprocal
+  source: https://android.googlesource.com/platform/development/+/90c8c64db3049935a07c6143d7fd006e26f8ecca/
+

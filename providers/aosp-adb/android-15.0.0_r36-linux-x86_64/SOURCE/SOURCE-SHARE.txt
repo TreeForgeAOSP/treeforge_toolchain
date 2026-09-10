@@ -1,0 +1,150 @@
+aosp-adb source-sharing provenance
+================================================================
+
+Android release: android-15.0.0_r36
+Compliance authority: AOSP compliance_listshare
+
+build/soong
+  repository: platform/build/soong
+  revision: 333d2b3687b3a337dbcca9d65000bca186795e39
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/build/soong/+/333d2b3687b3a337dbcca9d65000bca186795e39/
+
+development
+  repository: platform/development
+  revision: 90c8c64db3049935a07c6143d7fd006e26f8ecca
+  conditions: reciprocal, restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/development/+/90c8c64db3049935a07c6143d7fd006e26f8ecca/
+
+external/boringssl
+  repository: platform/external/boringssl
+  revision: 8fb009dc861624b67b6cdb62ea21f0f22d0c584b
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/external/boringssl/+/8fb009dc861624b67b6cdb62ea21f0f22d0c584b/
+
+external/brotli
+  repository: platform/external/brotli
+  revision: f4ee7fba7774faf2a30f13154332c0a06550dbc4
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/external/brotli/+/f4ee7fba7774faf2a30f13154332c0a06550dbc4/
+
+external/fmtlib
+  repository: platform/external/fmtlib
+  revision: 5c90c05cd622c0a81b57953a4d343e0e489f2e08
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/external/fmtlib/+/5c90c05cd622c0a81b57953a4d343e0e489f2e08/
+
+external/googletest
+  repository: platform/external/googletest
+  revision: 481dde660366d6f317d242b6974ef1b20adb843c
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/external/googletest/+/481dde660366d6f317d242b6974ef1b20adb843c/
+
+external/libpng
+  repository: platform/external/libpng
+  revision: a67afe4df73cf47866eedc69947994b8ff839aba
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/external/libpng/+/a67afe4df73cf47866eedc69947994b8ff839aba/
+
+external/libusb
+  repository: platform/external/libusb
+  revision: 86b64dcb59b3a0b37502ecd56e119234366a6f7e
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/external/libusb/+/86b64dcb59b3a0b37502ecd56e119234366a6f7e/
+
+external/lz4
+  repository: platform/external/lz4
+  revision: 27162e4e17433d5aa7cb38e7b6a433a09405fc7f
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/external/lz4/+/27162e4e17433d5aa7cb38e7b6a433a09405fc7f/
+
+external/mdnsresponder
+  repository: platform/external/mdnsresponder
+  revision: 48a54d368dc4fa860885eef7b70b6c53499e7c25
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/external/mdnsresponder/+/48a54d368dc4fa860885eef7b70b6c53499e7c25/
+
+external/openscreen
+  repository: platform/external/openscreen
+  revision: 3f982cf4871df8771c9d4abe6e9a6f8d829b2736
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/external/openscreen/+/3f982cf4871df8771c9d4abe6e9a6f8d829b2736/
+
+external/protobuf
+  repository: platform/external/protobuf
+  revision: 1b3f573f81763fcece89efc2b6a5209149e44ab8
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/external/protobuf/+/1b3f573f81763fcece89efc2b6a5209149e44ab8/
+
+external/zlib
+  repository: platform/external/zlib
+  revision: 86ee64e75fa5f8bce2c8c356138035642429cd05
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/external/zlib/+/86ee64e75fa5f8bce2c8c356138035642429cd05/
+
+external/zstd
+  repository: platform/external/zstd
+  revision: 01826a4963a0d8a59bc3812d29bdf0fb76416722
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/external/zstd/+/01826a4963a0d8a59bc3812d29bdf0fb76416722/
+
+frameworks/base
+  repository: platform/frameworks/base
+  revision: 396d32905ded85c082232bc510b525c9e372e585
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/frameworks/base/+/396d32905ded85c082232bc510b525c9e372e585/
+
+frameworks/native
+  repository: platform/frameworks/native
+  revision: cdca1e2000347ce2f2b25ab5d0f2dffa81f30e01
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/frameworks/native/+/cdca1e2000347ce2f2b25ab5d0f2dffa81f30e01/
+
+packages/modules/adb
+  repository: platform/packages/modules/adb
+  revision: a877adddefdf011bfb5d4045919c6df3d3727ed3
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/packages/modules/adb/+/a877adddefdf011bfb5d4045919c6df3d3727ed3/
+
+prebuilts/clang/host/linux-x86
+  repository: platform/prebuilts/clang/host/linux-x86
+  revision: 96266255abde668f1bf100bf2c47363b96b7a21e
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+/96266255abde668f1bf100bf2c47363b96b7a21e/
+
+prebuilts/runtime
+  repository: platform/prebuilts/runtime
+  revision: 924841fff420cd6b931e1027ee46b85e0a18fe17
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/prebuilts/runtime/+/924841fff420cd6b931e1027ee46b85e0a18fe17/
+
+system/core
+  repository: platform/system/core
+  revision: 00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/system/core/+/00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad/
+
+system/incremental_delivery
+  repository: platform/system/incremental_delivery
+  revision: 9190c2a8bd3622b7aa9bd7bfe4b3aec77820f478
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/system/incremental_delivery/+/9190c2a8bd3622b7aa9bd7bfe4b3aec77820f478/
+
+system/libbase
+  repository: platform/system/libbase
+  revision: 8f0ba417480079999ba552f1087ae592091b9d02
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/system/libbase/+/8f0ba417480079999ba552f1087ae592091b9d02/
+
+system/libziparchive
+  repository: platform/system/libziparchive
+  revision: adcb0a6279ea715828f9bc5e351569419e478774
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/system/libziparchive/+/adcb0a6279ea715828f9bc5e351569419e478774/
+
+system/logging
+  repository: platform/system/logging
+  revision: 598139dc91b21518d67c408eaea2644226490971
+  conditions: restricted, restricted_if_statically_linked
+  source: https://android.googlesource.com/platform/system/logging/+/598139dc91b21518d67c408eaea2644226490971/
+

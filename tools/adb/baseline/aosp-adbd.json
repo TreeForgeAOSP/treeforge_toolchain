@@ -1,0 +1,53 @@
+{
+  "android_release": "android-15.0.0_r36",
+  "canonical_payload": "rootfs/system/apex/com.android.adbd.capex",
+  "canonical_payload_sha256": "77999007b945dcf69d87f2f23c56276d7f3e7dbc9f5b0d5bc940c72daa3302f4",
+  "classification": "AOSP_REFERENCE_PROVIDER",
+  "compliance": {
+    "android_release": "android-15.0.0_r36",
+    "checkshare": {
+      "result": "PASS",
+      "tool": "compliance_checkshare"
+    },
+    "listshare": {
+      "project_count": 0,
+      "record": "SOURCE/SOURCE-SHARE.json",
+      "tool": "compliance_listshare"
+    },
+    "notice": {
+      "path": "NOTICE/NOTICE.txt",
+      "sha256": "17162dcd72b29bf83f58a1584553ee40435955ace0408115fd27963c6a234793",
+      "tool": "textnotice"
+    },
+    "runtime_roots": 1
+  },
+  "components": {
+    "packages-modules-adb": {
+      "git_revision": "a877adddefdf011bfb5d4045919c6df3d3727ed3",
+      "module": "com.android.adbd",
+      "modules": [
+        "com.android.adbd"
+      ],
+      "repo_name": "platform/packages/modules/adb",
+      "source_root": "packages/modules/adb"
+    }
+  },
+  "provider": "aosp-adbd",
+  "provider_kind": "runtime",
+  "provider_release": "android-15.0.0_r36-arm64",
+  "provider_source": {
+    "build_modules": [
+      "adbd",
+      "adbd.com.android.adbd",
+      "com.android.adbd",
+      "adbd_system_api"
+    ],
+    "platform": "AOSP",
+    "platform_release": "android-15.0.0_r36",
+    "product": "aosp_arm64-trunk_staging-eng",
+    "provider_kind": "normal-android-compressed-apex",
+    "source_out_dir": "out-treeforge-adb-fastboot-baseline"
+  },
+  "schema": 1,
+  "upstream_manifest": "manifests/android-15.0.0_r36/manifest.xml"
+}

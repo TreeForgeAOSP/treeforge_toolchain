@@ -1,0 +1,13 @@
+TreeForge modifications relative to AOSP android-15.0.0_r36
+
+1. Added IDeviceInfo::AllowVirtualAbInRecovery(), default false.
+2. Narrowed only the Virtual A/B creation Recovery gate so an explicit
+   TreeForge Recovery device implementation may opt in.
+3. Added a private full-COW libsnapshot Recovery build that does not use
+   LIBSNAPSHOT_NO_COW_WRITE.
+4. Added treeforge-vabc-coordinator.
+5. The current coordinator exposes only the non-destructive --probe
+   contract.
+6. Boot-slot activation APIs fail closed in this provider milestone.
+
+See PATCHES/treeforge-vabc-recovery.patch for the exact source delta.

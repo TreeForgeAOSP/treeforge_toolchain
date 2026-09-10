@@ -1,0 +1,40 @@
+{
+  "android_release": "android-15.0.0_r36",
+  "canonical_payload": "rootfs/system/bin/treeforge-vabc-coordinator",
+  "canonical_payload_sha256": "666417386eb6c0ba9d1c3e197b585879d3bc05cdb9ed4c9f1d40944ed969d393",
+  "classification": "TREEFORGE_MODIFIED_AOSP_PROVIDER",
+  "compliance": {
+    "android_release": "android-15.0.0_r36",
+    "checkshare": {
+      "result": "PASS",
+      "tool": "compliance_checkshare"
+    },
+    "listshare": {
+      "project_count": 25,
+      "record": "SOURCE/SOURCE-SHARE.json",
+      "tool": "compliance_listshare"
+    },
+    "notice": {
+      "path": "NOTICE/NOTICE.txt",
+      "sha256": "33963402f481ee6a9d3b2ab3c91b3986cace6b1a2eb1a53aafa355d4096b592c",
+      "tool": "textnotice"
+    },
+    "runtime_roots": 4
+  },
+  "components": {},
+  "provider": "treeforge-vabc-coordinator",
+  "provider_kind": "runtime",
+  "provider_release": "android-15.0.0_r36-arm64",
+  "provider_source": {
+    "build_modules": [
+      "treeforge-vabc-coordinator"
+    ],
+    "clang_default_version": "clang-r536225",
+    "platform": "AOSP",
+    "platform_release": "android-15.0.0_r36",
+    "product": "aosp_arm64-trunk_staging-eng",
+    "recovery_output_root": "out/target/product/generic_arm64/recovery/root"
+  },
+  "schema": 1,
+  "upstream_manifest": "manifests/android-15.0.0_r36/manifest.xml"
+}

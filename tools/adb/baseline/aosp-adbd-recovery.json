@@ -1,0 +1,138 @@
+{
+  "android_release": "android-15.0.0_r36",
+  "canonical_payload": "rootfs/system/bin/adbd",
+  "canonical_payload_sha256": "555ecbd819c6410811934236b02bc1ead86ffc10b5a2d8811b221a2dfc3863e1",
+  "classification": "AOSP_REFERENCE_PROVIDER",
+  "compliance": {
+    "android_release": "android-15.0.0_r36",
+    "checkshare": {
+      "result": "PASS",
+      "tool": "compliance_checkshare"
+    },
+    "listshare": {
+      "project_count": 32,
+      "record": "SOURCE/SOURCE-SHARE.json",
+      "tool": "compliance_listshare"
+    },
+    "notice": {
+      "path": "NOTICE/NOTICE.txt",
+      "sha256": "5fa26876518827f456bda86cb0a018f7b21a6316c7ff7cec50589576ea581baa",
+      "tool": "textnotice"
+    },
+    "runtime_roots": 15
+  },
+  "components": {
+    "bionic": {
+      "git_revision": "8d67ca893c1523eb926b9080dbe4e2ffd2a27ba1",
+      "module": "ld-android.recovery / libc.recovery / libdl.recovery / libm.recovery / linker.recovery",
+      "modules": [
+        "ld-android.recovery",
+        "libc.recovery",
+        "libdl.recovery",
+        "libm.recovery",
+        "linker.recovery"
+      ],
+      "repo_name": "platform/bionic",
+      "source_root": "bionic"
+    },
+    "external-boringssl": {
+      "git_revision": "8fb009dc861624b67b6cdb62ea21f0f22d0c584b",
+      "module": "libcrypto.recovery",
+      "modules": [
+        "libcrypto.recovery"
+      ],
+      "repo_name": "platform/external/boringssl",
+      "source_root": "external/boringssl"
+    },
+    "external-pcre": {
+      "git_revision": "22dc650d8ae982c6770746019a6f94af92b0f024",
+      "module": "libpcre2.recovery",
+      "modules": [
+        "libpcre2.recovery"
+      ],
+      "repo_name": "platform/external/pcre",
+      "source_root": "external/pcre"
+    },
+    "external-selinux": {
+      "git_revision": "2d543d20722ada2425b5bdab9d0d1d29470e7bba",
+      "module": "libselinux.recovery",
+      "modules": [
+        "libselinux.recovery"
+      ],
+      "repo_name": "platform/external/selinux",
+      "source_root": "external/selinux"
+    },
+    "frameworks-native": {
+      "git_revision": "cdca1e2000347ce2f2b25ab5d0f2dffa81f30e01",
+      "module": "libadbd_auth.recovery",
+      "modules": [
+        "libadbd_auth.recovery"
+      ],
+      "repo_name": "platform/frameworks/native",
+      "source_root": "frameworks/native"
+    },
+    "packages-modules-adb": {
+      "git_revision": "a877adddefdf011bfb5d4045919c6df3d3727ed3",
+      "module": "adbd.recovery / libadbd_fs.recovery",
+      "modules": [
+        "adbd.recovery",
+        "libadbd_fs.recovery"
+      ],
+      "repo_name": "platform/packages/modules/adb",
+      "source_root": "packages/modules/adb"
+    },
+    "prebuilts-clang-host-linux-x86": {
+      "git_revision": "96266255abde668f1bf100bf2c47363b96b7a21e",
+      "module": "libc++.recovery",
+      "modules": [
+        "libc++.recovery"
+      ],
+      "repo_name": "platform/prebuilts/clang/host/linux-x86",
+      "source_root": "prebuilts/clang/host/linux-x86"
+    },
+    "system-core": {
+      "git_revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "module": "libpackagelistparser.recovery",
+      "modules": [
+        "libpackagelistparser.recovery"
+      ],
+      "repo_name": "platform/system/core",
+      "source_root": "system/core"
+    },
+    "system-libbase": {
+      "git_revision": "8f0ba417480079999ba552f1087ae592091b9d02",
+      "module": "libbase.recovery",
+      "modules": [
+        "libbase.recovery"
+      ],
+      "repo_name": "platform/system/libbase",
+      "source_root": "system/libbase"
+    },
+    "system-logging": {
+      "git_revision": "598139dc91b21518d67c408eaea2644226490971",
+      "module": "liblog.recovery",
+      "modules": [
+        "liblog.recovery"
+      ],
+      "repo_name": "platform/system/logging",
+      "source_root": "system/logging"
+    }
+  },
+  "provider": "aosp-adbd-recovery",
+  "provider_kind": "runtime",
+  "provider_release": "android-15.0.0_r36-arm64",
+  "provider_source": {
+    "build_modules": [
+      "adbd.recovery",
+      "adbd_system_api_recovery",
+      "linker.recovery"
+    ],
+    "platform": "AOSP",
+    "platform_release": "android-15.0.0_r36",
+    "product": "aosp_arm64-trunk_staging-eng",
+    "provider_kind": "recovery-elf-runtime",
+    "source_out_dir": "out-treeforge-adb-fastboot-baseline"
+  },
+  "schema": 1,
+  "upstream_manifest": "manifests/android-15.0.0_r36/manifest.xml"
+}

@@ -1,0 +1,55 @@
+{
+  "android_release": "android-15.0.0_r36",
+  "canonical_payload": "bin/fastboot",
+  "canonical_payload_sha256": "340c23293ee6f3fb60d689e8c2042d23ef969d511981c2df3c423973d6ff4898",
+  "classification": "AOSP_REFERENCE_PROVIDER",
+  "executables": [
+    {
+      "capabilities": [
+        "android-fastboot-host"
+      ],
+      "name": "fastboot",
+      "path": "bin/fastboot",
+      "sha256": "340c23293ee6f3fb60d689e8c2042d23ef969d511981c2df3c423973d6ff4898"
+    }
+  ],
+  "legal_files": [
+    {
+      "path": "legal/NOTICE.txt",
+      "sha256": "258a51001a29780bcd4efc9afd7b65532238f13e51e065c7026eb29becb104fb"
+    }
+  ],
+  "provenance_files": [
+    {
+      "path": "provenance/PROVENANCE.json",
+      "sha256": "f74fcc2bbafb3f05f483e0de6b3541c4e9b133ac64cf3c935ade4a822d16d642"
+    },
+    {
+      "path": "provenance/MODIFICATIONS.txt",
+      "sha256": "11267c7810c8d2fcb0b78be57d28c80c0ed659d48e54be67d08ba40bfdf15dd6"
+    },
+    {
+      "path": "SOURCE/SOURCE-SHARE.json",
+      "sha256": "4594166f62d4f2289425247f8dce59a4fd034a4a4c47ae39d6573987d517873f"
+    },
+    {
+      "path": "SOURCE/SOURCE-SHARE.txt",
+      "sha256": "8d4c214a5fce6eb9e7d98f1af8f24e8b267f3dcff45a8dfa1179e975d954fce1"
+    }
+  ],
+  "provider": "aosp-fastboot",
+  "provider_kind": "host",
+  "provider_release": "android-15.0.0_r36-linux-x86_64",
+  "provider_sources": [
+    {
+      "module": "fastboot",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "source_path": "system/core/fastboot"
+    }
+  ],
+  "schema": 1,
+  "upstream_manifest": "manifests/android-15.0.0_r36/manifest.xml"
+}

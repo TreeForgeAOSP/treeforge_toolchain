@@ -1,0 +1,464 @@
+diff --git a/fs_mgr/libsnapshot/Android.bp b/fs_mgr/libsnapshot/Android.bp
+index 966696b05b..3fd09064ac 100644
+--- a/fs_mgr/libsnapshot/Android.bp
++++ b/fs_mgr/libsnapshot/Android.bp
+@@ -483,6 +483,39 @@ cc_binary {
+     ],
+ }
+ 
++cc_binary {
++    name: "inspect_cow.treeforge",
++    host_supported: true,
++    device_supported: false,
++    defaults: ["libsnapshot_cow_defaults"],
++
++    cflags: [
++        "-D_FILE_OFFSET_BITS=64",
++        "-Wall",
++        "-Werror",
++    ],
++
++    static_libs: [
++        "libbase",
++        "libbrotli",
++        "libcrypto_static",
++        "liblog",
++        "libgflags",
++        "libsnapshot_cow",
++        "libz",
++    ],
++
++    shared_libs: [
++    ],
++
++    srcs: [
++        "libsnapshot_cow/inspect_cow.cpp",
++    ],
++
++    stl: "libc++_static",
++    static_executable: true,
++}
++
+ cc_binary {
+     name: "create_snapshot",
+     host_supported: true,
+@@ -542,3 +575,62 @@ python_library_host {
+         canonical_path_from_root: false,
+     },
+ }
++
++
++// TreeForge standalone Recovery Virtual A/B coordinator.
++//
++// This is deliberately separate from libsnapshot_init and
++// libsnapshot_nobinder because those variants compile with
++// LIBSNAPSHOT_NO_COW_WRITE.
++//
++// Do not add libsnapshot_hal_deps here. TreeForge supplies its own
++// fail-closed IDeviceInfo implementation.
++cc_library_static {
++    name: "libsnapshot_treeforge_recovery",
++    defaults: [
++        "libsnapshot_defaults",
++        "libsnapshot_cow_defaults",
++    ],
++    srcs: [":libsnapshot_sources"],
++    recovery_available: true,
++
++    static_libs: [
++        "libfs_mgr_binder",
++        "liblp",
++        "libprotobuf-cpp-lite",
++        "libsnapshot_cow",
++    ],
++
++    whole_static_libs: [
++        "libselinux",
++    ],
++}
++
++cc_binary {
++    name: "treeforge-vabc-coordinator",
++    stem: "treeforge-vabc-coordinator",
++
++    defaults: [
++        "libsnapshot_defaults",
++        "libsnapshot_cow_defaults",
++    ],
++
++    srcs: [
++        "treeforge_vabc_coordinator.cpp",
++    ],
++
++    static_libs: [
++        "libsnapshot_treeforge_recovery",
++        "libsnapshot_cow",
++        "libfs_mgr",
++        "libfs_mgr_binder",
++        "liblp",
++        "libprotobuf-cpp-lite",
++    ],
++
++    shared_libs: [
++        "libcrypto",
++    ],
++
++    recovery: true,
++}
+diff --git a/fs_mgr/libsnapshot/include/libsnapshot/snapshot.h b/fs_mgr/libsnapshot/include/libsnapshot/snapshot.h
+index de20526310..b8a5a2e955 100644
+--- a/fs_mgr/libsnapshot/include/libsnapshot/snapshot.h
++++ b/fs_mgr/libsnapshot/include/libsnapshot/snapshot.h
+@@ -107,6 +107,13 @@ class ISnapshotManager {
+         virtual bool SetActiveBootSlot(unsigned int slot) = 0;
+         virtual bool SetSlotAsUnbootable(unsigned int slot) = 0;
+         virtual bool IsRecovery() const = 0;
++
++        // TreeForge's standalone Recovery coordinator needs to create
++        // Virtual A/B userspace snapshots while retaining true Recovery
++        // semantics everywhere else. Ordinary implementations remain
++        // disabled by default.
++        virtual bool AllowVirtualAbInRecovery() const { return false; }
++
+         virtual bool IsTestDevice() const { return false; }
+         virtual bool IsFirstStageInit() const = 0;
+         virtual std::unique_ptr<IImageManager> OpenImageManager() const = 0;
+diff --git a/fs_mgr/libsnapshot/snapshot.cpp b/fs_mgr/libsnapshot/snapshot.cpp
+index ecf567eb84..88ae78c700 100644
+--- a/fs_mgr/libsnapshot/snapshot.cpp
++++ b/fs_mgr/libsnapshot/snapshot.cpp
+@@ -3411,7 +3411,10 @@ Return SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manife
+     std::string vabc_disable_reason;
+     if (!dap_metadata.vabc_enabled()) {
+         vabc_disable_reason = "not enabled metadata";
+-    } else if (device_->IsRecovery()) {
++    } else if (
++        device_->IsRecovery()
++        && !device_->AllowVirtualAbInRecovery()
++    ) {
+         vabc_disable_reason = "recovery";
+     } else if (!KernelSupportsCompressedSnapshots()) {
+         vabc_disable_reason = "kernel missing userspace block device support";
+diff --git a/fs_mgr/libsnapshot/treeforge_vabc_coordinator.cpp b/fs_mgr/libsnapshot/treeforge_vabc_coordinator.cpp
+new file mode 100644
+index 0000000000..01d1371c0f
+--- /dev/null
++++ b/fs_mgr/libsnapshot/treeforge_vabc_coordinator.cpp
+@@ -0,0 +1,317 @@
++/*
++ * TreeForge Virtual A/B Recovery Coordinator
++ *
++ * Android baseline:
++ *   android-15.0.0_r36
++ *
++ * This initial provider milestone is intentionally NON-DESTRUCTIVE.
++ * It proves the statically-linked full-COW libsnapshot closure and
++ * TreeForge's Recovery-specific IDeviceInfo boundary.
++ *
++ * Snapshot creation, COW mapping, writes, FinishedSnapshotWrites(),
++ * and slot activation are not reachable from this probe version.
++ */
++
++#include <cstdio>
++#include <memory>
++#include <string>
++
++#include <libdm/dm.h>
++#include <liblp/partition_opener.h>
++#include <libsnapshot/snapshot.h>
++
++namespace {
++
++using android::snapshot::ISnapshotManager;
++using android::snapshot::SnapshotManager;
++
++
++class TreeForgeRecoveryDeviceInfo final
++    : public SnapshotManager::IDeviceInfo {
++  public:
++    using MergeStatus =
++        SnapshotManager::IDeviceInfo::MergeStatus;
++
++    TreeForgeRecoveryDeviceInfo(
++        std::string slot_suffix,
++        std::string super_device,
++        std::string metadata_dir
++    )
++        : slot_suffix_(std::move(slot_suffix)),
++          super_device_(std::move(super_device)),
++          metadata_dir_(std::move(metadata_dir)) {}
++
++    std::string GetMetadataDir() const override {
++        return metadata_dir_;
++    }
++
++    std::string GetSlotSuffix() const override {
++        return slot_suffix_;
++    }
++
++    std::string GetOtherSlotSuffix() const override {
++        return (
++            slot_suffix_ == "_a"
++            ? "_b"
++            : "_a"
++        );
++    }
++
++    std::string GetSuperDevice(
++        [[maybe_unused]] uint32_t slot
++    ) const override {
++        return super_device_;
++    }
++
++    const android::fs_mgr::IPartitionOpener&
++    GetPartitionOpener() const override {
++        return opener_;
++    }
++
++    bool IsOverlayfsSetup() const override {
++        return false;
++    }
++
++    bool SetBootControlMergeStatus(
++        [[maybe_unused]] MergeStatus status
++    ) override {
++        /*
++         * Fail closed. The preparation coordinator does not own
++         * boot-control state.
++         */
++        return false;
++    }
++
++    bool SetActiveBootSlot(
++        [[maybe_unused]] unsigned int slot
++    ) override {
++        /*
++         * Hard safety boundary: TreeForge Recovery performs slot
++         * activation separately and explicitly.
++         */
++        return false;
++    }
++
++    bool SetSlotAsUnbootable(
++        [[maybe_unused]] unsigned int slot
++    ) override {
++        return false;
++    }
++
++    bool IsRecovery() const override {
++        return true;
++    }
++
++    bool AllowVirtualAbInRecovery() const override {
++        return true;
++    }
++
++    bool IsFirstStageInit() const override {
++        return false;
++    }
++
++    std::unique_ptr<IImageManager>
++    OpenImageManager() const override {
++        return (
++            ISnapshotManager::IDeviceInfo
++                ::OpenImageManager("ota")
++        );
++    }
++
++    android::dm::IDeviceMapper&
++    GetDeviceMapper() override {
++        return android::dm::DeviceMapper::Instance();
++    }
++
++    bool IsTempMetadata() const override {
++        return false;
++    }
++
++  private:
++    std::string slot_suffix_;
++    std::string super_device_;
++    std::string metadata_dir_;
++
++    android::fs_mgr::PartitionOpener opener_;
++};
++
++
++bool ParseArgument(
++    const char* argument,
++    const char* prefix,
++    std::string* output
++) {
++    std::string value(argument);
++
++    std::string expected(prefix);
++
++    if (value.rfind(expected, 0) != 0) {
++        return false;
++    }
++
++    *output = value.substr(expected.size());
++
++    return true;
++}
++
++}  // namespace
++
++
++int main(int argc, char** argv) {
++    std::string slot_suffix;
++    std::string super_device =
++        "/dev/block/by-name/super";
++    std::string metadata_dir =
++        "/metadata/ota";
++
++    bool probe = false;
++
++    for (int index = 1; index < argc; ++index) {
++        std::string argument(argv[index]);
++
++        if (argument == "--probe") {
++            probe = true;
++            continue;
++        }
++
++        if (
++            ParseArgument(
++                argv[index],
++                "--slot=",
++                &slot_suffix
++            )
++        ) {
++            continue;
++        }
++
++        if (
++            ParseArgument(
++                argv[index],
++                "--super=",
++                &super_device
++            )
++        ) {
++            continue;
++        }
++
++        if (
++            ParseArgument(
++                argv[index],
++                "--metadata=",
++                &metadata_dir
++            )
++        ) {
++            continue;
++        }
++
++        std::fprintf(
++            stderr,
++            "unknown argument: %s\\n",
++            argv[index]
++        );
++
++        return 2;
++    }
++
++    if (!probe) {
++        std::fprintf(
++            stderr,
++            "treeforge-vabc-coordinator: "
++            "only --probe is enabled in this milestone\\n"
++        );
++
++        return 2;
++    }
++
++    if (
++        slot_suffix != "_a"
++        && slot_suffix != "_b"
++    ) {
++        std::fprintf(
++            stderr,
++            "--slot must be _a or _b\\n"
++        );
++
++        return 2;
++    }
++
++    auto* device =
++        new TreeForgeRecoveryDeviceInfo(
++            slot_suffix,
++            super_device,
++            metadata_dir
++        );
++
++    /*
++     * SnapshotManager takes ownership of IDeviceInfo.
++     *
++     * Construction itself is non-destructive: no BeginUpdate(),
++     * CreateUpdateSnapshots(), mapping, COW write, finalization,
++     * or boot-control operation is called here.
++     */
++    auto manager =
++        SnapshotManager::New(device);
++
++    if (!manager) {
++        std::fprintf(
++            stderr,
++            "unable to construct SnapshotManager\\n"
++        );
++
++        return 3;
++    }
++
++    std::printf(
++        "treeforge-vabc-coordinator-v1\\n"
++    );
++
++    std::printf(
++        "mode=probe\\n"
++    );
++
++    std::printf(
++        "slot=%s\\n",
++        slot_suffix.c_str()
++    );
++
++    std::printf(
++        "other_slot=%s\\n",
++        device->GetOtherSlotSuffix().c_str()
++    );
++
++    std::printf(
++        "super=%s\\n",
++        super_device.c_str()
++    );
++
++    std::printf(
++        "metadata=%s\\n",
++        metadata_dir.c_str()
++    );
++
++    std::printf(
++        "is_recovery=1\\n"
++    );
++
++    std::printf(
++        "allow_virtual_ab_in_recovery=1\\n"
++    );
++
++    std::printf(
++        "full_cow_build=1\\n"
++    );
++
++    std::printf(
++        "snapshot_creation=disabled\\n"
++    );
++
++    std::printf(
++        "cow_write=disabled\\n"
++    );
++
++    std::printf(
++        "slot_activation=disabled\\n"
++    );
++
++    return 0;
++}

@@ -1,0 +1,14 @@
+Provider: aosp-adbd-recovery
+Release: android-15.0.0_r36-arm64
+Platform release: android-15.0.0_r36
+Architecture: arm64
+Canonical SDK level: 35
+Kind: recovery-elf-runtime
+Source output: out-treeforge-adb-fastboot-baseline
+
+Build modules:
+  adbd.recovery
+  adbd_system_api_recovery
+  linker.recovery
+
+TreeForge modifications: None.

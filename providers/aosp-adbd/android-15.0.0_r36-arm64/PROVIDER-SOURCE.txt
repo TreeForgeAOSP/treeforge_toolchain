@@ -1,0 +1,15 @@
+Provider: aosp-adbd
+Release: android-15.0.0_r36-arm64
+Platform release: android-15.0.0_r36
+Architecture: arm64
+Canonical SDK level: 35
+Kind: normal-android-compressed-apex
+Source output: out-treeforge-adb-fastboot-baseline
+
+Build modules:
+  adbd
+  adbd.com.android.adbd
+  com.android.adbd
+  adbd_system_api
+
+TreeForge modifications: None.

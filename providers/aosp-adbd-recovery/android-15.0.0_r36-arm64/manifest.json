@@ -1,0 +1,348 @@
+{
+  "architecture": "arm64",
+  "canonical_sdk_level": "35",
+  "compliance": {
+    "android_release": "android-15.0.0_r36",
+    "checkshare": {
+      "result": "PASS",
+      "tool": "compliance_checkshare"
+    },
+    "listshare": {
+      "project_count": 32,
+      "record": "SOURCE/SOURCE-SHARE.json",
+      "tool": "compliance_listshare"
+    },
+    "notice": {
+      "path": "NOTICE/NOTICE.txt",
+      "sha256": "5fa26876518827f456bda86cb0a018f7b21a6316c7ff7cec50589576ea581baa",
+      "tool": "textnotice"
+    },
+    "runtime_roots": 15
+  },
+  "components": {
+    "bionic": {
+      "git_revision": "8d67ca893c1523eb926b9080dbe4e2ffd2a27ba1",
+      "module": "ld-android.recovery / libc.recovery / libdl.recovery / libm.recovery / linker.recovery",
+      "modules": [
+        "ld-android.recovery",
+        "libc.recovery",
+        "libdl.recovery",
+        "libm.recovery",
+        "linker.recovery"
+      ],
+      "repo_name": "platform/bionic",
+      "source_root": "bionic"
+    },
+    "external-boringssl": {
+      "git_revision": "8fb009dc861624b67b6cdb62ea21f0f22d0c584b",
+      "module": "libcrypto.recovery",
+      "modules": [
+        "libcrypto.recovery"
+      ],
+      "repo_name": "platform/external/boringssl",
+      "source_root": "external/boringssl"
+    },
+    "external-pcre": {
+      "git_revision": "22dc650d8ae982c6770746019a6f94af92b0f024",
+      "module": "libpcre2.recovery",
+      "modules": [
+        "libpcre2.recovery"
+      ],
+      "repo_name": "platform/external/pcre",
+      "source_root": "external/pcre"
+    },
+    "external-selinux": {
+      "git_revision": "2d543d20722ada2425b5bdab9d0d1d29470e7bba",
+      "module": "libselinux.recovery",
+      "modules": [
+        "libselinux.recovery"
+      ],
+      "repo_name": "platform/external/selinux",
+      "source_root": "external/selinux"
+    },
+    "frameworks-native": {
+      "git_revision": "cdca1e2000347ce2f2b25ab5d0f2dffa81f30e01",
+      "module": "libadbd_auth.recovery",
+      "modules": [
+        "libadbd_auth.recovery"
+      ],
+      "repo_name": "platform/frameworks/native",
+      "source_root": "frameworks/native"
+    },
+    "packages-modules-adb": {
+      "git_revision": "a877adddefdf011bfb5d4045919c6df3d3727ed3",
+      "module": "adbd.recovery / libadbd_fs.recovery",
+      "modules": [
+        "adbd.recovery",
+        "libadbd_fs.recovery"
+      ],
+      "repo_name": "platform/packages/modules/adb",
+      "source_root": "packages/modules/adb"
+    },
+    "prebuilts-clang-host-linux-x86": {
+      "git_revision": "96266255abde668f1bf100bf2c47363b96b7a21e",
+      "module": "libc++.recovery",
+      "modules": [
+        "libc++.recovery"
+      ],
+      "repo_name": "platform/prebuilts/clang/host/linux-x86",
+      "source_root": "prebuilts/clang/host/linux-x86"
+    },
+    "system-core": {
+      "git_revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "module": "libpackagelistparser.recovery",
+      "modules": [
+        "libpackagelistparser.recovery"
+      ],
+      "repo_name": "platform/system/core",
+      "source_root": "system/core"
+    },
+    "system-libbase": {
+      "git_revision": "8f0ba417480079999ba552f1087ae592091b9d02",
+      "module": "libbase.recovery",
+      "modules": [
+        "libbase.recovery"
+      ],
+      "repo_name": "platform/system/libbase",
+      "source_root": "system/libbase"
+    },
+    "system-logging": {
+      "git_revision": "598139dc91b21518d67c408eaea2644226490971",
+      "module": "liblog.recovery",
+      "modules": [
+        "liblog.recovery"
+      ],
+      "repo_name": "platform/system/logging",
+      "source_root": "system/logging"
+    }
+  },
+  "files": [
+    {
+      "android_path": "/system/bin/adbd",
+      "module": "adbd.recovery",
+      "path": "rootfs/system/bin/adbd",
+      "sha256": "555ecbd819c6410811934236b02bc1ead86ffc10b5a2d8811b221a2dfc3863e1"
+    },
+    {
+      "android_path": "/system/bin/linker64",
+      "module": "linker.recovery",
+      "path": "rootfs/system/bin/linker64",
+      "sha256": "4da962679b0102b7648f86eb4b56a543247dac4ff159f74952eb15053e5a8608"
+    },
+    {
+      "android_path": "/system/lib64/ld-android.so",
+      "module": "ld-android.recovery",
+      "path": "rootfs/system/lib64/ld-android.so",
+      "sha256": "8c0f39337049618b77a7c3beaa4fedc9519852f4bb32ca0e7e71766fc89a0633"
+    },
+    {
+      "android_path": "/system/lib64/libadbd_auth.so",
+      "module": "libadbd_auth.recovery",
+      "path": "rootfs/system/lib64/libadbd_auth.so",
+      "sha256": "b99564a82b77d13057f2a1b8d2ecea61fc8f3ee47c094e2e51afa4eec6b6347a"
+    },
+    {
+      "android_path": "/system/lib64/libadbd_fs.so",
+      "module": "libadbd_fs.recovery",
+      "path": "rootfs/system/lib64/libadbd_fs.so",
+      "sha256": "2a10bcb2706f3c45b42cc7e4ca5879afd347a902d7892212629d0e07ec330bf7"
+    },
+    {
+      "android_path": "/system/lib64/libbase.so",
+      "module": "libbase.recovery",
+      "path": "rootfs/system/lib64/libbase.so",
+      "sha256": "025705fb34c825d2cc74856e7605153aa5254a0b8ae57f6406df46cd917e0303"
+    },
+    {
+      "android_path": "/system/lib64/libc++.so",
+      "module": "libc++.recovery",
+      "path": "rootfs/system/lib64/libc++.so",
+      "sha256": "9c049c3162c05531936ff4b3d78473e9daddc06b5c501f5384a7413975058217"
+    },
+    {
+      "android_path": "/system/lib64/libc.so",
+      "module": "libc.recovery",
+      "path": "rootfs/system/lib64/libc.so",
+      "sha256": "eadd38f2c9ce29c0c96ff5f6b1f4146d070ed6567fc8c67cef6de1898ef3b06f"
+    },
+    {
+      "android_path": "/system/lib64/libcrypto.so",
+      "module": "libcrypto.recovery",
+      "path": "rootfs/system/lib64/libcrypto.so",
+      "sha256": "552cf68e1712a07806303a8e501bc54d7a3d6866b3aa75d6278a165dbdb66529"
+    },
+    {
+      "android_path": "/system/lib64/libdl.so",
+      "module": "libdl.recovery",
+      "path": "rootfs/system/lib64/libdl.so",
+      "sha256": "a108ab3d81159e94dcde32e2888aa3fd90aa355a194ab0480318568386bb02fd"
+    },
+    {
+      "android_path": "/system/lib64/liblog.so",
+      "module": "liblog.recovery",
+      "path": "rootfs/system/lib64/liblog.so",
+      "sha256": "2b31c1aa1759f9ccdd1f717282e09b9a5bc60e826d4e04c7aacd9eccba4d7297"
+    },
+    {
+      "android_path": "/system/lib64/libm.so",
+      "module": "libm.recovery",
+      "path": "rootfs/system/lib64/libm.so",
+      "sha256": "4f801773d48b7357fffcdd15ea41d3e4d740cfeffafb20e85dd5dbe7e7a9840d"
+    },
+    {
+      "android_path": "/system/lib64/libpackagelistparser.so",
+      "module": "libpackagelistparser.recovery",
+      "path": "rootfs/system/lib64/libpackagelistparser.so",
+      "sha256": "d061cd95ab21dbfd1c055a9c7d74c49688e5675d1aba1e1e244450c683aa4b0e"
+    },
+    {
+      "android_path": "/system/lib64/libpcre2.so",
+      "module": "libpcre2.recovery",
+      "path": "rootfs/system/lib64/libpcre2.so",
+      "sha256": "d27b86d1edaed439047520dc5fcfd39665d3bcb96c9f2d815d4efb17780238c3"
+    },
+    {
+      "android_path": "/system/lib64/libselinux.so",
+      "module": "libselinux.recovery",
+      "path": "rootfs/system/lib64/libselinux.so",
+      "sha256": "5fa0ba66d65c0581824c2496661166b13861b63e7e2571b75d0fb4610f0a70ae"
+    }
+  ],
+  "name": "aosp-adbd-recovery",
+  "provider_source": {
+    "build_modules": [
+      "adbd.recovery",
+      "adbd_system_api_recovery",
+      "linker.recovery"
+    ],
+    "platform": "AOSP",
+    "platform_release": "android-15.0.0_r36",
+    "product": "aosp_arm64-trunk_staging-eng",
+    "provider_kind": "recovery-elf-runtime",
+    "source_out_dir": "out-treeforge-adb-fastboot-baseline"
+  },
+  "release": "android-15.0.0_r36-arm64",
+  "runtime_modules": {
+    "adbd.recovery": {
+      "android_path": "/system/bin/adbd",
+      "git_revision": "a877adddefdf011bfb5d4045919c6df3d3727ed3",
+      "license_metadata": "target/product/generic_arm64/obj/METAEXECUTABLES/adbd.recovery_intermediates/adbd.recovery.meta_lic",
+      "repo_name": "platform/packages/modules/adb",
+      "repo_path": "packages/modules/adb",
+      "source_path": "packages/modules/adb"
+    },
+    "ld-android.recovery": {
+      "android_path": "/system/lib64/ld-android.so",
+      "git_revision": "8d67ca893c1523eb926b9080dbe4e2ffd2a27ba1",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/ld-android.recovery_intermediates/ld-android.recovery.meta_lic",
+      "repo_name": "platform/bionic",
+      "repo_path": "bionic",
+      "source_path": "bionic/linker"
+    },
+    "libadbd_auth.recovery": {
+      "android_path": "/system/lib64/libadbd_auth.so",
+      "git_revision": "cdca1e2000347ce2f2b25ab5d0f2dffa81f30e01",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libadbd_auth.recovery_intermediates/libadbd_auth.recovery.meta_lic",
+      "repo_name": "platform/frameworks/native",
+      "repo_path": "frameworks/native",
+      "source_path": "frameworks/native/libs/adbd_auth"
+    },
+    "libadbd_fs.recovery": {
+      "android_path": "/system/lib64/libadbd_fs.so",
+      "git_revision": "a877adddefdf011bfb5d4045919c6df3d3727ed3",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libadbd_fs.recovery_intermediates/libadbd_fs.recovery.meta_lic",
+      "repo_name": "platform/packages/modules/adb",
+      "repo_path": "packages/modules/adb",
+      "source_path": "packages/modules/adb/libs/libadbd_fs"
+    },
+    "libbase.recovery": {
+      "android_path": "/system/lib64/libbase.so",
+      "git_revision": "8f0ba417480079999ba552f1087ae592091b9d02",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libbase.recovery_intermediates/libbase.recovery.meta_lic",
+      "repo_name": "platform/system/libbase",
+      "repo_path": "system/libbase",
+      "source_path": "system/libbase"
+    },
+    "libc++.recovery": {
+      "android_path": "/system/lib64/libc++.so",
+      "git_revision": "96266255abde668f1bf100bf2c47363b96b7a21e",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libc++.recovery_intermediates/libc++.recovery.meta_lic",
+      "repo_name": "platform/prebuilts/clang/host/linux-x86",
+      "repo_path": "prebuilts/clang/host/linux-x86",
+      "source_path": "prebuilts/clang/host/linux-x86"
+    },
+    "libc.recovery": {
+      "android_path": "/system/lib64/libc.so",
+      "git_revision": "8d67ca893c1523eb926b9080dbe4e2ffd2a27ba1",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libc.recovery_intermediates/libc.recovery.meta_lic",
+      "repo_name": "platform/bionic",
+      "repo_path": "bionic",
+      "source_path": "bionic/libc"
+    },
+    "libcrypto.recovery": {
+      "android_path": "/system/lib64/libcrypto.so",
+      "git_revision": "8fb009dc861624b67b6cdb62ea21f0f22d0c584b",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libcrypto.recovery_intermediates/libcrypto.recovery.meta_lic",
+      "repo_name": "platform/external/boringssl",
+      "repo_path": "external/boringssl",
+      "source_path": "external/boringssl"
+    },
+    "libdl.recovery": {
+      "android_path": "/system/lib64/libdl.so",
+      "git_revision": "8d67ca893c1523eb926b9080dbe4e2ffd2a27ba1",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libdl.recovery_intermediates/libdl.recovery.meta_lic",
+      "repo_name": "platform/bionic",
+      "repo_path": "bionic",
+      "source_path": "bionic/libdl"
+    },
+    "liblog.recovery": {
+      "android_path": "/system/lib64/liblog.so",
+      "git_revision": "598139dc91b21518d67c408eaea2644226490971",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/liblog.recovery_intermediates/liblog.recovery.meta_lic",
+      "repo_name": "platform/system/logging",
+      "repo_path": "system/logging",
+      "source_path": "system/logging/liblog"
+    },
+    "libm.recovery": {
+      "android_path": "/system/lib64/libm.so",
+      "git_revision": "8d67ca893c1523eb926b9080dbe4e2ffd2a27ba1",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libm.recovery_intermediates/libm.recovery.meta_lic",
+      "repo_name": "platform/bionic",
+      "repo_path": "bionic",
+      "source_path": "bionic/libm"
+    },
+    "libpackagelistparser.recovery": {
+      "android_path": "/system/lib64/libpackagelistparser.so",
+      "git_revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libpackagelistparser.recovery_intermediates/libpackagelistparser.recovery.meta_lic",
+      "repo_name": "platform/system/core",
+      "repo_path": "system/core",
+      "source_path": "system/core/libpackagelistparser"
+    },
+    "libpcre2.recovery": {
+      "android_path": "/system/lib64/libpcre2.so",
+      "git_revision": "22dc650d8ae982c6770746019a6f94af92b0f024",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libpcre2.recovery_intermediates/libpcre2.recovery.meta_lic",
+      "repo_name": "platform/external/pcre",
+      "repo_path": "external/pcre",
+      "source_path": "external/pcre"
+    },
+    "libselinux.recovery": {
+      "android_path": "/system/lib64/libselinux.so",
+      "git_revision": "2d543d20722ada2425b5bdab9d0d1d29470e7bba",
+      "license_metadata": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libselinux.recovery_intermediates/libselinux.recovery.meta_lic",
+      "repo_name": "platform/external/selinux",
+      "repo_path": "external/selinux",
+      "source_path": "external/selinux/libselinux"
+    },
+    "linker.recovery": {
+      "android_path": "/system/bin/linker64",
+      "git_revision": "8d67ca893c1523eb926b9080dbe4e2ffd2a27ba1",
+      "license_metadata": "target/product/generic_arm64/obj/METAEXECUTABLES/linker.recovery_intermediates/linker.recovery.meta_lic",
+      "repo_name": "platform/bionic",
+      "repo_path": "bionic",
+      "source_path": "bionic/linker"
+    }
+  },
+  "schema": 1
+}

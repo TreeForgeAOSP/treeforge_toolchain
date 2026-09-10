@@ -1,0 +1,8 @@
+aosp-adbd
+=========
+
+Upstream baseline: AOSP android-15.0.0_r36
+
+TreeForge modifications: None.
+
+This provider contains an untouched AOSP reference build.

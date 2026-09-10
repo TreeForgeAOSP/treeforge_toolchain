@@ -1,0 +1,134 @@
+TreeForge Android Provider Source-Sharing Record
+
+Provider: treeforge-vabc-coordinator
+Release: android-15.0.0_r36-arm64
+Android release: android-15.0.0_r36
+Tool: compliance_listshare
+Projects: 25
+
+Projects and source-sharing conditions:
+
+Source path: bionic
+AOSP project: platform/bionic
+Revision: 8d67ca893c1523eb926b9080dbe4e2ffd2a27ba1
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: build/soong
+AOSP project: platform/build/soong
+Revision: 333d2b3687b3a337dbcca9d65000bca186795e39
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: external/avb
+AOSP project: platform/external/avb
+Revision: d289c2ba6de359471b23d594623b906876bc48a0
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: external/brotli
+AOSP project: platform/external/brotli
+Revision: f4ee7fba7774faf2a30f13154332c0a06550dbc4
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: external/e2fsprogs
+AOSP project: platform/external/e2fsprogs
+Revision: 6a54128f25917bfc36a8a6e9d722c04a0b4641b6
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: external/fmtlib
+AOSP project: platform/external/fmtlib
+Revision: 5c90c05cd622c0a81b57953a4d343e0e489f2e08
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: external/googletest
+AOSP project: platform/external/googletest
+Revision: 481dde660366d6f317d242b6974ef1b20adb843c
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: external/libchrome
+AOSP project: platform/external/libchrome
+Revision: 635a864187cb8b6c713ff48b7e790a6b21769273
+Conditions: reciprocal, restricted, restricted_if_statically_linked
+
+Source path: external/libevent
+AOSP project: platform/external/libevent
+Revision: 663afb9b963571284e0f0a60f257164ab54f64bf
+Conditions: restricted
+
+Source path: external/lz4
+AOSP project: platform/external/lz4
+Revision: 27162e4e17433d5aa7cb38e7b6a433a09405fc7f
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: external/modp_b64
+AOSP project: platform/external/modp_b64
+Revision: c3cd14fb6370b1f0a2b85e79eb9b360b8782fd16
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: external/pcre
+AOSP project: platform/external/pcre
+Revision: 22dc650d8ae982c6770746019a6f94af92b0f024
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: external/protobuf
+AOSP project: platform/external/protobuf
+Revision: 1b3f573f81763fcece89efc2b6a5209149e44ab8
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: external/selinux
+AOSP project: platform/external/selinux
+Revision: 2d543d20722ada2425b5bdab9d0d1d29470e7bba
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: external/zlib
+AOSP project: platform/external/zlib
+Revision: 86ee64e75fa5f8bce2c8c356138035642429cd05
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: external/zstd
+AOSP project: platform/external/zstd
+Revision: 01826a4963a0d8a59bc3812d29bdf0fb76416722
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: libnativehelper
+AOSP project: platform/libnativehelper
+Revision: 0797b24ee566c78eb48500180cb4bf71f81c8aab
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: prebuilts/clang/host/linux-x86
+AOSP project: platform/prebuilts/clang/host/linux-x86
+Revision: 96266255abde668f1bf100bf2c47363b96b7a21e
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: prebuilts/module_sdk/art
+AOSP project: platform/prebuilts/module_sdk/art
+Revision: c3a3f8110c7425991db548da68e390a07e623c8f
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: system/core
+AOSP project: platform/system/core
+Revision: 00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: system/extras
+AOSP project: platform/system/extras
+Revision: 288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: system/gsid
+AOSP project: platform/system/gsid
+Revision: 4e2b41f188908a2ae9d9a2089f1f10779d080021
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: system/libbase
+AOSP project: platform/system/libbase
+Revision: 8f0ba417480079999ba552f1087ae592091b9d02
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: system/logging
+AOSP project: platform/system/logging
+Revision: 598139dc91b21518d67c408eaea2644226490971
+Conditions: restricted, restricted_if_statically_linked
+
+Source path: system/update_engine
+AOSP project: platform/system/update_engine
+Revision: 5a9231315b4521097b8dc3750bc806fcafe0c72f
+Conditions: restricted, restricted_if_statically_linked

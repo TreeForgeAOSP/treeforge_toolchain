@@ -1,0 +1,16 @@
+{
+  "android_release": "android-15.0.0_r36",
+  "policy_authority": "AOSP build/tools/compliance compliance_listshare",
+  "projects": [
+    {
+      "conditions": [
+        "reciprocal"
+      ],
+      "project_name": "platform/development",
+      "project_path": "development",
+      "revision": "90c8c64db3049935a07c6143d7fd006e26f8ecca",
+      "source_url": "https://android.googlesource.com/platform/development/+/90c8c64db3049935a07c6143d7fd006e26f8ecca/"
+    }
+  ],
+  "schema": 1
+}

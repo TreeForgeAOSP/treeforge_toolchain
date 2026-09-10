@@ -1,0 +1,33 @@
+{
+  "android_release": "android-15.0.0_r36",
+  "families": {
+    "adb": {
+      "aosp_providers": [
+        "aosp-adb",
+        "aosp-adbd",
+        "aosp-adbd-recovery"
+      ],
+      "project": "platform/packages/modules/adb",
+      "revision": "a877adddefdf011bfb5d4045919c6df3d3727ed3",
+      "source_path": "packages/modules/adb",
+      "treeforge_variants": [
+        "treeforge-adb",
+        "treeforge-adbd"
+      ]
+    },
+    "fastboot": {
+      "aosp_providers": [
+        "aosp-fastboot",
+        "aosp-fastbootd"
+      ],
+      "project": "platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "source_path": "system/core",
+      "treeforge_variants": [
+        "treeforge-fastboot",
+        "treeforge-fastbootd"
+      ]
+    }
+  },
+  "schema": 1
+}

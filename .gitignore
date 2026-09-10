@@ -1,0 +1,17 @@
+# Local AOSP/build workspaces
+/aosp/
+/out/
+/work/
+
+# Generated release payloads
+/dist/
+/release/
+
+# Temporary files
+*.tmp
+*.tar
+*.tar.zst
+
+# Python
+__pycache__/
+*.pyc

@@ -1,0 +1,253 @@
+{
+  "android_release": "android-15.0.0_r36",
+  "compliance_roots": [
+    {
+      "path": "target/product/generic_arm64/obj/METAEXECUTABLES/treeforge-vabc-coordinator_intermediates/treeforge-vabc-coordinator.meta_lic",
+      "sha256": "3a5a7d135da9845431251df7f403f01ac416f8958eb2eca4fb0d872fd9e24fe2"
+    },
+    {
+      "path": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libchrome.recovery_intermediates/libchrome.recovery.meta_lic",
+      "sha256": "41d34f6c6af7c3d00c16d0bb681d887034bd46f75f5329b999147095016199a8"
+    },
+    {
+      "path": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libcutils.recovery_intermediates/libcutils.recovery.meta_lic",
+      "sha256": "ba52bcf3710f921e56921f73821a11efdf0eaefd0f79b8422b03ce53e9fb3b03"
+    },
+    {
+      "path": "target/product/generic_arm64/obj/METASHARED_LIBRARIES/libevent.recovery_intermediates/libevent.recovery.meta_lic",
+      "sha256": "5f9ffaa91d1b93d622a02ef2ec9eb41b2bba272b953de65d5d2ab03efc495d0c"
+    }
+  ],
+  "project_count": 25,
+  "projects": [
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/bionic",
+      "revision": "8d67ca893c1523eb926b9080dbe4e2ffd2a27ba1",
+      "source_path": "bionic"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/build/soong",
+      "revision": "333d2b3687b3a337dbcca9d65000bca186795e39",
+      "source_path": "build/soong"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/external/avb",
+      "revision": "d289c2ba6de359471b23d594623b906876bc48a0",
+      "source_path": "external/avb"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/external/brotli",
+      "revision": "f4ee7fba7774faf2a30f13154332c0a06550dbc4",
+      "source_path": "external/brotli"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/external/e2fsprogs",
+      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "source_path": "external/e2fsprogs"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/external/fmtlib",
+      "revision": "5c90c05cd622c0a81b57953a4d343e0e489f2e08",
+      "source_path": "external/fmtlib"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/external/googletest",
+      "revision": "481dde660366d6f317d242b6974ef1b20adb843c",
+      "source_path": "external/googletest"
+    },
+    {
+      "conditions": [
+        "reciprocal",
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/external/libchrome",
+      "revision": "635a864187cb8b6c713ff48b7e790a6b21769273",
+      "source_path": "external/libchrome"
+    },
+    {
+      "conditions": [
+        "restricted"
+      ],
+      "project": "platform/external/libevent",
+      "revision": "663afb9b963571284e0f0a60f257164ab54f64bf",
+      "source_path": "external/libevent"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/external/lz4",
+      "revision": "27162e4e17433d5aa7cb38e7b6a433a09405fc7f",
+      "source_path": "external/lz4"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/external/modp_b64",
+      "revision": "c3cd14fb6370b1f0a2b85e79eb9b360b8782fd16",
+      "source_path": "external/modp_b64"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/external/pcre",
+      "revision": "22dc650d8ae982c6770746019a6f94af92b0f024",
+      "source_path": "external/pcre"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/external/protobuf",
+      "revision": "1b3f573f81763fcece89efc2b6a5209149e44ab8",
+      "source_path": "external/protobuf"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/external/selinux",
+      "revision": "2d543d20722ada2425b5bdab9d0d1d29470e7bba",
+      "source_path": "external/selinux"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/external/zlib",
+      "revision": "86ee64e75fa5f8bce2c8c356138035642429cd05",
+      "source_path": "external/zlib"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/external/zstd",
+      "revision": "01826a4963a0d8a59bc3812d29bdf0fb76416722",
+      "source_path": "external/zstd"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/libnativehelper",
+      "revision": "0797b24ee566c78eb48500180cb4bf71f81c8aab",
+      "source_path": "libnativehelper"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/prebuilts/clang/host/linux-x86",
+      "revision": "96266255abde668f1bf100bf2c47363b96b7a21e",
+      "source_path": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/prebuilts/module_sdk/art",
+      "revision": "c3a3f8110c7425991db548da68e390a07e623c8f",
+      "source_path": "prebuilts/module_sdk/art"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "source_path": "system/core"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/system/extras",
+      "revision": "288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5",
+      "source_path": "system/extras"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/system/gsid",
+      "revision": "4e2b41f188908a2ae9d9a2089f1f10779d080021",
+      "source_path": "system/gsid"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/system/libbase",
+      "revision": "8f0ba417480079999ba552f1087ae592091b9d02",
+      "source_path": "system/libbase"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/system/logging",
+      "revision": "598139dc91b21518d67c408eaea2644226490971",
+      "source_path": "system/logging"
+    },
+    {
+      "conditions": [
+        "restricted",
+        "restricted_if_statically_linked"
+      ],
+      "project": "platform/system/update_engine",
+      "revision": "5a9231315b4521097b8dc3750bc806fcafe0c72f",
+      "source_path": "system/update_engine"
+    }
+  ],
+  "provider": "treeforge-vabc-coordinator",
+  "release": "android-15.0.0_r36-arm64",
+  "schema": 1,
+  "tool": "compliance_listshare"
+}
