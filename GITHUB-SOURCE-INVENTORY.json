@@ -1,0 +1,496 @@
+{
+  "schema": 1,
+  "purpose": "TreeForge GitHub source/rebuild input inventory",
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 167,
+      "sha256": "a69582aae86e7ed865bad47b863ab01ad60ae1e5eb31d94b9a4db2922abd1d66"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1135,
+      "sha256": "0397374109a8d5c770a8e27897bb1a0dcf2a0b449a3f001a06dfee8673e1b700"
+    },
+    {
+      "path": "docs/PROVIDERS.md",
+      "bytes": 494,
+      "sha256": "4af7459a79cbbc030d1a50cb87b157784e5315e90fdfa59934ca5f2598502bb5"
+    },
+    {
+      "path": "docs/REPRODUCIBILITY.md",
+      "bytes": 664,
+      "sha256": "76d9f8879440912d5a0765093b491ae10765f7a1ea576c7304a436ebdad00f53"
+    },
+    {
+      "path": "manifests/android-15.0.0_r36/manifest.xml",
+      "bytes": 239974,
+      "sha256": "9608e346716ced6118249ac10325b14914826de8cb5e49dd9548ae85be1ee145"
+    },
+    {
+      "path": "manifests/android-15.0.0_r36/revisions.json",
+      "bytes": 219084,
+      "sha256": "542acfe6fa8abbe0cbc7453eaaeee3c908f04a4cf1f8eed6cdd5a5fff8da2b26"
+    },
+    {
+      "path": "manifests/android-15.0.0_r36/tool-build-matrix.json",
+      "bytes": 5099,
+      "sha256": "49186988a7cae89a95e34489582b2efa7a14c4f55e1260ca849af5aa7e808deb"
+    },
+    {
+      "path": "manifests/android-15.0.0_r36/tool-source-ownership.json",
+      "bytes": 798,
+      "sha256": "ab1a76dd297ca8126dfef1c8b5d2192fea465518e05e6a3958533f601273e267"
+    },
+    {
+      "path": "providers/android-image-tools/android-15.0.0_r36-linux-x86_64/PAYLOAD-NOT-IN-GIT.md",
+      "bytes": 337,
+      "sha256": "37e6d6d902ebf420546f4694925e4bd93556b5ef79a3509ddc37659571928778"
+    },
+    {
+      "path": "providers/android-image-tools/android-15.0.0_r36-linux-x86_64/legal/NOTICE.txt",
+      "bytes": 117767,
+      "sha256": "b646b803a70fc83a99ad9065708214b6b08ba56af827833e27285b4696077047"
+    },
+    {
+      "path": "providers/android-image-tools/android-15.0.0_r36-linux-x86_64/manifest.json",
+      "bytes": 7464,
+      "sha256": "1325014a77fd1e780120cac742fe889ef86916ad338f62dee8a6277d03b03383"
+    },
+    {
+      "path": "providers/android-image-tools/android-15.0.0_r36-linux-x86_64/provenance/PROVENANCE.json",
+      "bytes": 11741,
+      "sha256": "475bb409aaec8b2c71900e11a146e77b5d937284c50906a9d8a8d41713997e15"
+    },
+    {
+      "path": "providers/aosp-adb/android-15.0.0_r36-linux-x86_64/PAYLOAD-NOT-IN-GIT.md",
+      "bytes": 578,
+      "sha256": "3a26cc768d27c0f34811db12f46fa5ffcb75a24f0f72002d8ea29a3520087396"
+    },
+    {
+      "path": "providers/aosp-adb/android-15.0.0_r36-linux-x86_64/SOURCE/SOURCE-SHARE.json",
+      "bytes": 9537,
+      "sha256": "5daa35b3dbfa98dad6743a879e17440fbe407181b0ece403f9cc26392bad1747"
+    },
+    {
+      "path": "providers/aosp-adb/android-15.0.0_r36-linux-x86_64/SOURCE/SOURCE-SHARE.txt",
+      "bytes": 7014,
+      "sha256": "f88721eedc58b0b5e4570c3566a9c6194e399223391434b7d7622855d8986c7e"
+    },
+    {
+      "path": "providers/aosp-adb/android-15.0.0_r36-linux-x86_64/legal/NOTICE.txt",
+      "bytes": 931479,
+      "sha256": "996d0c952c3d44fed1143edaf08ceb1c2a8148f760ee9f71b6a2e56fe5a78749"
+    },
+    {
+      "path": "providers/aosp-adb/android-15.0.0_r36-linux-x86_64/manifest.json",
+      "bytes": 1422,
+      "sha256": "93d8a26494e62232ce0aa3747cedebaf611fae995dc6cbf67f21840abe19ed25"
+    },
+    {
+      "path": "providers/aosp-adb/android-15.0.0_r36-linux-x86_64/provenance/MODIFICATIONS.txt",
+      "bytes": 153,
+      "sha256": "df2e9c37884c0bbdeb8fe0c8f078e310e06fc2aa4b7bfa40ebf56ffde6557a92"
+    },
+    {
+      "path": "providers/aosp-adb/android-15.0.0_r36-linux-x86_64/provenance/PROVENANCE.json",
+      "bytes": 893,
+      "sha256": "70cbbf564a265c5e52d530650e9308a1727baecfc4f57681295a1f91bdbe6f71"
+    },
+    {
+      "path": "providers/aosp-adbd-recovery/android-15.0.0_r36-arm64/MODIFICATIONS.txt",
+      "bytes": 173,
+      "sha256": "655f7c2c66d30ee9b55b2ddd71716584c214963217ce8f94f4348b1d1012da5c"
+    },
+    {
+      "path": "providers/aosp-adbd-recovery/android-15.0.0_r36-arm64/NOTICE/NOTICE.txt",
+      "bytes": 1324837,
+      "sha256": "5fa26876518827f456bda86cb0a018f7b21a6316c7ff7cec50589576ea581baa"
+    },
+    {
+      "path": "providers/aosp-adbd-recovery/android-15.0.0_r36-arm64/PAYLOAD-NOT-IN-GIT.md",
+      "bytes": 596,
+      "sha256": "3413c3ebe32471d207be8021999c08a734599e657c6ec34cf67d11ec66cc08cc"
+    },
+    {
+      "path": "providers/aosp-adbd-recovery/android-15.0.0_r36-arm64/PROVIDER-SOURCE.txt",
+      "bytes": 331,
+      "sha256": "ee351348f0deed4353bfb246435608cd1334f8597d8f524f555cf997a7185aa3"
+    },
+    {
+      "path": "providers/aosp-adbd-recovery/android-15.0.0_r36-arm64/SOURCE/SOURCE-SHARE.json",
+      "bytes": 12521,
+      "sha256": "ad2f02b7dab5e104124a311dff2387cca00a85697a593963e6e634df0b4d5841"
+    },
+    {
+      "path": "providers/aosp-adbd-recovery/android-15.0.0_r36-arm64/SOURCE/SOURCE-SHARE.txt",
+      "bytes": 9190,
+      "sha256": "b66ee7ba360b0a25920b27271eb052727c7534f5c930591d1d79c38e688deb1a"
+    },
+    {
+      "path": "providers/aosp-adbd-recovery/android-15.0.0_r36-arm64/manifest.json",
+      "bytes": 13861,
+      "sha256": "5b47e85e1d40790a8365b1bfce150380906ca1b0025a4b60e3e80612947ab76b"
+    },
+    {
+      "path": "providers/aosp-adbd/android-15.0.0_r36-arm64/MODIFICATIONS.txt",
+      "bytes": 155,
+      "sha256": "2361f11d7702bc129cb4d4f3ec4823d984979a1f50dc763e5af5f9bd10c6e95a"
+    },
+    {
+      "path": "providers/aosp-adbd/android-15.0.0_r36-arm64/NOTICE/NOTICE.txt",
+      "bytes": 40,
+      "sha256": "17162dcd72b29bf83f58a1584553ee40435955ace0408115fd27963c6a234793"
+    },
+    {
+      "path": "providers/aosp-adbd/android-15.0.0_r36-arm64/PAYLOAD-NOT-IN-GIT.md",
+      "bytes": 606,
+      "sha256": "531798d54709ab554ceeab768fc7869cc35a05cc8a289e2dc41b177bb1f4d5fc"
+    },
+    {
+      "path": "providers/aosp-adbd/android-15.0.0_r36-arm64/PROVIDER-SOURCE.txt",
+      "bytes": 339,
+      "sha256": "43da663c236cab2b048dbd24311ff43c3ca0a11ee495bfa236794d33f3896dff"
+    },
+    {
+      "path": "providers/aosp-adbd/android-15.0.0_r36-arm64/SOURCE/SOURCE-SHARE.json",
+      "bytes": 153,
+      "sha256": "e0dcf31f618095e4174b49e0a98a28f3b85172508c9856b9aefe6c16459ffa1b"
+    },
+    {
+      "path": "providers/aosp-adbd/android-15.0.0_r36-arm64/SOURCE/SOURCE-SHARE.txt",
+      "bytes": 187,
+      "sha256": "6a116d3f79745a2731bf8310a2fdb9d2d3e66bd9da65db35a93e26741cbec5fe"
+    },
+    {
+      "path": "providers/aosp-adbd/android-15.0.0_r36-arm64/manifest.json",
+      "bytes": 2046,
+      "sha256": "43c29f5c1de1fda3a6e171495a2676f5a20b7ddeca1d82e8ed6b88b6ed5d9a52"
+    },
+    {
+      "path": "providers/aosp-fastboot/android-15.0.0_r36-linux-x86_64/PAYLOAD-NOT-IN-GIT.md",
+      "bytes": 588,
+      "sha256": "8c97ce7a3c37baaecdf6691b3990da851ed8c4d09c27a53f5b275db3f69ed035"
+    },
+    {
+      "path": "providers/aosp-fastboot/android-15.0.0_r36-linux-x86_64/SOURCE/SOURCE-SHARE.json",
+      "bytes": 485,
+      "sha256": "4594166f62d4f2289425247f8dce59a4fd034a4a4c47ae39d6573987d517873f"
+    },
+    {
+      "path": "providers/aosp-fastboot/android-15.0.0_r36-linux-x86_64/SOURCE/SOURCE-SHARE.txt",
+      "bytes": 425,
+      "sha256": "8d4c214a5fce6eb9e7d98f1af8f24e8b267f3dcff45a8dfa1179e975d954fce1"
+    },
+    {
+      "path": "providers/aosp-fastboot/android-15.0.0_r36-linux-x86_64/legal/NOTICE.txt",
+      "bytes": 849363,
+      "sha256": "258a51001a29780bcd4efc9afd7b65532238f13e51e065c7026eb29becb104fb"
+    },
+    {
+      "path": "providers/aosp-fastboot/android-15.0.0_r36-linux-x86_64/manifest.json",
+      "bytes": 1438,
+      "sha256": "f4377812c6efe8bee12cf2998752bc8e61b513a632c94a0761fb2566b546af9d"
+    },
+    {
+      "path": "providers/aosp-fastboot/android-15.0.0_r36-linux-x86_64/provenance/MODIFICATIONS.txt",
+      "bytes": 163,
+      "sha256": "11267c7810c8d2fcb0b78be57d28c80c0ed659d48e54be67d08ba40bfdf15dd6"
+    },
+    {
+      "path": "providers/aosp-fastboot/android-15.0.0_r36-linux-x86_64/provenance/PROVENANCE.json",
+      "bytes": 904,
+      "sha256": "f74fcc2bbafb3f05f483e0de6b3541c4e9b133ac64cf3c935ade4a822d16d642"
+    },
+    {
+      "path": "providers/aosp-fastbootd/android-15.0.0_r36-arm64/MODIFICATIONS.txt",
+      "bytes": 165,
+      "sha256": "882e1892e079f35ba9729e20f0c96bd83db59baed4bb7f8d53c7803babd26092"
+    },
+    {
+      "path": "providers/aosp-fastbootd/android-15.0.0_r36-arm64/NOTICE/NOTICE.txt",
+      "bytes": 699605,
+      "sha256": "90fbea0db0aeec85d7d9f9a79cfa92816cf29a9542d90551fb39e60fe5934377"
+    },
+    {
+      "path": "providers/aosp-fastbootd/android-15.0.0_r36-arm64/PAYLOAD-NOT-IN-GIT.md",
+      "bytes": 597,
+      "sha256": "5ba4ce152ba8b60c579bae04fb8643e51901093014d803dd68a6513f57a90403"
+    },
+    {
+      "path": "providers/aosp-fastbootd/android-15.0.0_r36-arm64/PROVIDER-SOURCE.txt",
+      "bytes": 306,
+      "sha256": "2ce5a89b6ddb0132df9c647ad50162abd98d35466da683fe2ef41ecd9c02042d"
+    },
+    {
+      "path": "providers/aosp-fastbootd/android-15.0.0_r36-arm64/SOURCE/SOURCE-SHARE.json",
+      "bytes": 15887,
+      "sha256": "9b9d17f4a999cbfdabb603c76751853600eb4f15a56ec533a96d648272273089"
+    },
+    {
+      "path": "providers/aosp-fastbootd/android-15.0.0_r36-arm64/SOURCE/SOURCE-SHARE.txt",
+      "bytes": 11628,
+      "sha256": "0c193f1fc9ca0ede28842f733b5ec2692171e8cd30bde561579745fed46ae78a"
+    },
+    {
+      "path": "providers/aosp-fastbootd/android-15.0.0_r36-arm64/manifest.json",
+      "bytes": 36867,
+      "sha256": "b059f042be480e39018045d96f180010c65c6a7d2e5ecbd65c54e32d448c559f"
+    },
+    {
+      "path": "providers/avbtool/android-15.0.0_r36-linux-x86_64/PAYLOAD-NOT-IN-GIT.md",
+      "bytes": 337,
+      "sha256": "37e6d6d902ebf420546f4694925e4bd93556b5ef79a3509ddc37659571928778"
+    },
+    {
+      "path": "providers/avbtool/android-15.0.0_r36-linux-x86_64/legal/NOTICE.txt",
+      "bytes": 17120,
+      "sha256": "8143e315d770052be333cbafbbd66bb9cb2bb5cd3baab7de9a89db8f34299a4d"
+    },
+    {
+      "path": "providers/avbtool/android-15.0.0_r36-linux-x86_64/manifest.json",
+      "bytes": 1015,
+      "sha256": "3aeabfb871d6245aa703b9d5b411121d69b57f8238beb053453db6ec33d0cd74"
+    },
+    {
+      "path": "providers/avbtool/android-15.0.0_r36-linux-x86_64/provenance/PROVENANCE.json",
+      "bytes": 1245,
+      "sha256": "820d38a29d38683b0f2849e311b99ad4458ccbb588474586154753dba1e94d98"
+    },
+    {
+      "path": "providers/create_snapshot/android-15.0.0_r36-linux-x86_64/PAYLOAD-NOT-IN-GIT.md",
+      "bytes": 337,
+      "sha256": "37e6d6d902ebf420546f4694925e4bd93556b5ef79a3509ddc37659571928778"
+    },
+    {
+      "path": "providers/create_snapshot/android-15.0.0_r36-linux-x86_64/legal/NOTICE.txt",
+      "bytes": 14893,
+      "sha256": "8f1c86f66e10032e0ca2319d477a756d453b3c3b44a28ce744acca0e5b666ac9"
+    },
+    {
+      "path": "providers/create_snapshot/android-15.0.0_r36-linux-x86_64/manifest.json",
+      "bytes": 1054,
+      "sha256": "17d2335e3712b78d5383f49f35d20da59436005df719e4c8454eb65e8a62a884"
+    },
+    {
+      "path": "providers/create_snapshot/android-15.0.0_r36-linux-x86_64/provenance/PROVENANCE.json",
+      "bytes": 1274,
+      "sha256": "db3282046c3db4bc51c7c4fd31baeb1b0f18a31d7b0c815b21176372ae1526b4"
+    },
+    {
+      "path": "providers/index.json",
+      "bytes": 2901,
+      "sha256": "c374eb73dcd98f4d7d12d4f29ce77c567153367756ca17edc64a89da070b7b85"
+    },
+    {
+      "path": "providers/inspect_cow/android-15.0.0_r36-linux-x86_64/PAYLOAD-NOT-IN-GIT.md",
+      "bytes": 337,
+      "sha256": "37e6d6d902ebf420546f4694925e4bd93556b5ef79a3509ddc37659571928778"
+    },
+    {
+      "path": "providers/inspect_cow/android-15.0.0_r36-linux-x86_64/legal/NOTICE.txt",
+      "bytes": 14893,
+      "sha256": "8f1c86f66e10032e0ca2319d477a756d453b3c3b44a28ce744acca0e5b666ac9"
+    },
+    {
+      "path": "providers/inspect_cow/android-15.0.0_r36-linux-x86_64/manifest.json",
+      "bytes": 1191,
+      "sha256": "37fa8d40316cbcdbc13507fe7a9175b92e99d966b48fb1c93e1c3c7e5f9dd419"
+    },
+    {
+      "path": "providers/inspect_cow/android-15.0.0_r36-linux-x86_64/provenance/MODIFICATIONS.txt",
+      "bytes": 649,
+      "sha256": "b46f19dbf1e895e964bac2d797d30c1e55729d1bdf40205e4c0e10117a4a412e"
+    },
+    {
+      "path": "providers/inspect_cow/android-15.0.0_r36-linux-x86_64/provenance/PROVENANCE.json",
+      "bytes": 1333,
+      "sha256": "68767d714b75b29b40c2d7dac5ca9a184182534d1ac4fd66308103fdad9c683b"
+    },
+    {
+      "path": "providers/mkdtimg/android-15.0.0_r36-linux-x86_64/PAYLOAD-NOT-IN-GIT.md",
+      "bytes": 337,
+      "sha256": "37e6d6d902ebf420546f4694925e4bd93556b5ef79a3509ddc37659571928778"
+    },
+    {
+      "path": "providers/mkdtimg/android-15.0.0_r36-linux-x86_64/legal/NOTICE.txt",
+      "bytes": 26579,
+      "sha256": "9b19479104432f4f0c00eaed6aa98b1c29bb00253c967fee81e2f159a5ab1dc7"
+    },
+    {
+      "path": "providers/mkdtimg/android-15.0.0_r36-linux-x86_64/manifest.json",
+      "bytes": 1003,
+      "sha256": "bd5b92574c24a6826577056b875ba61f7d45d8992d0244323916f5c632eb9dcd"
+    },
+    {
+      "path": "providers/mkdtimg/android-15.0.0_r36-linux-x86_64/provenance/PROVENANCE.json",
+      "bytes": 1236,
+      "sha256": "871fda75758b02d0b1edb3f1277e62ae8c4c3dccc3378c957d4403fa88fd6180"
+    },
+    {
+      "path": "providers/release-contract.json",
+      "bytes": 410,
+      "sha256": "1560bdbcc2c9a86582fe89ba49605fc5c79aadaf0649e772da0e987e0f297807"
+    },
+    {
+      "path": "providers/treeforge-adbd/android-15.0.0_r36-arm64/MODIFICATIONS.txt",
+      "bytes": 681,
+      "sha256": "933e65806ad5973e2f51298fbbbc83904599bc6f8acafd0a2b51dc2e7b74be46"
+    },
+    {
+      "path": "providers/treeforge-adbd/android-15.0.0_r36-arm64/PATCHES/treeforge-recovery-standalone-adbd.patch",
+      "bytes": 2765,
+      "sha256": "2c46f6dcc36ad2ca8e687807834726353d87627ce3eb891607e70bfec6675cfe"
+    },
+    {
+      "path": "providers/treeforge-adbd/android-15.0.0_r36-arm64/PROVIDER-SOURCE.txt",
+      "bytes": 699,
+      "sha256": "36d9b490036dfbf591ebb8434a4c881b443506271f26328d5b717d4c912905b5"
+    },
+    {
+      "path": "providers/treeforge-adbd/android-15.0.0_r36-arm64/SOURCE/packages/modules/adb/Android.bp",
+      "bytes": 26555,
+      "sha256": "86c100a66fe42b43ebec75101e3b59efba2a22a2f184bde0737b8efd3b5c937c"
+    },
+    {
+      "path": "providers/treeforge-adbd/android-15.0.0_r36-arm64/SOURCE/packages/modules/adb/daemon/main.cpp",
+      "bytes": 14098,
+      "sha256": "53fe0200eb32e68b6fe869edb7526a1bcdb613314964906292a0be10432468ec"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/MODIFICATIONS.txt",
+      "bytes": 613,
+      "sha256": "c241354e845f6766287fe2b35a3e370bbc4576aeb5cf3125ff4b33b7f7e296e0"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/NOTICE/NOTICE.txt",
+      "bytes": 431047,
+      "sha256": "33963402f481ee6a9d3b2ab3c91b3986cace6b1a2eb1a53aafa355d4096b592c"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/NOTICE/libchrome-MODULE_LICENSE_BSD",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/NOTICE/libchrome-NOTICE",
+      "bytes": 1559,
+      "sha256": "7a209dd1b94cabdb5ea9c6f9164b9546ffa5daaa671e7767d49510db055f5c51"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/NOTICE/libevent-LICENSE",
+      "bytes": 4528,
+      "sha256": "ff02effc9b331edcdac387d198691bfa3e575e7d244ad10cb826aa51ef085670"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/NOTICE/libevent-MODULE_LICENSE_BSD_LIKE",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/NOTICE/system-core-MODULE_LICENSE_APACHE2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/PATCHES/treeforge-vabc-recovery.patch",
+      "bytes": 11068,
+      "sha256": "41c4607f659d17bff939d6c9cddf357b297a0249143f821fded603c6cff41cf4"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/PAYLOAD-NOT-IN-GIT.md",
+      "bytes": 626,
+      "sha256": "a014a9cecdb94a281c8d56c76e59c39fa922864cda921618acfbeb8ceb154b80"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/PROVIDER-SOURCE.txt",
+      "bytes": 1736,
+      "sha256": "9ba8a3535ce38626adcce2415f37659a7c2f6f2f5d2632172431bf9b51f1ac87"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/SOURCE/SOURCE-SHARE.json",
+      "bytes": 7519,
+      "sha256": "1b969e73bd23710e845e609f06b435197321a1d99c03d79bf6e105d36edfed5b"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/SOURCE/SOURCE-SHARE.txt",
+      "bytes": 4635,
+      "sha256": "f25e7217916cf6d09f4c7a009476257f9f320ce7c656a5194cea66e8b19f8af8"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/Android.bp",
+      "bytes": 13305,
+      "sha256": "fad30b7dfabc5bf319f8e9dc4fb9f89d60970d0468637bb4cf018927a12b0f00"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+      "bytes": 40716,
+      "sha256": "4d4d0a31716108973d5d463258ff557dd55d5bbdb4b1b9b6c12032d4e0db7779"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapshot.cpp",
+      "bytes": 184210,
+      "sha256": "1c1ab8387084c0821279a912943358fbb1c9cbfd43403c40056677d6edfd5328"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/treeforge_vabc_coordinator.cpp",
+      "bytes": 6443,
+      "sha256": "e7d5c0c2c8e237a95a1b693ed8d7a0681b460bb08c059de722ffefba4c4843dc"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/manifest.json",
+      "bytes": 2694,
+      "sha256": "7ed06571d1e68dc1677c0e7b074921a606efdd6327846dbfa21d34add7ad4f6d"
+    },
+    {
+      "path": "scripts/build",
+      "bytes": 10891,
+      "sha256": "f85a83a88a14611f3f78a265d62cd1a23e4136c51b0dea327cdeb6db820e1cf4"
+    },
+    {
+      "path": "scripts/refresh-source-inventory",
+      "bytes": 1193,
+      "sha256": "ee0733bf01cd6696dd026bbb01e66a2ffd0c42fc58b937b7c8b71c3341b2936d"
+    },
+    {
+      "path": "tools/adb/baseline/aosp-adb.json",
+      "bytes": 1678,
+      "sha256": "3f260e862f260f6d41e02fc31bc98fc8f4f6e5b66f2b43fe1223c8aea7ed6ecd"
+    },
+    {
+      "path": "tools/adb/baseline/aosp-adbd-recovery.json",
+      "bytes": 4350,
+      "sha256": "f8df616744a6c4d2c79f8cbbdfa06ef9479208534f6056e6e5709314ea95b903"
+    },
+    {
+      "path": "tools/adb/baseline/aosp-adbd.json",
+      "bytes": 1628,
+      "sha256": "443049b218da0a928249038f7403ef798c64abb9d8f2afcd35c01d7ce5c6720c"
+    },
+    {
+      "path": "tools/adb/patches/treeforge-recovery-standalone-adbd.patch",
+      "bytes": 2765,
+      "sha256": "2c46f6dcc36ad2ca8e687807834726353d87627ce3eb891607e70bfec6675cfe"
+    },
+    {
+      "path": "tools/fastboot/baseline/aosp-fastboot.json",
+      "bytes": 1699,
+      "sha256": "035936e26931999609b5b6a8698dc929be0aa25794c9c22eb9eb8012794da3b3"
+    },
+    {
+      "path": "tools/fastboot/baseline/aosp-fastbootd.json",
+      "bytes": 7741,
+      "sha256": "d173e3d7a5d40cd2d23075da167a0fbff7ee3cee6af3b9611b30a2e109709c5f"
+    },
+    {
+      "path": "tools/vabc/baseline/treeforge-vabc-coordinator.json",
+      "bytes": 1314,
+      "sha256": "1f290178a0bded9517e791f09cc3cff1c588126c0f6d849b403159ab95ca138f"
+    },
+    {
+      "path": "tools/vabc/patches/treeforge-vabc-recovery.patch",
+      "bytes": 11068,
+      "sha256": "41c4607f659d17bff939d6c9cddf357b297a0249143f821fded603c6cff41cf4"
+    }
+  ]
+}

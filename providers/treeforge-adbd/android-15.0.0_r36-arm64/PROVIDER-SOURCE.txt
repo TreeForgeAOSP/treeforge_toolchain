@@ -1,0 +1,25 @@
+TreeForge ADB Daemon Runtime Provider
+
+Provider: treeforge-adbd
+Release: android-15.0.0_r36-arm64
+Architecture: arm64
+
+Upstream:
+  Android Open Source Project
+  platform tag: android-15.0.0_r36
+  project: platform/packages/modules/adb
+  source path: packages/modules/adb
+  revision: a877adddefdf011bfb5d4045919c6df3d3727ed3
+
+TreeForge build module:
+  adbd.treeforge_recovery
+
+TreeForge modifications:
+  PATCHES/treeforge-recovery-standalone-adbd.patch
+
+Modified source snapshots:
+  SOURCE/packages/modules/adb/Android.bp
+  SOURCE/packages/modules/adb/daemon/main.cpp
+
+The canonical AOSP source checkout is not modified.
+TreeForge modifications are applied only to the derived TreeForge source line.

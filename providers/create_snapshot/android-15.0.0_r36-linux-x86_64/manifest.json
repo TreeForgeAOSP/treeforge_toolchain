@@ -1,0 +1,40 @@
+{
+  "architecture": "x86_64",
+  "executables": [
+    {
+      "capabilities": [
+        "android-cow-v3-create"
+      ],
+      "name": "create_snapshot",
+      "path": "bin/create_snapshot",
+      "sha256": "1811590d612a5bbcc62ed27a9c5e643988cb6b30c6f9cd486ff190fc59d4b047"
+    }
+  ],
+  "legal_files": [
+    {
+      "path": "legal/NOTICE.txt",
+      "sha256": "8f1c86f66e10032e0ca2319d477a756d453b3c3b44a28ce744acca0e5b666ac9"
+    }
+  ],
+  "name": "create_snapshot",
+  "platform": "linux",
+  "provenance_files": [
+    {
+      "path": "provenance/PROVENANCE.json",
+      "sha256": "db3282046c3db4bc51c7c4fd31baeb1b0f18a31d7b0c815b21176372ae1526b4"
+    }
+  ],
+  "provider_sources": [
+    {
+      "module": "create_snapshot",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "source_path": "system/core/fs_mgr/libsnapshot"
+    }
+  ],
+  "release": "android-15.0.0_r36-linux-x86_64",
+  "runtime_files": [],
+  "schema": 2
+}

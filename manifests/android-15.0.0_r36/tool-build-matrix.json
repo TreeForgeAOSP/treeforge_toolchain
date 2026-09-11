@@ -1,0 +1,192 @@
+{
+  "schema": 1,
+  "android_release": "android-15.0.0_r36",
+  "build_products": {
+    "host": "module_x86_64-trunk_staging-eng",
+    "runtime": "module_arm64-trunk_staging-eng"
+  },
+  "source_model": {
+    "aosp_reference": {
+      "mutable": false,
+      "purpose": [
+        "pristine reference build",
+        "regression comparison",
+        "reproducibility oracle"
+      ]
+    },
+    "treeforge_operational": {
+      "derived_from": "aosp_reference",
+      "mutable": true,
+      "purpose": [
+        "TreeForge production providers",
+        "TreeForge customization",
+        "release payload generation"
+      ]
+    }
+  },
+  "source_projects": {
+    "packages/modules/adb": {
+      "project": "platform/packages/modules/adb",
+      "revision": "a877adddefdf011bfb5d4045919c6df3d3727ed3"
+    },
+    "system/core": {
+      "project": "platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad"
+    },
+    "external/avb": {
+      "project": "platform/external/avb",
+      "revision": "d289c2ba6de359471b23d594623b906876bc48a0"
+    },
+    "system/libufdt": {
+      "project": "platform/system/libufdt",
+      "revision": "13e8728f0cffde9369df671f7b293a048a99c7ed"
+    },
+    "system/extras": {
+      "project": "platform/system/extras",
+      "revision": "288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5"
+    },
+    "system/tools/mkbootimg": {
+      "project": "platform/system/tools/mkbootimg",
+      "revision": "ca3fa710f8bcbb9d3e6a3929ba3ecc841aca0677"
+    }
+  },
+  "tools": {
+    "adb": {
+      "class": "host",
+      "aosp_module": "adb",
+      "treeforge_module": "adb",
+      "source": "packages/modules/adb"
+    },
+    "adbd": {
+      "class": "runtime",
+      "aosp_modules": [
+        "adbd",
+        "adbd.recovery",
+        "com.android.adbd"
+      ],
+      "treeforge_modules": [
+        "adbd.treeforge_recovery",
+        "adbd_system_api_recovery"
+      ],
+      "source": "packages/modules/adb"
+    },
+    "fastboot": {
+      "class": "host",
+      "aosp_module": "fastboot",
+      "treeforge_module": "fastboot",
+      "source": "system/core"
+    },
+    "fastbootd": {
+      "class": "runtime",
+      "aosp_module": "fastbootd",
+      "treeforge_module": "fastbootd",
+      "source": "system/core"
+    },
+    "avbtool": {
+      "class": "host",
+      "aosp_module": "avbtool",
+      "treeforge_module": "avbtool",
+      "source": "external/avb"
+    },
+    "mkdtimg": {
+      "class": "host",
+      "aosp_module": "mkdtimg",
+      "treeforge_module": "mkdtimg",
+      "source": "system/libufdt"
+    },
+    "create_snapshot": {
+      "class": "host",
+      "aosp_module": "create_snapshot",
+      "treeforge_module": "create_snapshot",
+      "source": "system/core"
+    },
+    "inspect_cow": {
+      "class": "host",
+      "aosp_module": "inspect_cow",
+      "treeforge_module": "inspect_cow.treeforge",
+      "source": "system/core"
+    },
+    "lpdump": {
+      "class": "host",
+      "aosp_module": "lpdump",
+      "treeforge_module": "lpdump",
+      "source": "system/extras"
+    },
+    "lpunpack": {
+      "class": "host",
+      "aosp_module": "lpunpack",
+      "treeforge_module": "lpunpack",
+      "source": "system/extras"
+    },
+    "simg2img": {
+      "class": "host",
+      "aosp_module": "simg2img",
+      "treeforge_module": "simg2img",
+      "source": "system/core"
+    },
+    "mkbootimg": {
+      "class": "host",
+      "aosp_module": "mkbootimg",
+      "treeforge_module": "mkbootimg",
+      "source": "system/tools/mkbootimg"
+    },
+    "unpack_bootimg": {
+      "class": "host",
+      "aosp_module": "unpack_bootimg",
+      "treeforge_module": "unpack_bootimg",
+      "source": "system/tools/mkbootimg"
+    },
+    "snapuserd_ramdisk": {
+      "class": "runtime",
+      "aosp_module": "snapuserd_ramdisk",
+      "treeforge_module": "snapuserd_ramdisk",
+      "source": "system/core"
+    },
+    "treeforge-vabc-coordinator": {
+      "class": "runtime",
+      "aosp_equivalent": null,
+      "treeforge_module": "treeforge-vabc-coordinator",
+      "source": "system/core"
+    }
+  },
+  "treeforge_patches": [
+    {
+      "path": "tools/adb/patches/treeforge-recovery-standalone-adbd.patch",
+      "applies_to": "packages/modules/adb"
+    },
+    {
+      "path": "tools/vabc/patches/treeforge-vabc-recovery.patch",
+      "applies_to": "system/core"
+    }
+  ],
+  "provider_release_identities": [
+    "aosp-adb",
+    "aosp-adbd",
+    "aosp-adbd-recovery",
+    "aosp-fastboot",
+    "aosp-fastbootd",
+    "treeforge-adb",
+    "treeforge-adbd",
+    "treeforge-fastboot",
+    "treeforge-fastbootd",
+    "treeforge-vabc-coordinator",
+    "avbtool",
+    "mkdtimg",
+    "create_snapshot",
+    "inspect_cow",
+    "android-image-tools",
+    "snapuserd_ramdisk"
+  ],
+  "github_reproducibility_requirements": {
+    "pinned_revisions": true,
+    "build_recipes": true,
+    "treeforge_source_deltas": true,
+    "modified_source_records": true,
+    "provider_manifests": true,
+    "legal_notice_material": true,
+    "provenance": true,
+    "source_sha256_inventory": true,
+    "compiled_payloads_in_git": false,
+    "compiled_payloads_as_release_assets": true
+  }
+}

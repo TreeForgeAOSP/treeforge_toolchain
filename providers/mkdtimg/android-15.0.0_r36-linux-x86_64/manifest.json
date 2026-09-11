@@ -1,0 +1,40 @@
+{
+  "architecture": "x86_64",
+  "executables": [
+    {
+      "capabilities": [
+        "android-mkdtimg"
+      ],
+      "name": "mkdtimg",
+      "path": "bin/mkdtimg",
+      "sha256": "eb1411b0e69fc7855fe700827c26ac11e8191032842419f77a74dc2e844325f6"
+    }
+  ],
+  "legal_files": [
+    {
+      "path": "legal/NOTICE.txt",
+      "sha256": "9b19479104432f4f0c00eaed6aa98b1c29bb00253c967fee81e2f159a5ab1dc7"
+    }
+  ],
+  "name": "mkdtimg",
+  "platform": "linux",
+  "provenance_files": [
+    {
+      "path": "provenance/PROVENANCE.json",
+      "sha256": "871fda75758b02d0b1edb3f1277e62ae8c4c3dccc3378c957d4403fa88fd6180"
+    }
+  ],
+  "provider_sources": [
+    {
+      "module": "mkdtimg",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/libufdt",
+      "revision": "13e8728f0cffde9369df671f7b293a048a99c7ed",
+      "source_path": "system/libufdt"
+    }
+  ],
+  "release": "android-15.0.0_r36-linux-x86_64",
+  "runtime_files": [],
+  "schema": 2
+}

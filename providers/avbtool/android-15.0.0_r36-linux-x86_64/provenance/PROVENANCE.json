@@ -1,0 +1,41 @@
+{
+  "artifacts": [
+    {
+      "kind": "executable",
+      "path": "bin/avbtool",
+      "sha256": "ff418b18d3b3b48dea2201124f62fc469c677bba93ca134829673254357ae17b"
+    }
+  ],
+  "legal_inputs": [
+    {
+      "sha256": "7b64210dc457e50fdcdf49c44d3efa19d78d6f49aa141862592ac31b700c19d2",
+      "source": "aosp/external/avb/LICENSE"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source": "aosp/external/avb/MODULE_LICENSE_APACHE2"
+    },
+    {
+      "sha256": "e0afbb47be661ce2076d21a1d4dc02caa58b7c215ab7ff9d151b6724be341f77",
+      "source": "aosp/system/libbase/NOTICE"
+    }
+  ],
+  "notes": [
+    "Provider normalized from the previous TreeForge schema-1 bundle.",
+    "The AOSP checkout is provenance/build evidence only and is not a runtime dependency."
+  ],
+  "platform_release": "android-15.0.0_r36",
+  "provider": "avbtool",
+  "release": "android-15.0.0_r36-linux-x86_64",
+  "schema": 1,
+  "sources": [
+    {
+      "module": "external/avb/avbtool.py",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/external/avb",
+      "revision": "d289c2ba6de359471b23d594623b906876bc48a0",
+      "source_path": "external/avb"
+    }
+  ]
+}

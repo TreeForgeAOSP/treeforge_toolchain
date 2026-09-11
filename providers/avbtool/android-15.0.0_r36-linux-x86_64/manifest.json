@@ -1,0 +1,40 @@
+{
+  "architecture": "x86_64",
+  "executables": [
+    {
+      "capabilities": [
+        "android-avbtool"
+      ],
+      "name": "avbtool",
+      "path": "bin/avbtool",
+      "sha256": "ff418b18d3b3b48dea2201124f62fc469c677bba93ca134829673254357ae17b"
+    }
+  ],
+  "legal_files": [
+    {
+      "path": "legal/NOTICE.txt",
+      "sha256": "8143e315d770052be333cbafbbd66bb9cb2bb5cd3baab7de9a89db8f34299a4d"
+    }
+  ],
+  "name": "avbtool",
+  "platform": "linux",
+  "provenance_files": [
+    {
+      "path": "provenance/PROVENANCE.json",
+      "sha256": "820d38a29d38683b0f2849e311b99ad4458ccbb588474586154753dba1e94d98"
+    }
+  ],
+  "provider_sources": [
+    {
+      "module": "external/avb/avbtool.py",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/external/avb",
+      "revision": "d289c2ba6de359471b23d594623b906876bc48a0",
+      "source_path": "external/avb"
+    }
+  ],
+  "release": "android-15.0.0_r36-linux-x86_64",
+  "runtime_files": [],
+  "schema": 2
+}

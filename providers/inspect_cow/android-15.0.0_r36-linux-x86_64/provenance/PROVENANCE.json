@@ -1,0 +1,44 @@
+{
+  "artifacts": [
+    {
+      "kind": "executable",
+      "path": "bin/inspect_cow",
+      "sha256": "7b09017079b58d1383059133314ff4ef67b3ff46e37e07cfbe18383723fe71e4"
+    }
+  ],
+  "legal_inputs": [
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source": "aosp/system/core/MODULE_LICENSE_APACHE2"
+    },
+    {
+      "sha256": "79f4e3e40e233ecf37271aec00da77235f6528054d057208460a33f44848b23a",
+      "source": "aosp/system/core/fs_mgr/NOTICE"
+    },
+    {
+      "sha256": "e0afbb47be661ce2076d21a1d4dc02caa58b7c215ab7ff9d151b6724be341f77",
+      "source": "aosp/system/libbase/NOTICE"
+    }
+  ],
+  "modifications": [
+    "provenance/MODIFICATIONS.txt"
+  ],
+  "notes": [
+    "Provider normalized from the previous TreeForge schema-1 bundle.",
+    "The AOSP checkout is provenance/build evidence only and is not a runtime dependency."
+  ],
+  "platform_release": "android-15.0.0_r36",
+  "provider": "inspect_cow",
+  "release": "android-15.0.0_r36-linux-x86_64",
+  "schema": 1,
+  "sources": [
+    {
+      "module": "inspect_cow.treeforge",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "source_path": "system/core/fs_mgr/libsnapshot"
+    }
+  ]
+}

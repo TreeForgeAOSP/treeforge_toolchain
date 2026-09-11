@@ -1,0 +1,17 @@
+TreeForge modifications relative to AOSP android-15.0.0_r36
+
+1. Adds the independent adbd.treeforge_recovery build module.
+2. Leaves the normal AOSP adbd.recovery module unchanged.
+3. Keeps the standalone TreeForge Recovery daemon root when normal
+   Android property initialization is unavailable.
+4. Avoids the normal root_seclabel transition in the standalone build.
+5. Disables Android ADB authentication only for the explicitly selected
+   TREEFORGE_RECOVERY_STANDALONE build.
+6. Preserves standard ADB implementation and protocol behavior otherwise.
+
+Modified AOSP files:
+  Android.bp
+  daemon/main.cpp
+
+Reproducible delta:
+  PATCHES/treeforge-recovery-standalone-adbd.patch

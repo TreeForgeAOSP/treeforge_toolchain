@@ -1,0 +1,21 @@
+TreeForge inspect_cow host provider
+
+Upstream source:
+  AOSP android-15.0.0_r36
+  system/core/fs_mgr/libsnapshot/libsnapshot_cow/inspect_cow.cpp
+
+TreeForge modification:
+  A separate host-only module named inspect_cow.treeforge was added.
+
+Purpose:
+  Produce a self-contained static host executable suitable for the
+  TreeForge Recovery host-provider bundle.
+
+Build-property changes relative to upstream inspect_cow:
+  - static_executable: true
+  - stl: libc++_static
+  - libbase linked statically
+  - liblog linked statically
+  - remaining libsnapshot_cow dependencies linked statically
+
+The inspect_cow.cpp implementation itself was not modified.

@@ -1,0 +1,326 @@
+{
+  "artifacts": [
+    {
+      "kind": "executable",
+      "module": "lpdump",
+      "path": "bin/lpdump",
+      "project": "platform/system/extras",
+      "revision": "288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5",
+      "sha256": "79926c0cd96f8ec15cc62e9242ed8dca9f791675c2ef9154f161d37222b0076b",
+      "source_path": "system/extras/partition_tools"
+    },
+    {
+      "kind": "executable",
+      "module": "lpunpack",
+      "path": "bin/lpunpack",
+      "project": "platform/system/extras",
+      "revision": "288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5",
+      "sha256": "942ddd97b58920088ef8a5444ef55ba1dc41d9a2deccf2466a475f84d3d54149",
+      "source_path": "system/extras/partition_tools"
+    },
+    {
+      "kind": "executable",
+      "module": "mkbootimg",
+      "path": "bin/mkbootimg",
+      "project": "platform/system/tools/mkbootimg",
+      "revision": "ca3fa710f8bcbb9d3e6a3929ba3ecc841aca0677",
+      "sha256": "c610d80ac3cd1e2de3ab535ecbf88b27e5539fc639fa865e8ee9911273b72d58",
+      "source_path": "system/tools/mkbootimg"
+    },
+    {
+      "kind": "executable",
+      "module": "simg2img",
+      "path": "bin/simg2img",
+      "project": "platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "sha256": "68bb4c010d1eb0d6c55c04e46890908d27966e527c3202b6d9f00dde11838941",
+      "source_path": "system/core/libsparse"
+    },
+    {
+      "kind": "executable",
+      "module": "unpack_bootimg",
+      "path": "bin/unpack_bootimg",
+      "project": "platform/system/tools/mkbootimg",
+      "revision": "ca3fa710f8bcbb9d3e6a3929ba3ecc841aca0677",
+      "sha256": "ff1339356d3ec46b855dab87388cd11e3e5de15a9bf8c4dbc8aa6653a2704278",
+      "source_path": "system/tools/mkbootimg"
+    },
+    {
+      "kind": "runtime",
+      "module": "libbase",
+      "path": "lib64/libbase.so",
+      "project": "platform/system/libbase",
+      "revision": "8f0ba417480079999ba552f1087ae592091b9d02",
+      "sha256": "0ce4898c1151ff4684386d5322ddf4aed0dcaabe95e7084640de44492afe1d68",
+      "source_path": "system/libbase"
+    },
+    {
+      "kind": "runtime",
+      "module": "libc++",
+      "path": "lib64/libc++.so",
+      "project": "platform/prebuilts/clang/host/linux-x86",
+      "revision": "96266255abde668f1bf100bf2c47363b96b7a21e",
+      "sha256": "5d61559447fac8eecc3d416479c5baee6c0b692d195939210eb0fcfe072286b9",
+      "source_path": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "kind": "runtime",
+      "module": "libcrypto",
+      "path": "lib64/libcrypto-host.so",
+      "project": "platform/external/boringssl",
+      "revision": "8fb009dc861624b67b6cdb62ea21f0f22d0c584b",
+      "sha256": "7b1d3986c2375ebc9b961a1a62b98702be1e87b938c13121f3e775f74cd1b273",
+      "source_path": "external/boringssl"
+    },
+    {
+      "kind": "runtime",
+      "module": "libcrypto_utils",
+      "path": "lib64/libcrypto_utils.so",
+      "project": "platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "sha256": "8eb99b81d2806202c7270b51b11ce21e5c744cb88753d4ef2f2eae1d49717d43",
+      "source_path": "system/core/libcrypto_utils"
+    },
+    {
+      "kind": "runtime",
+      "module": "libext4_utils",
+      "path": "lib64/libext4_utils.so",
+      "project": "platform/system/extras",
+      "revision": "288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5",
+      "sha256": "6fdcb4372e4f82190c0064a11db66d0ef89680f54b3be6377c1ce8501e32c477",
+      "source_path": "system/extras/ext4_utils"
+    },
+    {
+      "kind": "runtime",
+      "module": "liblog",
+      "path": "lib64/liblog.so",
+      "project": "platform/system/logging",
+      "revision": "598139dc91b21518d67c408eaea2644226490971",
+      "sha256": "10b9de8be1678680808fe65764b4127532b91d995691ac5537be1c9e1ef9f105",
+      "source_path": "system/logging/liblog"
+    },
+    {
+      "kind": "runtime",
+      "module": "liblp",
+      "path": "lib64/liblp.so",
+      "project": "platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "sha256": "852ee812faf6f8eb1b3985dbe382d760589df5049a86836fa88ff55fbe8e8c1a",
+      "source_path": "system/core/fs_mgr/liblp"
+    },
+    {
+      "kind": "runtime",
+      "module": "liblpdump",
+      "path": "lib64/liblpdump.so",
+      "project": "platform/system/extras",
+      "revision": "288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5",
+      "sha256": "53c1df5ce7702911d4afc229ca00fc312601ae854e0f0902f05f1bcd74311758",
+      "source_path": "system/extras/partition_tools"
+    },
+    {
+      "kind": "runtime",
+      "module": "libprotobuf-cpp-full",
+      "path": "lib64/libprotobuf-cpp-full.so",
+      "project": "platform/external/protobuf",
+      "revision": "1b3f573f81763fcece89efc2b6a5209149e44ab8",
+      "sha256": "603353489b90ef218dbcb7fd26d0b372db3e75e36749061c0b9dabc21cee7a15",
+      "source_path": "external/protobuf"
+    },
+    {
+      "kind": "runtime",
+      "module": "libsparse",
+      "path": "lib64/libsparse-host.so",
+      "project": "platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "sha256": "0a8c88745576e56d4b15d55e2677c0d738795459ecfc3559da7d6fa6d381f5ea",
+      "source_path": "system/core/libsparse"
+    },
+    {
+      "kind": "runtime",
+      "module": "libz",
+      "path": "lib64/libz-host.so",
+      "project": "platform/external/zlib",
+      "revision": "86ee64e75fa5f8bce2c8c356138035642429cd05",
+      "sha256": "a458c4413f806e618fb154670c630cebf1a8946a1bbcd61612c7422de1ff2b5a",
+      "source_path": "external/zlib"
+    }
+  ],
+  "legal_inputs": [
+    {
+      "sha256": "ccc3addfa916ca3c5e03495f54deb32bfd73b8ea29bfd20dccc6d8e98d676df6",
+      "source": ".smoke/android15_host_provider_NOTICE.txt"
+    },
+    {
+      "sha256": "a78d37138db9a43843736b2973284b61af19cd5384cf3c752e922171b0d4fc56",
+      "source": "aosp/external/boringssl/NOTICE"
+    },
+    {
+      "sha256": "6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d",
+      "source": "aosp/external/protobuf/LICENSE"
+    },
+    {
+      "sha256": "e1cfcc55c325b3f78cf55df9664abaa066e2271dffe8213347d9fccdfbac8f2c",
+      "source": "aosp/external/zlib/LICENSE"
+    },
+    {
+      "sha256": "79f4e3e40e233ecf37271aec00da77235f6528054d057208460a33f44848b23a",
+      "source": "aosp/system/core/fs_mgr/NOTICE"
+    },
+    {
+      "sha256": "a12819fdb7f46b425cb0bdb289c4c7d68d3c7a6f014a241bdaf59a214d72358b",
+      "source": "aosp/system/extras/ext4_utils/NOTICE"
+    },
+    {
+      "sha256": "e0afbb47be661ce2076d21a1d4dc02caa58b7c215ab7ff9d151b6724be341f77",
+      "source": "aosp/system/libbase/NOTICE"
+    },
+    {
+      "sha256": "f09747e3bc87e0ec3bdea983b37e18eeda223e01e678f76418a8a731ed8f590f",
+      "source": "aosp/system/logging/liblog/NOTICE"
+    }
+  ],
+  "notes": [
+    "Provider bytes were built from the pinned Android 15 source checkout and then copied into TreeForge.",
+    "The AOSP checkout is not consulted when TreeForge loads or executes this provider.",
+    "mkbootimg and unpack_bootimg use Soong's embedded Python launcher; Python prebuilt license material is included in the legal bundle when present in the pinned checkout."
+  ],
+  "platform_release": "android-15.0.0_r36",
+  "provider": "android-image-tools",
+  "release": "android-15.0.0_r36-linux-x86_64",
+  "runtime_closure": {
+    "aosp_runtime_dependency": false,
+    "bundled_runtime_files": 11,
+    "executables": 5
+  },
+  "schema": 1,
+  "sources": [
+    {
+      "module": "lpdump",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/extras",
+      "revision": "288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5",
+      "source_path": "system/extras/partition_tools"
+    },
+    {
+      "module": "lpunpack",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/extras",
+      "revision": "288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5",
+      "source_path": "system/extras/partition_tools"
+    },
+    {
+      "module": "simg2img",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "source_path": "system/core/libsparse"
+    },
+    {
+      "module": "mkbootimg",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/tools/mkbootimg",
+      "revision": "ca3fa710f8bcbb9d3e6a3929ba3ecc841aca0677",
+      "source_path": "system/tools/mkbootimg"
+    },
+    {
+      "module": "unpack_bootimg",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/tools/mkbootimg",
+      "revision": "ca3fa710f8bcbb9d3e6a3929ba3ecc841aca0677",
+      "source_path": "system/tools/mkbootimg"
+    },
+    {
+      "module": "libbase",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/libbase",
+      "revision": "8f0ba417480079999ba552f1087ae592091b9d02",
+      "source_path": "system/libbase"
+    },
+    {
+      "module": "liblog",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/logging",
+      "revision": "598139dc91b21518d67c408eaea2644226490971",
+      "source_path": "system/logging/liblog"
+    },
+    {
+      "module": "liblp",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "source_path": "system/core/fs_mgr/liblp"
+    },
+    {
+      "module": "liblpdump",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/extras",
+      "revision": "288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5",
+      "source_path": "system/extras/partition_tools"
+    },
+    {
+      "module": "libc++",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/prebuilts/clang/host/linux-x86",
+      "revision": "96266255abde668f1bf100bf2c47363b96b7a21e",
+      "source_path": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "module": "libcrypto",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/external/boringssl",
+      "revision": "8fb009dc861624b67b6cdb62ea21f0f22d0c584b",
+      "source_path": "external/boringssl"
+    },
+    {
+      "module": "libcrypto_utils",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "source_path": "system/core/libcrypto_utils"
+    },
+    {
+      "module": "libext4_utils",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/extras",
+      "revision": "288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5",
+      "source_path": "system/extras/ext4_utils"
+    },
+    {
+      "module": "libprotobuf-cpp-full",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/external/protobuf",
+      "revision": "1b3f573f81763fcece89efc2b6a5209149e44ab8",
+      "source_path": "external/protobuf"
+    },
+    {
+      "module": "libsparse",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "source_path": "system/core/libsparse"
+    },
+    {
+      "module": "libz",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/external/zlib",
+      "revision": "86ee64e75fa5f8bce2c8c356138035642429cd05",
+      "source_path": "external/zlib"
+    }
+  ]
+}

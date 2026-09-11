@@ -1,0 +1,85 @@
+diff --git a/Android.bp b/Android.bp
+--- a/Android.bp
++++ b/Android.bp
+@@ -848,6 +848,25 @@ cc_binary {
+     stem: "adbd",
+ }
+ 
++// TreeForge's standalone Recovery daemon.
++//
++// This remains the AOSP Recovery ADB implementation, but main.cpp is
++// compiled with a narrow startup adaptation for TreeForge's
++// post-FirstStageMain / pre-selinux_setup execution boundary.
++//
++// Keep the normal adbd.recovery module unchanged.
++cc_binary {
++    name: "adbd.treeforge_recovery",
++    defaults: [
++        "adbd_binary_defaults",
++    ],
++    recovery: true,
++    stem: "treeforge-adbd",
++    cflags: [
++        "-DTREEFORGE_RECOVERY_STANDALONE=1",
++    ],
++}
++
+ phony {
+     // Interface between adbd in a module and the system.
+     name: "adbd_system_api",
+diff --git a/daemon/main.cpp b/daemon/main.cpp
+--- a/daemon/main.cpp
++++ b/daemon/main.cpp
+@@ -64,6 +64,18 @@ static const char* root_seclabel = nullptr;
+ static const char* tim_seclabel = nullptr;
+ 
+ static bool should_drop_privileges() {
++#if defined(TREEFORGE_RECOVERY_STANDALONE)
++    /*
++     * TreeForge Recovery owns this daemon before Android second-stage
++     * init/property initialization.
++     *
++     * The ordinary default for a missing ro.secure property is true,
++     * which would incorrectly force the standalone Recovery daemon to
++     * AID_SHELL. TreeForge Recovery deliberately keeps this daemon root.
++     */
++    return false;
++#endif
++
+     // The properties that affect `adb root` and `adb unroot` are ro.secure and
+     // ro.debuggable. In this context the names don't make the expected behavior
+     // particularly obvious.
+@@ -173,6 +185,7 @@ static void drop_privileges() {
+         // minijail_enter() will abort if any priv-dropping step fails.
+         minijail_enter(jail.get());
+ 
++#if !defined(TREEFORGE_RECOVERY_STANDALONE)
+         if (root_seclabel != nullptr) {
+             if (selinux_android_setcon(root_seclabel) < 0) {
+                 // If we failed to become root, don't try again to avoid a
+@@ -181,6 +194,7 @@ static void drop_privileges() {
+                 LOG(FATAL) << "Could not set SELinux context";
+             }
+         }
++#endif
+     }
+ }
+ #endif
+@@ -213,6 +227,17 @@ int adbd_main() {
+ 
+     signal(SIGPIPE, SIG_IGN);
+ 
++#if defined(TREEFORGE_RECOVERY_STANDALONE)
++    /*
++     * TreeForge Recovery intentionally exposes ADB without Android's
++     * second-stage authentication/property lifecycle. Recovery access
++     * remains physically controlled by entering TreeForge Recovery.
++     */
++    auth_required = false;
++
++    LOG(INFO) << "TreeForge standalone Recovery adbd";
++#endif
++
+     // We need to call this even if auth isn't enabled because the file
+     // descriptor will always be open.
+     adbd_cloexec_auth_socket();

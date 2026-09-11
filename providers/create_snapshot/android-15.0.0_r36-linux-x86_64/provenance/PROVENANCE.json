@@ -1,0 +1,41 @@
+{
+  "artifacts": [
+    {
+      "kind": "executable",
+      "path": "bin/create_snapshot",
+      "sha256": "1811590d612a5bbcc62ed27a9c5e643988cb6b30c6f9cd486ff190fc59d4b047"
+    }
+  ],
+  "legal_inputs": [
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source": "aosp/system/core/MODULE_LICENSE_APACHE2"
+    },
+    {
+      "sha256": "79f4e3e40e233ecf37271aec00da77235f6528054d057208460a33f44848b23a",
+      "source": "aosp/system/core/fs_mgr/NOTICE"
+    },
+    {
+      "sha256": "e0afbb47be661ce2076d21a1d4dc02caa58b7c215ab7ff9d151b6724be341f77",
+      "source": "aosp/system/libbase/NOTICE"
+    }
+  ],
+  "notes": [
+    "Provider normalized from the previous TreeForge schema-1 bundle.",
+    "The AOSP checkout is provenance/build evidence only and is not a runtime dependency."
+  ],
+  "platform_release": "android-15.0.0_r36",
+  "provider": "create_snapshot",
+  "release": "android-15.0.0_r36-linux-x86_64",
+  "schema": 1,
+  "sources": [
+    {
+      "module": "create_snapshot",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "source_path": "system/core/fs_mgr/libsnapshot"
+    }
+  ]
+}

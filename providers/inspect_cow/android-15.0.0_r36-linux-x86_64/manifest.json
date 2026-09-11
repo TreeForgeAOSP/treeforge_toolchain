@@ -1,0 +1,44 @@
+{
+  "architecture": "x86_64",
+  "executables": [
+    {
+      "capabilities": [
+        "android-cow-v3-inspect"
+      ],
+      "name": "inspect_cow",
+      "path": "bin/inspect_cow",
+      "sha256": "7b09017079b58d1383059133314ff4ef67b3ff46e37e07cfbe18383723fe71e4"
+    }
+  ],
+  "legal_files": [
+    {
+      "path": "legal/NOTICE.txt",
+      "sha256": "8f1c86f66e10032e0ca2319d477a756d453b3c3b44a28ce744acca0e5b666ac9"
+    }
+  ],
+  "name": "inspect_cow",
+  "platform": "linux",
+  "provenance_files": [
+    {
+      "path": "provenance/PROVENANCE.json",
+      "sha256": "68767d714b75b29b40c2d7dac5ca9a184182534d1ac4fd66308103fdad9c683b"
+    },
+    {
+      "path": "provenance/MODIFICATIONS.txt",
+      "sha256": "b46f19dbf1e895e964bac2d797d30c1e55729d1bdf40205e4c0e10117a4a412e"
+    }
+  ],
+  "provider_sources": [
+    {
+      "module": "inspect_cow.treeforge",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "source_path": "system/core/fs_mgr/libsnapshot"
+    }
+  ],
+  "release": "android-15.0.0_r36-linux-x86_64",
+  "runtime_files": [],
+  "schema": 2
+}

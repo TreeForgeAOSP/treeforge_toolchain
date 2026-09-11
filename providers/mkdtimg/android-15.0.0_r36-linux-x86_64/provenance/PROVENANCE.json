@@ -1,0 +1,41 @@
+{
+  "artifacts": [
+    {
+      "kind": "executable",
+      "path": "bin/mkdtimg",
+      "sha256": "eb1411b0e69fc7855fe700827c26ac11e8191032842419f77a74dc2e844325f6"
+    }
+  ],
+  "legal_inputs": [
+    {
+      "sha256": "e0afbb47be661ce2076d21a1d4dc02caa58b7c215ab7ff9d151b6724be341f77",
+      "source": "aosp/system/libbase/NOTICE"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source": "aosp/system/libufdt/MODULE_LICENSE_APACHE2"
+    },
+    {
+      "sha256": "c12447b044d68da79c63ba0b57301d62d18f22a55893a91a4a0a2869043b322d",
+      "source": "aosp/system/libufdt/NOTICE"
+    }
+  ],
+  "notes": [
+    "Provider normalized from the previous TreeForge schema-1 bundle.",
+    "The AOSP checkout is provenance/build evidence only and is not a runtime dependency."
+  ],
+  "platform_release": "android-15.0.0_r36",
+  "provider": "mkdtimg",
+  "release": "android-15.0.0_r36-linux-x86_64",
+  "schema": 1,
+  "sources": [
+    {
+      "module": "mkdtimg",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/libufdt",
+      "revision": "13e8728f0cffde9369df671f7b293a048a99c7ed",
+      "source_path": "system/libufdt"
+    }
+  ]
+}
