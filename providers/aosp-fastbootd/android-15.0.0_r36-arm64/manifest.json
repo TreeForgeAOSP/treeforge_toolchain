@@ -204,73 +204,73 @@
       "android_path": "/system/bin/fastbootd",
       "module": "fastbootd",
       "path": "rootfs/system/bin/fastbootd",
-      "sha256": "36079d453dda5f10a23dcf7f09b5dcb886f59fe983f12b658a1c0830c2f75bec"
+      "sha256": "c4f5b98a3446fb9bba4f0a0e035a608306c909b163def0228119aa2d697bf8d6"
     },
     {
       "android_path": "/system/bin/linker64",
       "module": "linker.recovery",
       "path": "rootfs/system/bin/linker64",
-      "sha256": "4da962679b0102b7648f86eb4b56a543247dac4ff159f74952eb15053e5a8608"
+      "sha256": "318e3a9352b9db301354617d73907a3f0cf1c4a574d8ae95f49c267647159c45"
     },
     {
       "android_path": "/system/lib64/android.hardware.boot-V1-ndk.so",
       "module": "android.hardware.boot-V1-ndk.recovery",
       "path": "rootfs/system/lib64/android.hardware.boot-V1-ndk.so",
-      "sha256": "eed55b47d7d01de56a137ff2a1f0be645368bf0cbfa3654b4baaaacb1cbc3ab4"
+      "sha256": "07ba3fe99a31e02cf4fc1482a654e2b36dbf433c809aa609380dec82181836ce"
     },
     {
       "android_path": "/system/lib64/android.hardware.boot@1.0.so",
       "module": "android.hardware.boot@1.0.recovery",
       "path": "rootfs/system/lib64/android.hardware.boot@1.0.so",
-      "sha256": "5f983462044754070236b14c5058e628b2e2b339fad0d42dbfa109cdb7dd5b30"
+      "sha256": "580ca8963f5084768ccd0cd561471bad613c599711e28d543a444749645bb9b1"
     },
     {
       "android_path": "/system/lib64/android.hardware.boot@1.1.so",
       "module": "android.hardware.boot@1.1.recovery",
       "path": "rootfs/system/lib64/android.hardware.boot@1.1.so",
-      "sha256": "f7b516c4821c2b7e0998e171b45641ae903aacc9b512b3678b7b7e148ad48bc5"
+      "sha256": "4f8ac23175fcc17affd0703fe135262937236331c5d0bebd9796643653a61bc6"
     },
     {
       "android_path": "/system/lib64/android.hardware.boot@1.2.so",
       "module": "android.hardware.boot@1.2.recovery",
       "path": "rootfs/system/lib64/android.hardware.boot@1.2.so",
-      "sha256": "54824141afbed78087d5915f08063ea66a363ca8f389ab1f3008a8f2812be6f6"
+      "sha256": "6d3915d9936de5844b055cc9e540c3e824c8c7332e01dea60c9ec8fa21fffdf1"
     },
     {
       "android_path": "/system/lib64/android.hardware.fastboot-V1-ndk.so",
       "module": "android.hardware.fastboot-V1-ndk.recovery",
       "path": "rootfs/system/lib64/android.hardware.fastboot-V1-ndk.so",
-      "sha256": "5d9e5feefcdae545eae36c58917223c7a958658df8faafd769c1d2ff8141fb07"
+      "sha256": "e975776b0612c005f43b79cb5d1d0e2d8bd437c3d97ac7aaf635706c34ef0173"
     },
     {
       "android_path": "/system/lib64/android.hardware.fastboot@1.0.so",
       "module": "android.hardware.fastboot@1.0.recovery",
       "path": "rootfs/system/lib64/android.hardware.fastboot@1.0.so",
-      "sha256": "9bc6ca88ab9ea2734923c40d15f80616f1f3fe07a747635ec318333681c67a4c"
+      "sha256": "649617edc662825944641ea424f560182d16be790ce8067db1f7616982b4d6e7"
     },
     {
       "android_path": "/system/lib64/android.hardware.fastboot@1.1.so",
       "module": "android.hardware.fastboot@1.1.recovery",
       "path": "rootfs/system/lib64/android.hardware.fastboot@1.1.so",
-      "sha256": "7893c094f1d5146db3fc66361fd0ec699b2ae602d7b37f3781f77ca3cdef1713"
+      "sha256": "d7b0d12d5a6f9c8b963cd272b4e9f328675f4decb4b8c787c6daa8bcac84a0cd"
     },
     {
       "android_path": "/system/lib64/android.hardware.health-V4-ndk.so",
       "module": "android.hardware.health-V4-ndk.recovery",
       "path": "rootfs/system/lib64/android.hardware.health-V4-ndk.so",
-      "sha256": "fd69c8a3cd1d395b90f4e8d3d951e49cb214507bc7ba3d232e482096725f328e"
+      "sha256": "1c1dfd53914744410dba564acdd3d6f65c2447e18ddf81addcb56f914018a0cf"
     },
     {
       "android_path": "/system/lib64/android.hardware.health@1.0.so",
       "module": "android.hardware.health@1.0.recovery",
       "path": "rootfs/system/lib64/android.hardware.health@1.0.so",
-      "sha256": "75d5f0acf6781b541a7298953409b5a33c5164bb82e3ee846fceaf24fa2becf4"
+      "sha256": "4c99152748b27230c663621da0fd47e3e8b7f4f071fce10d1a1a6c628874cd2b"
     },
     {
       "android_path": "/system/lib64/android.hardware.health@2.0.so",
       "module": "android.hardware.health@2.0.recovery",
       "path": "rootfs/system/lib64/android.hardware.health@2.0.so",
-      "sha256": "712cd0a5a4de2d2c5a8e9def645aa391fa231c2174a5501491f9dedb656e0f86"
+      "sha256": "cd5fd9b356ec5ea131f5dbf66beba93a4c6f30630412e548f50a7119e80311a0"
     },
     {
       "android_path": "/system/lib64/ld-android.so",
@@ -294,7 +294,7 @@
       "android_path": "/system/lib64/libbinder.so",
       "module": "libbinder.recovery",
       "path": "rootfs/system/lib64/libbinder.so",
-      "sha256": "690082f29a3c0ea2d0a0ac2118d0eb7a505c940ee3b85498b360fddd3b694282"
+      "sha256": "6d30d9228c2aa4ccf9a11deb34d48f64c2094de1344965ce408e4b51871f854d"
     },
     {
       "android_path": "/system/lib64/libbinder_ndk.so",
@@ -306,7 +306,7 @@
       "android_path": "/system/lib64/libboot_control_client.so",
       "module": "libboot_control_client.recovery",
       "path": "rootfs/system/lib64/libboot_control_client.so",
-      "sha256": "3ce6b4db0ab93225ab2a3a779b5492c796cac90b593e409027f5a4c1c32acaac"
+      "sha256": "5fa0d333cea4ec2953b6dfd86daa8a6a86506d995df81d949831358df99122e3"
     },
     {
       "android_path": "/system/lib64/libbootloader_message.so",
@@ -324,7 +324,7 @@
       "android_path": "/system/lib64/libc.so",
       "module": "libc.recovery",
       "path": "rootfs/system/lib64/libc.so",
-      "sha256": "eadd38f2c9ce29c0c96ff5f6b1f4146d070ed6567fc8c67cef6de1898ef3b06f"
+      "sha256": "32c201dcb1bfd751afe4253f58909bdb5f188c5714d471ebe4ddccb1203bc029"
     },
     {
       "android_path": "/system/lib64/libcrypto.so",
@@ -384,7 +384,7 @@
       "android_path": "/system/lib64/libhidlbase.so",
       "module": "libhidlbase.recovery",
       "path": "rootfs/system/lib64/libhidlbase.so",
-      "sha256": "5fa2a657208ac949153d8b2bb0ac14018a874f52d295af2f8298bf72c5912454"
+      "sha256": "1edfc0c6ae0462a19814ff211cbafc6cbd6d1c17fdd7383c1cb01a2fd47df0e1"
     },
     {
       "android_path": "/system/lib64/liblog.so",

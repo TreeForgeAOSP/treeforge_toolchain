@@ -6,8 +6,8 @@
       "android_path": "/system/bin/snapuserd_ramdisk",
       "component": "libsnapshot-snapuserd",
       "module": "snapuserd_ramdisk",
-      "path": "rootfs/system/bin/snapuserd_ramdisk",
-      "sha256": "e8fab38acbee9985a68d567e457ebc7b1c9fbef85f764cb77dcdb44686d0239c"
+      "path": "rootfs/system/bin/snapuserd",
+      "sha256": "450208c1b25603b59753793b1047dbc4e7161e8d8376c5d4feb52ce1cbee54ef"
     }
   ],
   "license_files": [

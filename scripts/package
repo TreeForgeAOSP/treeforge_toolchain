@@ -19,6 +19,16 @@ ROOT = Path(__file__).resolve().parents[1]
 
 ANDROID_RELEASE = "android-15.0.0_r36"
 RELEASE_REVISION = "1"
+
+RUNTIME_CONSUMER_REVISION_2_PROVIDERS = frozenset(
+    {
+        "aosp-adbd",
+        "aosp-adbd-recovery",
+        "aosp-fastbootd",
+        "snapuserd_ramdisk",
+        "treeforge-vabc-coordinator",
+    }
+)
 REPOSITORY = "TreeForgeDEV/treeforge_toolchain"
 
 TREEFORGE_ROOT = Path(
@@ -320,10 +330,23 @@ def asset_stem(provider: Provider) -> str:
     )
 
 
+def release_revision(
+    provider: Provider,
+) -> str:
+    if (
+        provider.provider_id
+        in RUNTIME_CONSUMER_REVISION_2_PROVIDERS
+    ):
+        return "2"
+
+    return RELEASE_REVISION
+
+
 def release_tag(provider: Provider) -> str:
     return (
         f"{provider.provider_id}/"
-        f"{ANDROID_RELEASE}-{RELEASE_REVISION}"
+        f"{ANDROID_RELEASE}-"
+        f"{release_revision(provider)}"
     )
 
 

@@ -25,14 +25,14 @@
       "component": "libsnapshot",
       "module": "treeforge-vabc-coordinator",
       "path": "rootfs/system/bin/treeforge-vabc-coordinator",
-      "sha256": "666417386eb6c0ba9d1c3e197b585879d3bc05cdb9ed4c9f1d40944ed969d393"
+      "sha256": "094679d644ecf2342bcca6954cc27f6cb0f3846487baa153f1e30eadd5a48735"
     },
     {
       "android_path": "/system/lib64/libchrome.so",
       "component": "libchrome",
       "module": "libchrome",
       "path": "rootfs/system/lib64/libchrome.so",
-      "sha256": "799025c87a893a6052d49b7d99b5bbc56c1dd41767c3eb08f136b9ed65c54c44"
+      "sha256": "d35877d10c21aaa688293087649c0547a4f4c499c2967e417be0342668dee6d5"
     },
     {
       "android_path": "/system/lib64/libcutils.so",

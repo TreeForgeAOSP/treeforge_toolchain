@@ -84,11 +84,66 @@ def normalized_manifest(
         return None
 
     if (
-        data.get("schema") != 2
-        or data.get("name") != provider
+        data.get("name") != provider
         or data.get("release") != release
     ):
         return None
+
+    schema = data.get("schema")
+
+    # Schema 2 is the normalized host-provider consumer contract.
+    if schema == 2:
+        return candidate
+
+    # Schema 1 is also a consumer contract when it describes a real
+    # Android runtime bundle rather than publication metadata.
+    if schema != 1:
+        return None
+
+    if not isinstance(
+        data.get("canonical_sdk_level"),
+        str,
+    ) or not data["canonical_sdk_level"]:
+        return None
+
+    if not isinstance(
+        data.get("architecture"),
+        str,
+    ) or not data["architecture"]:
+        return None
+
+    files = data.get("files")
+
+    if not isinstance(files, list) or not files:
+        return None
+
+    for record in files:
+        if not isinstance(record, dict):
+            return None
+
+        relative = record.get("path")
+        digest = record.get("sha256")
+
+        if (
+            not isinstance(relative, str)
+            or not relative
+            or not isinstance(digest, str)
+            or len(digest) != 64
+            or digest.lower() != digest
+            or any(
+                char not in "0123456789abcdef"
+                for char in digest
+            )
+        ):
+            return None
+
+        relative_path = Path(relative)
+
+        if (
+            relative_path.is_absolute()
+            or ".." in relative_path.parts
+        ):
+            return None
 
     return candidate
 

@@ -121,13 +121,13 @@
       "android_path": "/system/bin/adbd",
       "module": "adbd.recovery",
       "path": "rootfs/system/bin/adbd",
-      "sha256": "555ecbd819c6410811934236b02bc1ead86ffc10b5a2d8811b221a2dfc3863e1"
+      "sha256": "2719cc6fe900eea94ae3c6e1ca2f165fe9329b72548b028c79a737fea6b3e5da"
     },
     {
       "android_path": "/system/bin/linker64",
       "module": "linker.recovery",
       "path": "rootfs/system/bin/linker64",
-      "sha256": "4da962679b0102b7648f86eb4b56a543247dac4ff159f74952eb15053e5a8608"
+      "sha256": "318e3a9352b9db301354617d73907a3f0cf1c4a574d8ae95f49c267647159c45"
     },
     {
       "android_path": "/system/lib64/ld-android.so",
@@ -163,7 +163,7 @@
       "android_path": "/system/lib64/libc.so",
       "module": "libc.recovery",
       "path": "rootfs/system/lib64/libc.so",
-      "sha256": "eadd38f2c9ce29c0c96ff5f6b1f4146d070ed6567fc8c67cef6de1898ef3b06f"
+      "sha256": "32c201dcb1bfd751afe4253f58909bdb5f188c5714d471ebe4ddccb1203bc029"
     },
     {
       "android_path": "/system/lib64/libcrypto.so",

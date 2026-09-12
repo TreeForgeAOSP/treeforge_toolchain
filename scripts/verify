@@ -138,6 +138,74 @@ def payload_hash_map(
     return result
 
 
+def is_consumer_manifest_data(
+    *,
+    data: dict,
+    provider: str,
+    release: str,
+) -> bool:
+    if (
+        data.get("name") != provider
+        or data.get("release") != release
+    ):
+        return False
+
+    schema = data.get("schema")
+
+    if schema == 2:
+        return True
+
+    if schema != 1:
+        return False
+
+    if not isinstance(
+        data.get("canonical_sdk_level"),
+        str,
+    ) or not data["canonical_sdk_level"]:
+        return False
+
+    if not isinstance(
+        data.get("architecture"),
+        str,
+    ) or not data["architecture"]:
+        return False
+
+    files = data.get("files")
+
+    if not isinstance(files, list) or not files:
+        return False
+
+    for record in files:
+        if not isinstance(record, dict):
+            return False
+
+        relative = record.get("path")
+        digest = record.get("sha256")
+
+        if (
+            not isinstance(relative, str)
+            or not relative
+            or not isinstance(digest, str)
+            or len(digest) != 64
+            or digest.lower() != digest
+            or any(
+                char not in "0123456789abcdef"
+                for char in digest
+            )
+        ):
+            return False
+
+        relative_path = Path(relative)
+
+        if (
+            relative_path.is_absolute()
+            or ".." in relative_path.parts
+        ):
+            return False
+
+    return True
+
+
 def verify_consumer_manifest(
     *,
     provider: str,
@@ -163,6 +231,52 @@ def verify_consumer_manifest(
         )
 
     data = json.loads(packaged.read_text())
+
+    if data.get("schema") == 1:
+        if not is_consumer_manifest_data(
+            data=data,
+            provider=provider,
+            release=release,
+        ):
+            fail(
+                f"{provider}: invalid schema-1 "
+                "runtime consumer manifest"
+            )
+
+        payload_root = package_root / "payload"
+
+        if not payload_root.is_dir():
+            fail(
+                f"{provider}: runtime consumer "
+                "package has no payload directory"
+            )
+
+        payload_by_sha: dict[str, list[Path]] = {}
+
+        for payload_file in sorted(
+            path
+            for path in payload_root.rglob("*")
+            if path.is_file()
+        ):
+            digest = sha256_file(payload_file)
+
+            payload_by_sha.setdefault(
+                digest,
+                [],
+            ).append(payload_file)
+
+        for record in data["files"]:
+            expected = record["sha256"]
+
+            if expected not in payload_by_sha:
+                fail(
+                    f"{provider}: runtime consumer payload "
+                    "does not contain manifest SHA-256 "
+                    f"{expected} for {record['path']}"
+                )
+
+        return
+
 
     if data.get("schema") != 2:
         fail(
@@ -467,7 +581,7 @@ for number, record in enumerate(
         )
 
         expected_consumer = (
-            source_data.get("schema") == 2
+            is_consumer_manifest_data(data=source_data, provider=provider, release=release)
         )
 
         actual_consumer = bool(
