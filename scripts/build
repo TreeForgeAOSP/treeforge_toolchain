@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT=/home/skelitonlord/development/treeforge_toolchain
-AOSP=/home/skelitonlord/development/treeforge/aosp
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="${TREEFORGE_TOOLCHAIN_ROOT:-$(cd "$SCRIPT_DIR/.." && pwd)}"
+WORKSPACE="$(cd "$ROOT/.." && pwd)"
+TREEFORGE="${TREEFORGE_ROOT:-$WORKSPACE/treeforge}"
+AOSP="${TREEFORGE_AOSP_SOURCE:-$TREEFORGE/aosp}"
 
 RELEASE=android-15.0.0_r36
 HOST_PRODUCT=module_x86_64-trunk_staging-eng
@@ -279,24 +282,39 @@ echo
 
 echo "===== APPLY TREEFORGE ADB DELTA ====="
 
-ADB_PATCH="$ROOT/tools/adb/patches/treeforge-recovery-standalone-adbd.patch"
+ADB_PATCHES=(
+    "$ROOT/tools/adb/patches/treeforge-host-adb-identity.patch"
+    "$ROOT/tools/adb/patches/treeforge-recovery-standalone-adbd.patch"
+)
 
-test -f "$ADB_PATCH" ||
-    fail "TreeForge adbd patch missing"
+for adb_patch in "${ADB_PATCHES[@]}"; do
+    if [[ ! -f "$adb_patch" ]]; then
+        fail "TreeForge ADB patch missing: $adb_patch"
+    fi
 
-patch \
-    --dry-run \
-    -d "$TF_SOURCE/packages/modules/adb" \
-    -p1 \
-    < "$ADB_PATCH"
+    echo "Applying $(basename "$adb_patch")"
 
-patch \
-    -d "$TF_SOURCE/packages/modules/adb" \
-    -p1 \
-    < "$ADB_PATCH"
+    if ! patch \
+        --dry-run \
+        -p1 \
+        -d "$TF_SOURCE/packages/modules/adb" \
+        < "$adb_patch" \
+        >/dev/null
+    then
+        fail "TreeForge ADB patch dry-run failed: $adb_patch"
+    fi
 
+    if ! patch \
+        -p1 \
+        -d "$TF_SOURCE/packages/modules/adb" \
+        < "$adb_patch"
+    then
+        fail "TreeForge ADB patch failed: $adb_patch"
+    fi
+done
+
+echo "treeforge_host_adb_identity_delta=PASS"
 echo "treeforge_adbd_delta=PASS"
-echo
 
 echo "===== APPLY TREEFORGE LIBSNAPSHOT/VABC DELTA ====="
 
@@ -368,12 +386,15 @@ echo "ARTIFACT INVENTORY"
 echo "============================================================"
 echo
 
-python3 - <<'PY'
+TREEFORGE_TOOLCHAIN_ROOT="$ROOT" python3 - <<'PY'
 from pathlib import Path
 import hashlib
 import json
+import os
 
-root = Path("/home/skelitonlord/development/treeforge_toolchain")
+root = Path(
+    os.environ["TREEFORGE_TOOLCHAIN_ROOT"]
+).resolve()
 
 roots = {
     "aosp_host":

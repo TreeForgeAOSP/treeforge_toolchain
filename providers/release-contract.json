@@ -1,7 +1,7 @@
 {
   "distribution": "GITHUB_RELEASE_ASSET",
   "floating_latest_allowed": false,
-  "repository": "Skellyaosp/treeforge_toolchain",
+  "repository": "TreeForgeDEV/treeforge_toolchain",
   "requirements": {
     "archive_sha256": true,
     "exact_release_tag": true,

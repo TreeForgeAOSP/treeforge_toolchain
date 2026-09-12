@@ -1,0 +1,584 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import hashlib
+import json
+import tarfile
+import tempfile
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+DIST = ROOT / "dist"
+ASSETS = DIST / "assets"
+PROVIDERS = ROOT / "providers"
+
+
+def fail(message: str) -> None:
+    raise SystemExit(f"ERROR: {message}")
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+
+    with path.open("rb") as handle:
+        for chunk in iter(
+            lambda: handle.read(1024 * 1024),
+            b"",
+        ):
+            digest.update(chunk)
+
+    return digest.hexdigest()
+
+
+def safe_extract(
+    archive: Path,
+    destination: Path,
+) -> None:
+    with tarfile.open(archive, "r:xz") as handle:
+        for member in handle.getmembers():
+            relative = Path(member.name)
+
+            if (
+                relative.is_absolute()
+                or ".." in relative.parts
+            ):
+                fail(
+                    f"unsafe archive path: {member.name}"
+                )
+
+            if member.issym() or member.islnk():
+                fail(
+                    f"archive link prohibited: {member.name}"
+                )
+
+        handle.extractall(
+            destination,
+            filter="data",
+        )
+
+
+def verify_internal_sha256(
+    package_root: Path,
+) -> None:
+    ledger = package_root / "SHA256SUMS"
+
+    if not ledger.is_file():
+        fail(
+            f"internal SHA256SUMS missing: {package_root}"
+        )
+
+    seen: set[str] = set()
+
+    for line in ledger.read_text().splitlines():
+        if not line.strip():
+            continue
+
+        try:
+            expected, relative_text = line.split(
+                "  ",
+                1,
+            )
+        except ValueError:
+            fail(
+                f"invalid internal checksum line: {line!r}"
+            )
+
+        if relative_text in seen:
+            fail(
+                f"duplicate checksum path: {relative_text}"
+            )
+
+        seen.add(relative_text)
+
+        relative = Path(relative_text)
+
+        if (
+            relative.is_absolute()
+            or ".." in relative.parts
+        ):
+            fail(
+                f"unsafe checksum path: {relative_text}"
+            )
+
+        target = package_root / relative
+
+        if not target.is_file():
+            fail(
+                f"checksummed file missing: {relative_text}"
+            )
+
+        actual = sha256_file(target)
+
+        if actual != expected:
+            fail(
+                f"internal SHA mismatch: {relative_text}\n"
+                f"expected={expected}\n"
+                f"actual={actual}"
+            )
+
+
+def payload_hash_map(
+    package_root: Path,
+) -> dict[str, list[Path]]:
+    result: dict[str, list[Path]] = {}
+    payload = package_root / "payload"
+
+    if not payload.is_dir():
+        return result
+
+    for path in payload.rglob("*"):
+        if not path.is_file():
+            continue
+
+        result.setdefault(
+            sha256_file(path),
+            [],
+        ).append(path)
+
+    return result
+
+
+def verify_consumer_manifest(
+    *,
+    provider: str,
+    release: str,
+    package_root: Path,
+    source_manifest: Path,
+) -> None:
+    packaged = (
+        package_root
+        / "consumer"
+        / "manifest.json"
+    )
+
+    if not packaged.is_file():
+        fail(
+            f"{provider}: consumer/manifest.json missing"
+        )
+
+    if packaged.read_bytes() != source_manifest.read_bytes():
+        fail(
+            f"{provider}: packaged consumer manifest "
+            "differs from source"
+        )
+
+    data = json.loads(packaged.read_text())
+
+    if data.get("schema") != 2:
+        fail(
+            f"{provider}: consumer schema is not 2"
+        )
+
+    if data.get("name") != provider:
+        fail(
+            f"{provider}: consumer name mismatch"
+        )
+
+    if data.get("release") != release:
+        fail(
+            f"{provider}: consumer release mismatch"
+        )
+
+    payload_hashes = payload_hash_map(
+        package_root
+    )
+
+    for section in (
+        "executables",
+        "runtime_files",
+    ):
+        for record in data.get(section, []):
+            relative = Path(record["path"])
+            expected = record["sha256"]
+
+            direct = (
+                package_root
+                / "payload"
+                / relative
+            )
+
+            if (
+                direct.is_file()
+                and sha256_file(direct) == expected
+            ):
+                continue
+
+            matches = payload_hashes.get(
+                expected,
+                [],
+            )
+
+            if len(matches) != 1:
+                fail(
+                    f"{provider}: cannot uniquely map "
+                    f"{section} {relative}; "
+                    f"matches={len(matches)}"
+                )
+
+    for section in (
+        "legal_files",
+        "provenance_files",
+    ):
+        for record in data.get(section, []):
+            relative = Path(record["path"])
+
+            if (
+                relative.is_absolute()
+                or ".." in relative.parts
+            ):
+                fail(
+                    f"{provider}: unsafe normalized path "
+                    f"{relative}"
+                )
+
+            target = package_root / relative
+
+            if not target.is_file():
+                fail(
+                    f"{provider}: normalized file missing "
+                    f"{relative}"
+                )
+
+            if sha256_file(target) != record["sha256"]:
+                fail(
+                    f"{provider}: normalized SHA mismatch "
+                    f"{relative}"
+                )
+
+
+index_path = DIST / "index.json"
+
+if not index_path.is_file():
+    fail(
+        "dist/index.json missing; run scripts/package first"
+    )
+
+index = json.loads(
+    index_path.read_text()
+)
+
+records = index.get("providers")
+
+if not isinstance(records, list):
+    fail(
+        "dist providers must be a list"
+    )
+
+if index.get("provider_count") != len(records):
+    fail(
+        "dist provider_count mismatch"
+    )
+
+names = [
+    record["provider"]
+    for record in records
+]
+
+if len(names) != len(set(names)):
+    fail(
+        "duplicate provider identity in dist"
+    )
+
+tags = [
+    record["release_tag"]
+    for record in records
+]
+
+if len(tags) != len(set(tags)):
+    fail(
+        "duplicate release tag in dist"
+    )
+
+source_index = json.loads(
+    (
+        PROVIDERS
+        / "index.json"
+    ).read_text()
+)
+
+source_names = set(
+    source_index["providers"]
+)
+
+dist_names = set(names)
+
+if source_names != dist_names:
+    fail(
+        "source catalog differs from dist provider set\n"
+        f"source={sorted(source_names)}\n"
+        f"dist={sorted(dist_names)}"
+    )
+
+expected_assets: set[str] = set()
+consumer_count = 0
+
+for number, record in enumerate(
+    records,
+    start=1,
+):
+    provider = record["provider"]
+    release = (
+        index["android_release"]
+        + "-"
+        + record["platform"]
+    )
+
+    archive = (
+        ASSETS
+        / record["archive"]
+    )
+
+    sidecar = archive.with_name(
+        archive.name + ".sha256"
+    )
+
+    expected_assets.add(
+        archive.name
+    )
+    expected_assets.add(
+        sidecar.name
+    )
+
+    if not archive.is_file():
+        fail(
+            f"{provider}: archive missing"
+        )
+
+    if not sidecar.is_file():
+        fail(
+            f"{provider}: sidecar missing"
+        )
+
+    archive_sha = sha256_file(
+        archive
+    )
+
+    if archive_sha != record["archive_sha256"]:
+        fail(
+            f"{provider}: archive SHA mismatch"
+        )
+
+    expected_sidecar = (
+        f"{archive_sha}  {archive.name}"
+    )
+
+    if sidecar.read_text().strip() != expected_sidecar:
+        fail(
+            f"{provider}: sidecar mismatch"
+        )
+
+    with tempfile.TemporaryDirectory(
+        prefix="treeforge-provider-verify-"
+    ) as raw:
+        temporary = Path(raw)
+
+        safe_extract(
+            archive,
+            temporary,
+        )
+
+        package_root = (
+            temporary
+            / f"{provider}-{release}"
+        )
+
+        if not package_root.is_dir():
+            fail(
+                f"{provider}: package root missing"
+            )
+
+        verify_internal_sha256(
+            package_root
+        )
+
+        release_json = (
+            package_root
+            / "RELEASE.json"
+        )
+
+        source_rebuild = (
+            package_root
+            / "SOURCE-REBUILD.json"
+        )
+
+        release_manifest = (
+            package_root
+            / "manifest.json"
+        )
+
+        for required in (
+            release_json,
+            source_rebuild,
+            release_manifest,
+        ):
+            if not required.is_file():
+                fail(
+                    f"{provider}: missing {required.name}"
+                )
+
+        release_data = json.loads(
+            release_json.read_text()
+        )
+
+        if release_data.get("provider") != provider:
+            fail(
+                f"{provider}: RELEASE provider mismatch"
+            )
+
+        if (
+            release_data.get("release_tag")
+            != record["release_tag"]
+        ):
+            fail(
+                f"{provider}: RELEASE tag mismatch"
+            )
+
+        if (
+            release_data.get("repository")
+            != index["repository"]
+        ):
+            fail(
+                f"{provider}: repository mismatch"
+            )
+
+        rebuild_data = json.loads(
+            source_rebuild.read_text()
+        )
+
+        if rebuild_data.get("provider") != provider:
+            fail(
+                f"{provider}: SOURCE-REBUILD identity mismatch"
+            )
+
+        source_manifest = (
+            PROVIDERS
+            / provider
+            / release
+            / "manifest.json"
+        )
+
+        if not source_manifest.is_file():
+            fail(
+                f"{provider}: source manifest missing"
+            )
+
+        source_data = json.loads(
+            source_manifest.read_text()
+        )
+
+        expected_consumer = (
+            source_data.get("schema") == 2
+        )
+
+        actual_consumer = bool(
+            record.get(
+                "consumer_manifest",
+                False,
+            )
+        )
+
+        if actual_consumer != expected_consumer:
+            fail(
+                f"{provider}: consumer flag disagrees "
+                "with source manifest schema"
+            )
+
+        if expected_consumer:
+            verify_consumer_manifest(
+                provider=provider,
+                release=release,
+                package_root=package_root,
+                source_manifest=source_manifest,
+            )
+
+            consumer_count += 1
+        else:
+            unexpected = (
+                package_root
+                / "consumer"
+                / "manifest.json"
+            )
+
+            if unexpected.exists():
+                fail(
+                    f"{provider}: schema-1 provider "
+                    "contains unexpected consumer manifest"
+                )
+
+    print(
+        f"[{number:02}/{len(records):02}] "
+        f"{provider}: PASS {archive_sha}"
+    )
+
+
+actual_assets = {
+    path.name
+    for path in ASSETS.iterdir()
+    if path.is_file()
+}
+
+if actual_assets != expected_assets:
+    fail(
+        "dist/assets does not match provider index\n"
+        f"extra={sorted(actual_assets - expected_assets)}\n"
+        f"missing={sorted(expected_assets - actual_assets)}"
+    )
+
+
+combined_path = DIST / "SHA256SUMS"
+
+if not combined_path.is_file():
+    fail(
+        "dist/SHA256SUMS missing"
+    )
+
+combined: dict[str, str] = {}
+
+for line in combined_path.read_text().splitlines():
+    if not line.strip():
+        continue
+
+    digest, archive_name = line.split(
+        "  ",
+        1,
+    )
+
+    if archive_name in combined:
+        fail(
+            f"duplicate combined checksum: {archive_name}"
+        )
+
+    combined[archive_name] = digest
+
+if len(combined) != len(records):
+    fail(
+        "combined SHA256SUMS count mismatch"
+    )
+
+for record in records:
+    if (
+        combined.get(record["archive"])
+        != record["archive_sha256"]
+    ):
+        fail(
+            f"combined checksum mismatch: "
+            f"{record['archive']}"
+        )
+
+
+print()
+print(
+    f"provider_count={len(records)}"
+)
+print(
+    f"consumer_manifest_count={consumer_count}"
+)
+print("archive_sha256=PASS")
+print("archive_sidecars=PASS")
+print("internal_sha256=PASS")
+print("release_identity=PASS")
+print("source_rebuild_identity=PASS")
+print("normalized_consumers=PASS")
+print("provider_catalog=PASS")
+print("asset_set_exact=PASS")
+print("TREEFORGE TOOLCHAIN VERIFY: PASS")

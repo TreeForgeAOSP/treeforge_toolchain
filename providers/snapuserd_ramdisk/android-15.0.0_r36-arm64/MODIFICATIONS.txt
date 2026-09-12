@@ -1,0 +1,6 @@
+TreeForge modifications relative to AOSP android-15.0.0_r36
+
+None.
+
+The bundled snapuserd_ramdisk executable is built from the stock
+android-15.0.0_r36 snapuserd_ramdisk module.

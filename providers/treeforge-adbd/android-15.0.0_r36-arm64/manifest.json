@@ -1,0 +1,23 @@
+{
+  "architecture": "arm64",
+  "canonical_payload": "rootfs/system/bin/treeforge-adbd",
+  "canonical_payload_sha256": "b8dd23393a68344e011bc20ed536f50ba07cfce9b91d8b7d391dbdd409004461",
+  "classification": "TREEFORGE_MODIFIED_AOSP_PROVIDER",
+  "distribution": "GITHUB_RELEASE_ASSET",
+  "family": "adb",
+  "kind": "runtime",
+  "name": "treeforge-adbd",
+  "platform": "android",
+  "release": "android-15.0.0_r36-arm64",
+  "release_tag": "treeforge-adbd/android-15.0.0_r36-1",
+  "repository": "TreeForgeDEV/treeforge_toolchain",
+  "schema": 1,
+  "source": {
+    "platform": "android",
+    "platform_release": "android-15.0.0_r36",
+    "project": "platform/packages/modules/adb",
+    "revision": "a877adddefdf011bfb5d4045919c6df3d3727ed3",
+    "source_path": "packages/modules/adb"
+  },
+  "source_rebuild_sha256": "0bb2c73bf35673b30ba987160417fb278b0224bd80ad7082d00b51b73fb8e7f2"
+}

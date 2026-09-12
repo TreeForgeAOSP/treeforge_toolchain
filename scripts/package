@@ -1,0 +1,1392 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import hashlib
+import json
+import os
+import re
+import shutil
+import stat
+import subprocess
+import sys
+from collections import defaultdict, deque
+from dataclasses import dataclass
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+ANDROID_RELEASE = "android-15.0.0_r36"
+RELEASE_REVISION = "1"
+REPOSITORY = "TreeForgeDEV/treeforge_toolchain"
+
+TREEFORGE_ROOT = Path(
+    os.environ.get(
+        "TREEFORGE_ROOT",
+        str(ROOT.parent / "treeforge"),
+    )
+).resolve()
+
+AOSP_SOURCE = Path(
+    os.environ.get(
+        "TREEFORGE_AOSP_SOURCE",
+        str(TREEFORGE_ROOT / "aosp"),
+    )
+).resolve()
+
+AOSP_HOST = ROOT / "out/build/aosp/linux-x86_64"
+AOSP_RUNTIME = ROOT / "out/build/aosp/arm64"
+
+TREEFORGE_HOST = ROOT / "out/build/treeforge/linux-x86_64"
+TREEFORGE_RUNTIME = ROOT / "out/build/treeforge/arm64"
+
+AOSP_PRODUCT = AOSP_RUNTIME / "target/product/module_arm64"
+TREEFORGE_PRODUCT = TREEFORGE_RUNTIME / "target/product/module_arm64"
+
+DIST = ROOT / "dist"
+STAGE = DIST / "stage"
+ASSETS = DIST / "assets"
+REPORTS = DIST / "reports"
+
+TOOL_BUILD_MATRIX = (
+    ROOT
+    / "manifests/android-15.0.0_r36/tool-build-matrix.json"
+)
+
+SOURCE_INVENTORY = ROOT / "GITHUB-SOURCE-INVENTORY.json"
+
+HOST_IMAGE_TOOL_LIBS = (
+    "libcrypto_utils.so",
+    "libext4_utils.so",
+    "liblog.so",
+    "liblp.so",
+    "liblpdump.so",
+    "libprotobuf-cpp-full.so",
+    "libsparse-host.so",
+    "libz-host.so",
+    "libbase.so",
+    "libc++.so",
+    "libcrypto-host.so",
+)
+
+
+@dataclass(frozen=True)
+class Provider:
+    provider_id: str
+    platform: str
+    source_line: str
+    kind: str
+    module: str
+    source_projects: tuple[str, ...]
+    binary_name: str | None = None
+    host_binary_name: str | None = None
+    comparison_name: str | None = None
+
+
+PROVIDERS = (
+    Provider(
+        "aosp-adb",
+        "linux-x86_64",
+        "aosp",
+        "host-single",
+        "adb",
+        ("packages/modules/adb",),
+        host_binary_name="adb",
+    ),
+    Provider(
+        "aosp-adbd",
+        "arm64",
+        "aosp",
+        "capex",
+        "com.android.adbd",
+        ("packages/modules/adb",),
+    ),
+    Provider(
+        "aosp-adbd-recovery",
+        "arm64",
+        "aosp",
+        "runtime",
+        "adbd.recovery",
+        ("packages/modules/adb",),
+        binary_name="adbd",
+    ),
+    Provider(
+        "aosp-fastboot",
+        "linux-x86_64",
+        "aosp",
+        "host-single",
+        "fastboot",
+        ("system/core",),
+        host_binary_name="fastboot",
+    ),
+    Provider(
+        "aosp-fastbootd",
+        "arm64",
+        "aosp",
+        "runtime",
+        "fastbootd",
+        ("system/core",),
+        binary_name="fastbootd",
+    ),
+
+    Provider(
+        "treeforge-adb",
+        "linux-x86_64",
+        "treeforge",
+        "host-single",
+        "adb",
+        ("packages/modules/adb",),
+        host_binary_name="adb",
+        comparison_name="adb",
+    ),
+    Provider(
+        "treeforge-adbd",
+        "arm64",
+        "treeforge",
+        "runtime",
+        "adbd.treeforge_recovery",
+        ("packages/modules/adb",),
+        binary_name="treeforge-adbd",
+    ),
+    Provider(
+        "treeforge-fastboot",
+        "linux-x86_64",
+        "treeforge",
+        "host-single",
+        "fastboot",
+        ("system/core",),
+        host_binary_name="fastboot",
+        comparison_name="fastboot",
+    ),
+    Provider(
+        "treeforge-fastbootd",
+        "arm64",
+        "treeforge",
+        "runtime",
+        "fastbootd",
+        ("system/core",),
+        binary_name="fastbootd",
+        comparison_name="fastbootd",
+    ),
+    Provider(
+        "treeforge-vabc-coordinator",
+        "arm64",
+        "treeforge",
+        "runtime",
+        "treeforge-vabc-coordinator",
+        ("system/core",),
+        binary_name="treeforge-vabc-coordinator",
+    ),
+
+    Provider(
+        "avbtool",
+        "linux-x86_64",
+        "treeforge",
+        "host-single",
+        "avbtool",
+        ("external/avb",),
+        host_binary_name="avbtool",
+        comparison_name="avbtool",
+    ),
+    Provider(
+        "mkdtimg",
+        "linux-x86_64",
+        "treeforge",
+        "host-single",
+        "mkdtimg",
+        ("system/libufdt",),
+        host_binary_name="mkdtimg",
+        comparison_name="mkdtimg",
+    ),
+    Provider(
+        "create_snapshot",
+        "linux-x86_64",
+        "treeforge",
+        "host-single",
+        "create_snapshot",
+        ("system/core",),
+        host_binary_name="create_snapshot",
+        comparison_name="create_snapshot",
+    ),
+    Provider(
+        "inspect_cow",
+        "linux-x86_64",
+        "treeforge",
+        "host-single",
+        "inspect_cow.treeforge",
+        ("system/core",),
+        host_binary_name="inspect_cow.treeforge",
+        comparison_name="inspect_cow",
+    ),
+    Provider(
+        "android-image-tools",
+        "linux-x86_64",
+        "treeforge",
+        "host-image-tools",
+        "android-image-tools",
+        (
+            "system/extras",
+            "system/core",
+            "system/tools/mkbootimg",
+            "external/f2fs-tools",
+        ),
+    ),
+    Provider(
+        "snapuserd_ramdisk",
+        "arm64",
+        "treeforge",
+        "runtime",
+        "snapuserd_ramdisk",
+        ("system/core",),
+        binary_name="snapuserd",
+    ),
+)
+
+
+def die(message: str) -> None:
+    print(f"ERROR: {message}", file=sys.stderr)
+    raise SystemExit(1)
+
+
+def run(
+    args: list[str],
+    *,
+    cwd: Path | None = None,
+    check: bool = True,
+    env: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        args,
+        cwd=cwd,
+        check=check,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=env,
+    )
+
+
+def sha256_file(path: Path) -> str:
+    h = hashlib.sha256()
+
+    with path.open("rb") as fh:
+        for block in iter(lambda: fh.read(1024 * 1024), b""):
+            h.update(block)
+
+    return h.hexdigest()
+
+
+def git_output(*args: str) -> str:
+    return run(
+        ["git", "-C", str(ROOT), *args]
+    ).stdout.strip()
+
+
+def require_file(path: Path, description: str) -> None:
+    if not path.is_file():
+        die(f"{description} missing: {path}")
+
+
+def require_dir(path: Path, description: str) -> None:
+    if not path.is_dir():
+        die(f"{description} missing: {path}")
+
+
+def copy_file(src: Path, dst: Path) -> None:
+    require_file(src, "source file")
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(src, dst)
+
+
+def json_write(path: Path, value: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    path.write_text(
+        json.dumps(
+            value,
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n"
+    )
+
+
+def asset_stem(provider: Provider) -> str:
+    return (
+        f"{provider.provider_id}-"
+        f"{ANDROID_RELEASE}-"
+        f"{provider.platform}"
+    )
+
+
+def release_tag(provider: Provider) -> str:
+    return (
+        f"{provider.provider_id}/"
+        f"{ANDROID_RELEASE}-{RELEASE_REVISION}"
+    )
+
+
+def host_root(provider: Provider) -> Path:
+    if provider.source_line == "aosp":
+        return AOSP_HOST
+
+    return TREEFORGE_HOST
+
+
+def runtime_root(provider: Provider) -> Path:
+    if provider.source_line == "aosp":
+        return AOSP_RUNTIME
+
+    return TREEFORGE_RUNTIME
+
+
+def product_root(provider: Provider) -> Path:
+    if provider.source_line == "aosp":
+        return AOSP_PRODUCT
+
+    return TREEFORGE_PRODUCT
+
+
+def host_binary(root: Path, name: str) -> Path:
+    direct = root / "host/linux-x86/bin" / name
+
+    if direct.is_file():
+        return direct
+
+    candidates = sorted(
+        (
+            path
+            for path in root.rglob(name)
+            if path.is_file()
+        ),
+        key=lambda p: (
+            0 if "/host/linux-x86/bin/" in str(p) else 1,
+            len(str(p)),
+            str(p),
+        ),
+    )
+
+    if not candidates:
+        die(f"host artifact not found: {name} in {root}")
+
+    return candidates[0]
+
+
+def build_file_index(root: Path) -> dict[str, list[Path]]:
+    result: dict[str, list[Path]] = defaultdict(list)
+
+    for base, _, files in os.walk(root):
+        base_path = Path(base)
+
+        for filename in files:
+            result[filename].append(base_path / filename)
+
+    return result
+
+
+_RUNTIME_INDEX: dict[Path, dict[str, list[Path]]] = {}
+
+
+def runtime_index(root: Path) -> dict[str, list[Path]]:
+    cached = _RUNTIME_INDEX.get(root)
+
+    if cached is None:
+        cached = build_file_index(root)
+        _RUNTIME_INDEX[root] = cached
+
+    return cached
+
+
+def runtime_candidate_rank(
+    product: Path,
+    path: Path,
+) -> tuple[int, int, str]:
+    rel = str(path.relative_to(product))
+
+    preferred = (
+        "recovery/root/system/bin/",
+        "recovery/root/system/lib64/",
+        "recovery/root/vendor/lib64/",
+        "recovery/root/system_ext/lib64/",
+        "recovery/root/product/lib64/",
+        "system/bin/",
+        "system/lib64/",
+        "vendor/lib64/",
+        "system_ext/lib64/",
+        "product/lib64/",
+    )
+
+    for index, prefix in enumerate(preferred):
+        if rel.startswith(prefix):
+            return (index, len(rel), rel)
+
+    if "/obj/" in f"/{rel}/":
+        return (100, len(rel), rel)
+
+    if "/symbols/" in f"/{rel}/":
+        return (101, len(rel), rel)
+
+    return (50, len(rel), rel)
+
+
+def runtime_file(
+    product: Path,
+    name: str,
+) -> Path:
+    candidates = runtime_index(product).get(name, [])
+
+    candidates = [
+        p
+        for p in candidates
+        if p.is_file()
+    ]
+
+    if not candidates:
+        die(f"runtime artifact not found: {name} in {product}")
+
+    return sorted(
+        candidates,
+        key=lambda p: runtime_candidate_rank(product, p),
+    )[0]
+
+
+def runtime_destination(
+    product: Path,
+    source: Path,
+) -> Path:
+    rel = source.relative_to(product)
+    parts = rel.parts
+
+    if len(parts) >= 3 and parts[0:2] == ("recovery", "root"):
+        return Path(*parts[2:])
+
+    for partition in (
+        "system",
+        "vendor",
+        "system_ext",
+        "product",
+        "odm",
+    ):
+        if parts and parts[0] == partition:
+            return rel
+
+    # Intermediates should not normally reach here. Put them into
+    # system/lib64 only as a last-resort library location.
+    if source.name.endswith(".so"):
+        return Path("system/lib64") / source.name
+
+    return Path("system/bin") / source.name
+
+
+def readelf_needed(path: Path) -> tuple[str, ...]:
+    proc = run(
+        ["readelf", "-d", str(path)],
+        check=False,
+    )
+
+    if proc.returncode != 0:
+        return ()
+
+    result = []
+
+    for line in proc.stdout.splitlines():
+        match = re.search(
+            r"Shared library: \[(.+?)\]",
+            line,
+        )
+
+        if match:
+            result.append(match.group(1))
+
+    return tuple(result)
+
+
+def readelf_interpreter(path: Path) -> str | None:
+    proc = run(
+        ["readelf", "-l", str(path)],
+        check=False,
+    )
+
+    if proc.returncode != 0:
+        return None
+
+    for line in proc.stdout.splitlines():
+        match = re.search(
+            r"Requesting program interpreter: (.+?)\]",
+            line,
+        )
+
+        if match:
+            return match.group(1)
+
+    return None
+
+
+def add_runtime_closure(
+    product: Path,
+    entry_binary: Path,
+    payload: Path,
+) -> list[Path]:
+    copied_sources: list[Path] = []
+
+    queue: deque[Path] = deque([entry_binary])
+    seen: set[Path] = set()
+
+    while queue:
+        source = queue.popleft()
+
+        if source in seen:
+            continue
+
+        seen.add(source)
+
+        destination_rel = runtime_destination(
+            product,
+            source,
+        )
+
+        copy_file(
+            source,
+            payload / "rootfs" / destination_rel,
+        )
+
+        copied_sources.append(source)
+
+        for needed in readelf_needed(source):
+            candidate = runtime_file(product, needed)
+
+            if candidate not in seen:
+                queue.append(candidate)
+
+        interpreter = readelf_interpreter(source)
+
+        if interpreter:
+            interpreter_name = Path(interpreter).name
+
+            try:
+                candidate = runtime_file(
+                    product,
+                    interpreter_name,
+                )
+            except SystemExit:
+                candidate = None
+
+            if candidate is not None and candidate not in seen:
+                queue.append(candidate)
+
+    return copied_sources
+
+
+def find_capex(product_output: Path) -> Path:
+    for name in (
+        "com.android.adbd.capex",
+        "com.android.adbd.apex",
+    ):
+        matches = sorted(
+            (
+                p
+                for p in product_output.rglob(name)
+                if p.is_file()
+            ),
+            key=lambda p: (
+                0
+                if "/target/product/module_arm64/system/apex/"
+                in str(p)
+                else 1,
+                len(str(p)),
+                str(p),
+            ),
+        )
+
+        if matches:
+            return matches[0]
+
+    die(
+        "neither com.android.adbd.capex nor "
+        "com.android.adbd.apex was found"
+    )
+
+
+def metadata_root(provider: Provider) -> Path | None:
+    candidate = (
+        ROOT
+        / "providers"
+        / provider.provider_id
+        / f"{ANDROID_RELEASE}-{provider.platform}"
+    )
+
+    if candidate.is_dir():
+        return candidate
+
+    parent = ROOT / "providers" / provider.provider_id
+
+    if not parent.is_dir():
+        return None
+
+    candidates = sorted(
+        p
+        for p in parent.iterdir()
+        if (
+            p.is_dir()
+            and p.name.startswith(ANDROID_RELEASE)
+        )
+    )
+
+    if len(candidates) == 1:
+        return candidates[0]
+
+    return None
+
+
+def copy_metadata(
+    provider: Provider,
+    package: Path,
+) -> None:
+    source = metadata_root(provider)
+
+    if source is not None:
+        for dirname in (
+            "legal",
+            "provenance",
+            "PATCHES",
+        ):
+            src = source / dirname
+
+            if src.is_dir():
+                shutil.copytree(
+                    src,
+                    package / dirname,
+                    dirs_exist_ok=True,
+                )
+
+        for filename in (
+            "MODIFICATIONS.txt",
+            "PROVIDER-SOURCE.txt",
+            "README.md",
+        ):
+            src = source / filename
+
+            if src.is_file():
+                copy_file(src, package / filename)
+
+    # VABC's canonical reproducible delta is retained centrally.
+    if provider.provider_id == "treeforge-vabc-coordinator":
+        patch = (
+            ROOT
+            / "tools/vabc/patches/"
+            / "treeforge-vabc-recovery.patch"
+        )
+
+        if patch.is_file():
+            copy_file(
+                patch,
+                package
+                / "PATCHES/treeforge-vabc-recovery.patch",
+            )
+
+    ensure_legal(provider, package)
+
+
+def ensure_legal(
+    provider: Provider,
+    package: Path,
+) -> None:
+    legal = package / "legal"
+    legal.mkdir(parents=True, exist_ok=True)
+
+    upstream_root = legal / "upstream"
+
+    recognized_names = {
+        "LICENSE",
+        "LICENSE.txt",
+        "LICENSE.md",
+        "NOTICE",
+        "NOTICE.txt",
+        "NOTICE.md",
+        "COPYING",
+        "COPYING.txt",
+        "COPYING.md",
+    }
+
+    copied_records: list[dict[str, object]] = []
+    upstream_count = 0
+
+    for project in provider.source_projects:
+        project_root = AOSP_SOURCE / project
+
+        if not project_root.is_dir():
+            die(
+                f"{provider.provider_id}: "
+                f"source project missing: {project_root}"
+            )
+
+        candidates: list[Path] = []
+
+        for source in project_root.rglob("*"):
+            if not source.is_file():
+                continue
+
+            name = source.name
+
+            if (
+                name in recognized_names
+                or name.startswith("MODULE_LICENSE_")
+            ):
+                candidates.append(source)
+
+        for source in sorted(
+            candidates,
+            key=lambda p: str(
+                p.relative_to(project_root)
+            ),
+        ):
+            relative = source.relative_to(project_root)
+
+            destination = (
+                upstream_root
+                / project
+                / relative
+            )
+
+            copy_file(source, destination)
+
+            copied_records.append(
+                {
+                    "source_project": project,
+                    "source_path": str(
+                        source.relative_to(AOSP_SOURCE)
+                    ),
+                    "package_path": str(
+                        destination.relative_to(package)
+                    ),
+                    "bytes": source.stat().st_size,
+                    "sha256": sha256_file(source),
+                }
+            )
+
+            upstream_count += 1
+
+    # TreeForge's repository license is additional project-level
+    # distribution material. It never substitutes for upstream
+    # licensing.
+    treeforge_license = ROOT / "LICENSE"
+
+    if treeforge_license.is_file():
+        destination = (
+            legal / "treeforge" / "LICENSE"
+        )
+
+        copy_file(
+            treeforge_license,
+            destination,
+        )
+
+        copied_records.append(
+            {
+                "source_project": "treeforge_toolchain",
+                "source_path": "LICENSE",
+                "package_path": str(
+                    destination.relative_to(package)
+                ),
+                "bytes": treeforge_license.stat().st_size,
+                "sha256": sha256_file(treeforge_license),
+            }
+        )
+
+    # Existing provider-specific legal files copied by
+    # copy_metadata() are intentionally retained alongside these
+    # upstream records.
+    provider_legal_files = [
+        path
+        for path in legal.rglob("*")
+        if (
+            path.is_file()
+            and "upstream" not in path.relative_to(legal).parts
+            and path.name != "LEGAL-SOURCES.json"
+        )
+    ]
+
+    if upstream_count == 0 and not provider_legal_files:
+        die(
+            f"{provider.provider_id}: no legal material "
+            "could be resolved from declared source projects "
+            f"{provider.source_projects}"
+        )
+
+    json_write(
+        legal / "LEGAL-SOURCES.json",
+        {
+            "schema": 1,
+            "provider": provider.provider_id,
+            "android_release": ANDROID_RELEASE,
+            "source_projects": list(
+                provider.source_projects
+            ),
+            "upstream_legal_files": upstream_count,
+            "records": copied_records,
+        },
+    )
+
+def package_payload(
+    provider: Provider,
+    payload: Path,
+) -> list[Path]:
+    payload.mkdir(parents=True, exist_ok=True)
+
+    source_files: list[Path] = []
+
+    if provider.kind == "host-single":
+        assert provider.host_binary_name is not None
+
+        source = host_binary(
+            host_root(provider),
+            provider.host_binary_name,
+        )
+
+        copy_file(
+            source,
+            payload / "bin" / source.name,
+        )
+
+        source_files.append(source)
+
+    elif provider.kind == "host-image-tools":
+        root = host_root(provider)
+
+        for name in (
+            "lpdump",
+            "lpunpack",
+            "simg2img",
+            "mkbootimg",
+            "unpack_bootimg",
+            "lpmake",
+            "make_f2fs",
+        ):
+            source = host_binary(root, name)
+
+            copy_file(
+                source,
+                payload / "bin" / name,
+            )
+
+            source_files.append(source)
+
+        for name in HOST_IMAGE_TOOL_LIBS:
+            direct = root / "host/linux-x86/lib64" / name
+
+            if not direct.is_file():
+                matches = sorted(
+                    p
+                    for p in root.rglob(name)
+                    if p.is_file()
+                )
+
+                if not matches:
+                    die(
+                        "android-image-tools runtime "
+                        f"library missing: {name}"
+                    )
+
+                direct = matches[0]
+
+            copy_file(
+                direct,
+                payload / "lib64" / name,
+            )
+
+            source_files.append(direct)
+
+    elif provider.kind == "capex":
+        source = find_capex(runtime_root(provider))
+
+        copy_file(
+            source,
+            payload / "apex" / source.name,
+        )
+
+        source_files.append(source)
+
+    elif provider.kind == "runtime":
+        assert provider.binary_name is not None
+
+        product = product_root(provider)
+
+        source = runtime_file(
+            product,
+            provider.binary_name,
+        )
+
+        source_files.extend(
+            add_runtime_closure(
+                product,
+                source,
+                payload,
+            )
+        )
+
+    else:
+        die(
+            f"unknown provider kind: {provider.kind}"
+        )
+
+    return source_files
+
+
+def comparison(
+    provider: Provider,
+    source_files: list[Path],
+) -> dict[str, object]:
+    if not provider.comparison_name:
+        return {
+            "status": "NOT_APPLICABLE",
+        }
+
+    if provider.platform == "linux-x86_64":
+        reference = host_binary(
+            AOSP_HOST,
+            provider.comparison_name,
+        )
+
+        operational = source_files[0]
+
+    else:
+        reference = runtime_file(
+            AOSP_PRODUCT,
+            provider.comparison_name,
+        )
+
+        operational = source_files[0]
+
+    aosp_sha = sha256_file(reference)
+    operational_sha = sha256_file(operational)
+
+    return {
+        "status": (
+            "BYTE_IDENTICAL"
+            if aosp_sha == operational_sha
+            else "DIFFERENT"
+        ),
+        "aosp_reference": str(reference),
+        "aosp_sha256": aosp_sha,
+        "operational": str(operational),
+        "operational_sha256": operational_sha,
+    }
+
+
+def payload_records(
+    payload: Path,
+) -> list[dict[str, object]]:
+    records: list[dict[str, object]] = []
+
+    for path in sorted(
+        p
+        for p in payload.rglob("*")
+        if p.is_file()
+    ):
+        records.append(
+            {
+                "path": str(path.relative_to(payload)),
+                "bytes": path.stat().st_size,
+                "mode": oct(
+                    stat.S_IMODE(path.stat().st_mode)
+                ),
+                "sha256": sha256_file(path),
+            }
+        )
+
+    return records
+
+
+def source_rebuild_record(
+    provider: Provider,
+    git_commit: str,
+    source_epoch: int,
+) -> dict[str, object]:
+    return {
+        "schema": 1,
+        "provider": provider.provider_id,
+        "android_release": ANDROID_RELEASE,
+        "repository": REPOSITORY,
+        "git_commit": git_commit,
+        "source_date_epoch": source_epoch,
+        "source_line": provider.source_line,
+        "source_projects": list(
+            provider.source_projects
+        ),
+        "build_module": provider.module,
+        "build_script": "scripts/build",
+        "package_script": "scripts/package",
+        "build_matrix": (
+            "manifests/android-15.0.0_r36/"
+            "tool-build-matrix.json"
+        ),
+        "source_inventory": (
+            "GITHUB-SOURCE-INVENTORY.json"
+        ),
+        "release_tag": release_tag(provider),
+    }
+
+
+def write_sha256s(package: Path) -> None:
+    lines = []
+
+    for path in sorted(
+        p
+        for p in package.rglob("*")
+        if (
+            p.is_file()
+            and p.name != "SHA256SUMS"
+        )
+    ):
+        lines.append(
+            f"{sha256_file(path)}  "
+            f"{path.relative_to(package)}"
+        )
+
+    (package / "SHA256SUMS").write_text(
+        "\n".join(lines) + "\n"
+    )
+
+
+def verify_sha256s(package: Path) -> None:
+    proc = subprocess.run(
+        ["sha256sum", "-c", "SHA256SUMS"],
+        cwd=package,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+
+    if proc.returncode != 0:
+        print(proc.stdout)
+        die(
+            f"{package.name}: internal SHA256 "
+            "verification failed"
+        )
+
+
+def make_archive(
+    package: Path,
+    provider: Provider,
+    source_epoch: int,
+) -> tuple[Path, str]:
+    archive = ASSETS / f"{package.name}.tar.xz"
+
+    env = os.environ.copy()
+
+    # Deterministic single-threaded xz stream.
+    env["XZ_OPT"] = "-T1 -6"
+
+    subprocess.run(
+        [
+            "tar",
+            "--sort=name",
+            f"--mtime=@{source_epoch}",
+            "--owner=0",
+            "--group=0",
+            "--numeric-owner",
+            "-C",
+            str(STAGE),
+            "-cJf",
+            str(archive),
+            package.name,
+        ],
+        check=True,
+        env=env,
+    )
+
+    subprocess.run(
+        ["tar", "-tJf", str(archive)],
+        check=True,
+        stdout=subprocess.DEVNULL,
+    )
+
+    digest = sha256_file(archive)
+
+    (ASSETS / f"{archive.name}.sha256").write_text(
+        f"{digest}  {archive.name}\n"
+    )
+
+    return archive, digest
+
+
+def main() -> int:
+    print(
+        "=== TREEFORGE PROVIDER PACKAGING ==="
+    )
+    print()
+
+    for path, description in (
+        (AOSP_HOST, "AOSP host build"),
+        (AOSP_RUNTIME, "AOSP runtime build"),
+        (TREEFORGE_HOST, "TreeForge host build"),
+        (TREEFORGE_RUNTIME, "TreeForge runtime build"),
+    ):
+        require_dir(path, description)
+
+    require_file(
+        TOOL_BUILD_MATRIX,
+        "tool build matrix",
+    )
+
+    require_file(
+        SOURCE_INVENTORY,
+        "source inventory",
+    )
+
+    if shutil.which("readelf") is None:
+        die("readelf is required")
+
+    if shutil.which("tar") is None:
+        die("GNU tar is required")
+
+    git_commit = git_output("rev-parse", "HEAD")
+
+    source_epoch_text = git_output(
+        "show",
+        "-s",
+        "--format=%ct",
+        "HEAD",
+    )
+
+    source_epoch = int(source_epoch_text)
+
+    print(f"android_release={ANDROID_RELEASE}")
+    print(f"git_commit={git_commit}")
+    print(f"source_date_epoch={source_epoch}")
+    print(f"provider_count={len(PROVIDERS)}")
+    print()
+
+    if DIST.exists():
+        shutil.rmtree(DIST)
+
+    STAGE.mkdir(parents=True)
+    ASSETS.mkdir(parents=True)
+    REPORTS.mkdir(parents=True)
+
+    index_records = []
+
+    for number, provider in enumerate(
+        PROVIDERS,
+        start=1,
+    ):
+        print(
+            f"[{number:02d}/{len(PROVIDERS):02d}] "
+            f"{provider.provider_id}"
+        )
+
+        stem = asset_stem(provider)
+        package = STAGE / stem
+        payload = package / "payload"
+
+        package.mkdir(parents=True)
+
+        source_files = package_payload(
+            provider,
+            payload,
+        )
+
+        copy_metadata(provider, package)
+
+        comparison_record = comparison(
+            provider,
+            source_files,
+        )
+
+        payload_info = payload_records(payload)
+
+        if not payload_info:
+            die(
+                f"{provider.provider_id}: "
+                "package payload is empty"
+            )
+
+        source_record = source_rebuild_record(
+            provider,
+            git_commit,
+            source_epoch,
+        )
+
+        json_write(
+            package / "SOURCE-REBUILD.json",
+            source_record,
+        )
+
+        manifest = {
+            "schema": 1,
+            "provider": provider.provider_id,
+            "android_release": ANDROID_RELEASE,
+            "platform": provider.platform,
+            "source_line": provider.source_line,
+            "build_module": provider.module,
+            "repository": REPOSITORY,
+            "git_commit": git_commit,
+            "release_tag": release_tag(provider),
+            "publish_state": "UNPUBLISHED",
+            "payload_files": payload_info,
+            "aosp_comparison": comparison_record,
+        }
+
+        json_write(
+            package / "manifest.json",
+            manifest,
+        )
+
+        json_write(
+            package / "RELEASE.json",
+            {
+                "schema": 1,
+                "provider": provider.provider_id,
+                "release_tag": release_tag(provider),
+                "asset_name": f"{stem}.tar.xz",
+                "repository": REPOSITORY,
+                "git_commit": git_commit,
+                "publish_state": "UNPUBLISHED",
+            },
+        )
+
+        write_sha256s(package)
+        verify_sha256s(package)
+
+        archive, archive_sha = make_archive(
+            package,
+            provider,
+            source_epoch,
+        )
+
+        index_records.append(
+            {
+                "provider": provider.provider_id,
+                "platform": provider.platform,
+                "source_line": provider.source_line,
+                "release_tag": release_tag(provider),
+                "archive": archive.name,
+                "archive_bytes": archive.stat().st_size,
+                "archive_sha256": archive_sha,
+                "payload_file_count": len(payload_info),
+            }
+        )
+
+        print(
+            f"  payload_files={len(payload_info)}"
+        )
+        print(
+            f"  archive_bytes={archive.stat().st_size}"
+        )
+        print(
+            f"  sha256={archive_sha}"
+        )
+        print(
+            f"  tag={release_tag(provider)}"
+        )
+        print()
+
+    if len(index_records) != 16:
+        die(
+            "expected 16 provider packages, "
+            f"got {len(index_records)}"
+        )
+
+    index = {
+        "schema": 1,
+        "android_release": ANDROID_RELEASE,
+        "repository": REPOSITORY,
+        "git_commit": git_commit,
+        "source_date_epoch": source_epoch,
+        "provider_count": len(index_records),
+        "providers": index_records,
+    }
+
+    json_write(
+        DIST / "index.json",
+        index,
+    )
+
+    combined_lines = []
+
+    for archive in sorted(
+        ASSETS.glob("*.tar.xz")
+    ):
+        combined_lines.append(
+            f"{sha256_file(archive)}  "
+            f"{archive.name}"
+        )
+
+    (DIST / "SHA256SUMS").write_text(
+        "\n".join(combined_lines) + "\n"
+    )
+
+    # Human-readable report.
+    report_lines = [
+        "TreeForge Provider Package Report",
+        "",
+        f"Android release: {ANDROID_RELEASE}",
+        f"Git commit: {git_commit}",
+        f"Providers: {len(index_records)}",
+        "",
+    ]
+
+    for record in index_records:
+        report_lines.extend(
+            (
+                record["provider"],
+                f"  tag: {record['release_tag']}",
+                f"  asset: {record['archive']}",
+                (
+                    "  sha256: "
+                    f"{record['archive_sha256']}"
+                ),
+                (
+                    "  payload files: "
+                    f"{record['payload_file_count']}"
+                ),
+                (
+                    "  bytes: "
+                    f"{record['archive_bytes']}"
+                ),
+                "",
+            )
+        )
+
+    (
+        REPORTS / "provider-packages.txt"
+    ).write_text(
+        "\n".join(report_lines)
+    )
+
+    print("=" * 60)
+    print("PACKAGING SUMMARY")
+    print("=" * 60)
+    print()
+
+    for record in index_records:
+        print(
+            f"{record['provider']:30} "
+            f"{record['archive_bytes']:12} "
+            f"{record['archive_sha256']}"
+        )
+
+    print()
+    print(f"provider_packages={len(index_records)}")
+    print(f"dist={DIST}")
+    print(
+        f"combined_sha256={DIST / 'SHA256SUMS'}"
+    )
+    print("build_invoked=NO")
+    print("commit_created=NO")
+    print("push_performed=NO")
+    print("release_created=NO")
+    print()
+    print("TREEFORGE PROVIDER PACKAGING: PASS")
+
+    return 0
+
+
+if __name__ == "__main__":
+    _treeforge_package_result = main()
+    from package_consumer import (
+        finalize_consumer_manifests,
+    )
+    finalize_consumer_manifests()
+    raise SystemExit(_treeforge_package_result)

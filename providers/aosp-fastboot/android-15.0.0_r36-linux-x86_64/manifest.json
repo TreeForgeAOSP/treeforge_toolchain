@@ -12,28 +12,96 @@
   ],
   "legal_files": [
     {
+      "path": "legal/LEGAL-SOURCES.json",
+      "sha256": "719198f5abb276ec770f1782088c54d899fc1f007c7d13733e912de5d651c796"
+    },
+    {
       "path": "legal/NOTICE.txt",
       "sha256": "258a51001a29780bcd4efc9afd7b65532238f13e51e065c7026eb29becb104fb"
+    },
+    {
+      "path": "legal/upstream/system/core/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "legal/upstream/system/core/debuggerd/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "legal/upstream/system/core/fastboot/LICENSE",
+      "sha256": "1bc6c8aff995afb8905dce226367c3e564eb68e4969bfe491229b8b50f19ebe1"
+    },
+    {
+      "path": "legal/upstream/system/core/fs_mgr/NOTICE",
+      "sha256": "79f4e3e40e233ecf37271aec00da77235f6528054d057208460a33f44848b23a"
+    },
+    {
+      "path": "legal/upstream/system/core/init/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "legal/upstream/system/core/init/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a"
+    },
+    {
+      "path": "legal/upstream/system/core/libcutils/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "legal/upstream/system/core/libcutils/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a"
+    },
+    {
+      "path": "legal/upstream/system/core/libgrallocusage/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "legal/upstream/system/core/libgrallocusage/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a"
+    },
+    {
+      "path": "legal/upstream/system/core/libkeyutils/NOTICE",
+      "sha256": "511ce23b36ca7dd3858570d8ee3054ceed18e12d284f96661d030a82590a5954"
+    },
+    {
+      "path": "legal/upstream/system/core/libnetutils/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a"
+    },
+    {
+      "path": "legal/upstream/system/core/libsync/NOTICE",
+      "sha256": "efcb3b0d1a6686c84546d85d1ad53ae01b0535443972c1f33eb248ae24b8357d"
+    },
+    {
+      "path": "legal/upstream/system/core/libutils/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "legal/upstream/system/core/libutils/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a"
+    },
+    {
+      "path": "legal/upstream/system/core/run-as/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a"
+    },
+    {
+      "path": "legal/upstream/system/core/toolbox/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "legal/upstream/system/core/toolbox/NOTICE",
+      "sha256": "18506019bb1f7624acda78bb7122784c74dc3551d137df51e485818dd06c4c55"
     }
   ],
   "name": "aosp-fastboot",
   "platform": "linux",
   "provenance_files": [
     {
-      "path": "provenance/PROVENANCE.json",
-      "sha256": "f74fcc2bbafb3f05f483e0de6b3541c4e9b133ac64cf3c935ade4a822d16d642"
-    },
-    {
       "path": "provenance/MODIFICATIONS.txt",
       "sha256": "11267c7810c8d2fcb0b78be57d28c80c0ed659d48e54be67d08ba40bfdf15dd6"
     },
     {
-      "path": "SOURCE/SOURCE-SHARE.json",
-      "sha256": "4594166f62d4f2289425247f8dce59a4fd034a4a4c47ae39d6573987d517873f"
-    },
-    {
-      "path": "SOURCE/SOURCE-SHARE.txt",
-      "sha256": "8d4c214a5fce6eb9e7d98f1af8f24e8b267f3dcff45a8dfa1179e975d954fce1"
+      "path": "provenance/PROVENANCE.json",
+      "sha256": "f74fcc2bbafb3f05f483e0de6b3541c4e9b133ac64cf3c935ade4a822d16d642"
     }
   ],
   "provider_sources": [

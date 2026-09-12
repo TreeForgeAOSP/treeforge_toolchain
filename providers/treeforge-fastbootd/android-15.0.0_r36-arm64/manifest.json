@@ -1,0 +1,23 @@
+{
+  "architecture": "arm64",
+  "canonical_payload": "rootfs/system/bin/fastbootd",
+  "canonical_payload_sha256": "f47842073e7888ac374c0071c192f6a81327f37179e726f9f899d64a392a5b8d",
+  "classification": "TREEFORGE_MODIFIED_AOSP_PROVIDER",
+  "distribution": "GITHUB_RELEASE_ASSET",
+  "family": "fastboot",
+  "kind": "runtime",
+  "name": "treeforge-fastbootd",
+  "platform": "android",
+  "release": "android-15.0.0_r36-arm64",
+  "release_tag": "treeforge-fastbootd/android-15.0.0_r36-1",
+  "repository": "TreeForgeDEV/treeforge_toolchain",
+  "schema": 1,
+  "source": {
+    "platform": "android",
+    "platform_release": "android-15.0.0_r36",
+    "project": "platform/system/core",
+    "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+    "source_path": "system/core"
+  },
+  "source_rebuild_sha256": "8c246132758ccafa38b1893e8e33003aef6870081473252fadeffc5ace771e9e"
+}

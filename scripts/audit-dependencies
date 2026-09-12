@@ -1,0 +1,923 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import json
+import re
+import shutil
+import subprocess
+import os
+from collections import defaultdict
+from pathlib import Path
+
+
+SCRIPT_ROOT = Path(
+    __file__
+).resolve().parents[1]
+
+TOOLCHAIN = Path(
+    os.environ.get(
+        "TREEFORGE_TOOLCHAIN_ROOT",
+        str(SCRIPT_ROOT),
+    )
+).resolve()
+
+WORKSPACE = TOOLCHAIN.parent
+
+TREEFORGE = Path(
+    os.environ.get(
+        "TREEFORGE_ROOT",
+        str(WORKSPACE / "treeforge"),
+    )
+).resolve()
+
+TREEFORGE_AOSP = Path(
+    os.environ.get(
+        "TREEFORGE_AOSP_SOURCE",
+        str(TREEFORGE / "aosp"),
+    )
+).resolve()
+
+KERNEL = Path(
+    os.environ.get(
+        "TREEFORGE_KERNEL_ROOT",
+        str(
+            WORKSPACE
+            / "kernel"
+            / "treeforge_kernel"
+        ),
+    )
+).resolve()
+
+
+# ============================================================
+# OS-managed host commands.
+#
+# These belong to TreeForge setup / doctor, selected according
+# to User / Maintainer / Developer requirements.
+# ============================================================
+
+OS_TOOLS = {
+    "awk",
+    "bash",
+    "bc",
+    "bison",
+    "bzip2",
+    "cat",
+    "chmod",
+    "cmake",
+    "cmp",
+    "cp",
+    "curl",
+    "cut",
+    "date",
+    "dd",
+    "diff",
+    "dirname",
+    "du",
+    "echo",
+    "expr",
+    "file",
+    "find",
+    "flex",
+    "gcc",
+    "git",
+    "grep",
+    "gzip",
+    "head",
+    "hostname",
+    "id",
+    "install",
+    "jq",
+    "ld.lld",
+    "m4",
+    "make",
+    "mkdir",
+    "mktemp",
+    "mv",
+    "ninja",
+    "nproc",
+    "od",
+    "openssl",
+    "paste",
+    "patch",
+    "pgrep",
+    "pkill",
+    "ps",
+    "pwd",
+    "python3",
+    "readelf",
+    "readlink",
+    "realpath",
+    "rm",
+    "rsync",
+    "sed",
+    "sha1sum",
+    "sha256sum",
+    "sort",
+    "stat",
+    "tail",
+    "tar",
+    "tee",
+    "touch",
+    "tr",
+    "unzip",
+    "wc",
+    "wget",
+    "which",
+    "xargs",
+    "xz",
+    "xzcat",
+    "zip",
+
+    # Explicitly OS-managed filesystem inspection tools.
+    "debugfs",
+    "dumpe2fs",
+    "dump.erofs",
+    "fsck.erofs",
+}
+
+
+# ============================================================
+# Specialized Android / kernel commands.
+#
+# If TreeForge or the standalone kernel consumes these, they
+# must ultimately be supplied by treeforge_toolchain.
+# ============================================================
+
+SPECIALIZED_TOOLS = {
+    "adb",
+    "adbd",
+    "avbtool",
+    "build_image",
+    "build_super_image",
+    "certify_bootimg",
+    "create_snapshot",
+    "depmod",
+    "dtc",
+    "e2fsck",
+    "e2fsdroid",
+    "fastboot",
+    "fastbootd",
+    "img2simg",
+    "inspect_cow",
+    "lpdump",
+    "lpmake",
+    "lpunpack",
+    "lz4",
+    "make_f2fs",
+    "mkbootfs",
+    "mkbootimg",
+    "mkdtboimg",
+    "mkdtboimg.py",
+    "mkdtimg",
+    "mke2fs",
+    "mkfs.erofs",
+    "mkuserimg_mke2fs",
+    "pahole",
+    "simg2img",
+    "sload_f2fs",
+    "snapuserd_ramdisk",
+    "soong_zip",
+    "stg",
+    "stgdiff",
+    "stginfo",
+    "swig",
+    "treeforge-vabc-coordinator",
+    "tune2fs",
+    "ufdt_apply_overlay",
+    "unpack_bootimg",
+}
+
+
+# ============================================================
+# Large provider families used by the kernel.
+#
+# We look for source references TO these paths, but NEVER scan
+# the prebuilt payload directories themselves.
+# ============================================================
+
+PROVIDER_FAMILY_ALIASES = {
+    "kernel-build-tools": (
+        "prebuilts/kernel-build-tools",
+    ),
+    "android-build-tools": (
+        "prebuilts/build-tools",
+    ),
+    "kernel-clang": (
+        "prebuilts/clang/host/linux-x86",
+        "clang-r487747c",
+    ),
+    "kernel-bazel": (
+        "prebuilts/bazel",
+        "tools/bazel",
+    ),
+    "kernel-jdk11": (
+        "prebuilts/jdk/jdk11",
+    ),
+    "kernel-ndk-r23": (
+        "prebuilts/ndk-r23",
+    ),
+    "kernel-gcc-host": (
+        "prebuilts/gcc/linux-x86",
+    ),
+}
+
+
+# ============================================================
+# Existing TreeForge toolchain ownership.
+# ============================================================
+
+CURRENT_OWNERS = {
+    "adb": "treeforge-adb/aosp-adb",
+    "adbd": (
+        "treeforge-adbd/"
+        "aosp-adbd/"
+        "aosp-adbd-recovery"
+    ),
+    "avbtool": "avbtool",
+    "create_snapshot": "create_snapshot",
+    "fastboot": (
+        "treeforge-fastboot/"
+        "aosp-fastboot"
+    ),
+    "fastbootd": (
+        "treeforge-fastbootd/"
+        "aosp-fastbootd"
+    ),
+    "inspect_cow": "inspect_cow",
+    "lpdump": "android-image-tools",
+    "lpunpack": "android-image-tools",
+    "mkbootimg": "android-image-tools",
+    "mkdtimg": "mkdtimg",
+    "simg2img": "android-image-tools",
+    "snapuserd_ramdisk": "snapuserd_ramdisk",
+    "treeforge-vabc-coordinator": (
+        "treeforge-vabc-coordinator"
+    ),
+    "unpack_bootimg": "android-image-tools",
+}
+
+
+# ============================================================
+# ONLY these three logical surfaces are scanned.
+#
+# IMPORTANT:
+# TreeForge's nested AOSP checkout is explicitly removed from
+# traversal below.
+# ============================================================
+
+ROOTS = {
+    "treeforge": TREEFORGE,
+    "toolchain": TOOLCHAIN,
+}
+
+if KERNEL.is_dir():
+    ROOTS["kernel"] = KERNEL
+
+
+COMMON_EXCLUDE_DIRS = (
+    ".git",
+    ".repo",
+    ".venv",
+    ".smoke",
+    "__pycache__",
+    "dist",
+    "node_modules",
+    "out",
+    "output",
+    "output2",
+    "work",
+    "prebuilts",
+)
+
+
+INCLUDES = (
+    "*.bzl",
+    "*.bp",
+    "*.bazel",
+    "*.cfg",
+    "*.conf",
+    "*.json",
+    "*.md",
+    "*.mk",
+    "*.py",
+    "*.sh",
+    "*.toml",
+    "*.txt",
+    "*.xml",
+    "*.yaml",
+    "*.yml",
+    "BUILD",
+    "BUILD.bazel",
+    "Makefile",
+)
+
+
+SEARCH_TERMS = (
+    set(OS_TOOLS)
+    | set(SPECIALIZED_TOOLS)
+    | {
+        alias
+        for aliases
+        in PROVIDER_FAMILY_ALIASES.values()
+        for alias in aliases
+    }
+)
+
+
+TERM_RE = re.compile(
+    r"(?<![A-Za-z0-9_.+/-])("
+    + "|".join(
+        re.escape(term)
+        for term in sorted(
+            SEARCH_TERMS,
+            key=len,
+            reverse=True,
+        )
+    )
+    + r")(?![A-Za-z0-9_.+/-])"
+)
+
+
+def grep_repository(
+    label: str,
+    root: Path,
+):
+    print(
+        f"Scanning {label}: {root}",
+        flush=True,
+    )
+
+    if label == "treeforge":
+        print(
+            f"  PRUNED: {TREEFORGE_AOSP}",
+            flush=True,
+        )
+
+    cmd = [
+        "grep",
+        "-r",
+        "-n",
+        "-I",
+        "-E",
+        "|".join(
+            re.escape(term)
+            for term in sorted(
+                SEARCH_TERMS,
+                key=len,
+                reverse=True,
+            )
+        ),
+    ]
+
+    for excluded in COMMON_EXCLUDE_DIRS:
+        cmd.append(
+            f"--exclude-dir={excluded}"
+        )
+
+    # CRITICAL:
+    # The configured AOSP checkout is a direct child of the
+    # normal TreeForge root. Explicitly prune it here.
+    #
+    # This audit discovers TreeForge consumers. AOSP is NOT
+    # a consumer and must not participate in discovery.
+    if label == "treeforge":
+        cmd.append(
+            "--exclude-dir=aosp"
+        )
+
+    for included in INCLUDES:
+        cmd.append(
+            f"--include={included}"
+        )
+
+    cmd.append(
+        str(root)
+    )
+
+    proc = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=None,
+        text=True,
+        errors="replace",
+    )
+
+    assert proc.stdout is not None
+
+    hits = defaultdict(set)
+
+    for line in proc.stdout:
+        try:
+            filename, _, text = line.split(
+                ":",
+                2,
+            )
+        except ValueError:
+            continue
+
+        path = Path(filename)
+
+        # Second safety boundary:
+        # even if grep traversal semantics ever change, reject
+        # every result physically underneath TreeForge/aosp.
+        if label == "treeforge":
+            try:
+                path.resolve().relative_to(
+                    TREEFORGE_AOSP.resolve()
+                )
+            except ValueError:
+                pass
+            else:
+                raise RuntimeError(
+                    "AOSP traversal safety violation: "
+                    f"{path}"
+                )
+
+        for match in TERM_RE.finditer(text):
+            hits[match.group(1)].add(
+                filename
+            )
+
+    rc = proc.wait()
+
+    if rc not in (0, 1):
+        raise RuntimeError(
+            f"grep failed for {label}: rc={rc}"
+        )
+
+    print(
+        f"Finished {label}",
+        flush=True,
+    )
+
+    return hits
+
+
+print(
+    "=== TREEFORGE UNIFIED TOOL OWNERSHIP AUDIT ==="
+)
+print()
+
+
+# ============================================================
+# Scan boundary declaration.
+# ============================================================
+
+print("===== SCAN BOUNDARY =====")
+
+print(
+    "treeforge_root="
+    f"{TREEFORGE}"
+)
+
+print(
+    "treeforge_aosp="
+    f"{TREEFORGE_AOSP}"
+)
+
+print(
+    "treeforge_aosp_scan=NO"
+)
+
+print(
+    "treeforge_aosp_pruned=YES"
+)
+
+print(
+    "toolchain_scan=YES"
+)
+
+print(
+    "kernel_scan="
+    + ("YES" if KERNEL.is_dir() else "NO")
+)
+
+print()
+
+
+# ============================================================
+# Scan each repository ONCE.
+# ============================================================
+
+references = {}
+
+for label, root in ROOTS.items():
+    references[label] = grep_repository(
+        label,
+        root,
+    )
+
+print()
+print("repository_scan=COMPLETE")
+print("aosp_scanned=NO")
+print()
+
+
+# ============================================================
+# Current provider state.
+# ============================================================
+
+providers_root = (
+    TOOLCHAIN / "providers"
+)
+
+provider_roots = sorted(
+    path.name
+    for path in providers_root.iterdir()
+    if path.is_dir()
+)
+
+matrix_path = (
+    TOOLCHAIN
+    / "manifests"
+    / "android-15.0.0_r36"
+    / "tool-build-matrix.json"
+)
+
+matrix = json.loads(
+    matrix_path.read_text()
+)
+
+matrix_providers = set(
+    matrix.get(
+        "provider_release_identities",
+        [],
+    )
+)
+
+
+print("===== CURRENT PROVIDERS =====")
+
+for provider in provider_roots:
+    print(provider)
+
+print(
+    "provider_root_count="
+    f"{len(provider_roots)}"
+)
+
+print()
+
+
+# ============================================================
+# Specialized tool ownership.
+# ============================================================
+
+print("===== SPECIALIZED TOOL OWNERSHIP =====")
+
+missing_tools = []
+
+for tool in sorted(
+    SPECIALIZED_TOOLS
+):
+    tool_refs = {}
+
+    for label in sorted(ROOTS):
+        files = references[label].get(
+            tool,
+            set(),
+        )
+
+        if files:
+            tool_refs[label] = files
+
+    if not tool_refs:
+        continue
+
+    owner = CURRENT_OWNERS.get(tool)
+
+    if owner:
+        state = "OWNED"
+    else:
+        state = "MISSING_PROVIDER"
+        missing_tools.append(tool)
+
+    print(
+        f"{state:20} "
+        f"{tool:28} "
+        f"owner={owner or '-'}"
+    )
+
+    for label, paths in sorted(
+        tool_refs.items()
+    ):
+        print(
+            f"  {label}: "
+            f"{len(paths)} reference file(s)"
+        )
+
+        for filename in sorted(paths)[:5]:
+            print(
+                f"    {filename}"
+            )
+
+print()
+
+
+# ============================================================
+# Kernel provider family ownership.
+# ============================================================
+
+print("===== PROVIDER FAMILY OWNERSHIP =====")
+
+missing_families = []
+
+for provider, aliases in sorted(
+    PROVIDER_FAMILY_ALIASES.items()
+):
+    provider_refs = defaultdict(set)
+
+    for alias in aliases:
+        for label in ROOTS:
+            provider_refs[label].update(
+                references[label].get(
+                    alias,
+                    set(),
+                )
+            )
+
+    provider_refs = {
+        label: paths
+        for label, paths
+        in provider_refs.items()
+        if paths
+    }
+
+    if not provider_refs:
+        continue
+
+    if provider in provider_roots:
+        state = "OWNED"
+    else:
+        state = (
+            "MISSING_PROVIDER_FAMILY"
+        )
+
+        missing_families.append(
+            provider
+        )
+
+    print(
+        f"{state:26} "
+        f"{provider}"
+    )
+
+    for label, paths in sorted(
+        provider_refs.items()
+    ):
+        print(
+            f"  {label}: "
+            f"{len(paths)} reference file(s)"
+        )
+
+        for filename in sorted(paths)[:5]:
+            print(
+                f"    {filename}"
+            )
+
+print()
+
+
+# ============================================================
+# OS-managed host dependencies.
+# ============================================================
+
+print("===== OS HOST DEPENDENCIES =====")
+
+referenced_os_tools = []
+
+for tool in sorted(OS_TOOLS):
+    used = any(
+        references[label].get(tool)
+        for label in ROOTS
+    )
+
+    if used:
+        referenced_os_tools.append(
+            tool
+        )
+
+
+missing_host_tools = []
+
+for tool in referenced_os_tools:
+    path = shutil.which(tool)
+
+    if path:
+        state = "INSTALLED"
+    else:
+        state = "MISSING_HOST"
+        missing_host_tools.append(tool)
+
+    print(
+        f"{state:14} "
+        f"{tool:20} "
+        f"{path or '-'}"
+    )
+
+print()
+
+
+# ============================================================
+# Pipeline consistency.
+# ============================================================
+
+print(
+    "===== PROVIDER PIPELINE CONSISTENCY ====="
+)
+
+provider_set = set(
+    provider_roots
+)
+
+for provider in sorted(
+    provider_set
+    - matrix_providers
+):
+    print(
+        "PROVIDER_ROOT_NOT_IN_MATRIX "
+        + provider
+    )
+
+for provider in sorted(
+    matrix_providers
+    - provider_set
+):
+    print(
+        "MATRIX_PROVIDER_NO_ROOT "
+        + provider
+    )
+
+
+providers_without_manifest = []
+
+for provider in provider_roots:
+    manifests = list(
+        (
+            providers_root
+            / provider
+        ).glob(
+            "*/manifest.json"
+        )
+    )
+
+    if not manifests:
+        providers_without_manifest.append(
+            provider
+        )
+
+        print(
+            "PROVIDER_WITHOUT_MANIFEST "
+            + provider
+        )
+
+print()
+
+
+# ============================================================
+# Final missing ownership inventory.
+# ============================================================
+
+print(
+    "===== REQUIRED TOOL PROVIDER EXPANSION ====="
+)
+
+for tool in sorted(
+    missing_tools
+):
+    print(tool)
+
+print(
+    "missing_specialized_tool_count="
+    f"{len(missing_tools)}"
+)
+
+print()
+
+
+print(
+    "===== REQUIRED PROVIDER FAMILY EXPANSION ====="
+)
+
+for provider in sorted(
+    missing_families
+):
+    print(provider)
+
+print(
+    "missing_provider_family_count="
+    f"{len(missing_families)}"
+)
+
+print()
+
+
+print("===== HOST SETUP GAPS =====")
+
+for tool in sorted(
+    missing_host_tools
+):
+    print(tool)
+
+print(
+    "missing_host_tool_count="
+    f"{len(missing_host_tools)}"
+)
+
+print()
+
+
+print(
+    "===== PROVIDER MANIFEST GAPS ====="
+)
+
+for provider in sorted(
+    providers_without_manifest
+):
+    print(provider)
+
+print(
+    "provider_manifest_gap_count="
+    f"{len(providers_without_manifest)}"
+)
+
+print()
+
+
+# ============================================================
+# Hard safety assertion.
+# ============================================================
+
+print("===== AOSP SAFETY ASSERTION =====")
+
+for label, hits in references.items():
+    if label != "treeforge":
+        continue
+
+    for paths in hits.values():
+        for filename in paths:
+            path = Path(filename).resolve()
+
+            try:
+                path.relative_to(
+                    TREEFORGE_AOSP.resolve()
+                )
+            except ValueError:
+                continue
+
+            raise RuntimeError(
+                "ERROR: AOSP file entered "
+                "TreeForge consumer results: "
+                f"{path}"
+            )
+
+print("aosp_result_files=0")
+print("aosp_scan=NO")
+print("aosp_prune=PASS")
+print()
+
+
+print("===== FINAL POLICY =====")
+
+print(
+    "ordinary_host_tools="
+    "TREEFORGE_SETUP_MANAGED_BY_MODE"
+)
+
+print(
+    "specialized_android_tools="
+    "TREEFORGE_TOOLCHAIN_OWNED"
+)
+
+print(
+    "kernel_toolchains="
+    "TREEFORGE_TOOLCHAIN_OWNED"
+)
+
+print(
+    "kernel_provider_cache="
+    "LOCAL_DISPOSABLE_VERIFIED_CACHE"
+)
+
+print(
+    "kernel_requires_treeforge_checkout="
+    "NO"
+)
+
+print(
+    "consumer_fetch_policy="
+    "FETCH_EXACT_RELEASE_IF_CACHE_MISSING"
+)
+
+print(
+    "aosp_used_for_consumer_discovery="
+    "NO"
+)
+
+print()
+
+print(
+    "TREEFORGE UNIFIED TOOL OWNERSHIP AUDIT: PASS"
+)

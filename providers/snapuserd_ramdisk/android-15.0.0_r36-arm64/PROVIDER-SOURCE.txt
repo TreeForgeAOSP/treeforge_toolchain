@@ -1,0 +1,18 @@
+TreeForge snapuserd Ramdisk Runtime Provider
+
+Provider: snapuserd_ramdisk
+Release: android-15.0.0_r36-arm64
+Canonical SDK: 35
+Architecture: arm64
+Upstream platform: AOSP android-15.0.0_r36
+Build product: aosp_arm64-trunk_staging-eng
+Build module: snapuserd_ramdisk
+
+This is the stock AOSP android-15.0.0_r36 snapuserd_ramdisk build.
+No TreeForge source modification is required for this provider.
+
+The binary is statically linked and has no ELF interpreter or DT_NEEDED
+runtime dependency.
+
+AOSP is used only as the developer build workspace for producing this
+bundled provider. TreeForge runtime use does not require an AOSP checkout.

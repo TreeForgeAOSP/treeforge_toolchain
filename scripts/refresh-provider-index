@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+PROVIDERS = ROOT / "providers"
+OUTPUT = PROVIDERS / "index.json"
+
+catalog: dict[str, dict] = {}
+
+for provider_root in sorted(
+    path
+    for path in PROVIDERS.iterdir()
+    if path.is_dir()
+):
+    releases: list[dict] = []
+
+    for release_root in sorted(
+        path
+        for path in provider_root.iterdir()
+        if path.is_dir()
+    ):
+        manifest_path = release_root / "manifest.json"
+
+        if not manifest_path.is_file():
+            continue
+
+        try:
+            manifest = json.loads(
+                manifest_path.read_text()
+            )
+        except Exception as error:
+            raise SystemExit(
+                f"ERROR: invalid manifest "
+                f"{manifest_path}: {error}"
+            )
+
+        schema = manifest.get("schema")
+
+        releases.append(
+            {
+                "release": release_root.name,
+                "metadata_root": str(
+                    release_root.relative_to(ROOT)
+                ),
+                "manifest_schema": schema,
+                "consumer_bundle": schema == 2,
+            }
+        )
+
+    if releases:
+        catalog[provider_root.name] = {
+            "distribution": "GITHUB_RELEASE_ASSET",
+            "releases": releases,
+        }
+
+data = {
+    "schema": 2,
+    "android_release": "android-15.0.0_r36",
+    "distribution": "GITHUB_RELEASE_ASSET",
+    "repository": "TreeForgeDEV/treeforge_toolchain",
+    "providers": catalog,
+}
+
+OUTPUT.write_text(
+    json.dumps(
+        data,
+        indent=2,
+        sort_keys=True,
+    )
+    + "\n"
+)
+
+print(f"provider_count={len(catalog)}")
+print(f"provider_index={OUTPUT}")

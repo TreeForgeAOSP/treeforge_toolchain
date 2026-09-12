@@ -13,6 +13,11 @@
       "sha256": "0397374109a8d5c770a8e27897bb1a0dcf2a0b449a3f001a06dfee8673e1b700"
     },
     {
+      "path": "docs/GITHUB_RELEASE_INPUTS.md",
+      "bytes": 2285,
+      "sha256": "be317dba223d8a3e430822abf6074a51c3d0b3e7a64d284fa3730fd3529dc11c"
+    },
+    {
       "path": "docs/PROVIDERS.md",
       "bytes": 494,
       "sha256": "4af7459a79cbbc030d1a50cb87b157784e5315e90fdfa59934ca5f2598502bb5"
@@ -34,8 +39,8 @@
     },
     {
       "path": "manifests/android-15.0.0_r36/tool-build-matrix.json",
-      "bytes": 5099,
-      "sha256": "49186988a7cae89a95e34489582b2efa7a14c4f55e1260ca849af5aa7e808deb"
+      "bytes": 5675,
+      "sha256": "9b189752b98c630cb961a1e71677ad5947596cb4d373062cd3c781e13e23515b"
     },
     {
       "path": "manifests/android-15.0.0_r36/tool-source-ownership.json",
@@ -54,8 +59,8 @@
     },
     {
       "path": "providers/android-image-tools/android-15.0.0_r36-linux-x86_64/manifest.json",
-      "bytes": 7464,
-      "sha256": "1325014a77fd1e780120cac742fe889ef86916ad338f62dee8a6277d03b03383"
+      "bytes": 19037,
+      "sha256": "633abf7143db05b1649b77bcfa52cb8f59696e8e940fcbf79681c25284d3d313"
     },
     {
       "path": "providers/android-image-tools/android-15.0.0_r36-linux-x86_64/provenance/PROVENANCE.json",
@@ -84,8 +89,8 @@
     },
     {
       "path": "providers/aosp-adb/android-15.0.0_r36-linux-x86_64/manifest.json",
-      "bytes": 1422,
-      "sha256": "93d8a26494e62232ce0aa3747cedebaf611fae995dc6cbf67f21840abe19ed25"
+      "bytes": 1613,
+      "sha256": "4c6913e659d4a422fa4c76ec61ed4b416b3404fe332d6357c0bdddb981a28979"
     },
     {
       "path": "providers/aosp-adb/android-15.0.0_r36-linux-x86_64/provenance/MODIFICATIONS.txt",
@@ -101,11 +106,6 @@
       "path": "providers/aosp-adbd-recovery/android-15.0.0_r36-arm64/MODIFICATIONS.txt",
       "bytes": 173,
       "sha256": "655f7c2c66d30ee9b55b2ddd71716584c214963217ce8f94f4348b1d1012da5c"
-    },
-    {
-      "path": "providers/aosp-adbd-recovery/android-15.0.0_r36-arm64/NOTICE/NOTICE.txt",
-      "bytes": 1324837,
-      "sha256": "5fa26876518827f456bda86cb0a018f7b21a6316c7ff7cec50589576ea581baa"
     },
     {
       "path": "providers/aosp-adbd-recovery/android-15.0.0_r36-arm64/PAYLOAD-NOT-IN-GIT.md",
@@ -128,6 +128,11 @@
       "sha256": "b66ee7ba360b0a25920b27271eb052727c7534f5c930591d1d79c38e688deb1a"
     },
     {
+      "path": "providers/aosp-adbd-recovery/android-15.0.0_r36-arm64/legal/retained/NOTICE.txt",
+      "bytes": 1324837,
+      "sha256": "5fa26876518827f456bda86cb0a018f7b21a6316c7ff7cec50589576ea581baa"
+    },
+    {
       "path": "providers/aosp-adbd-recovery/android-15.0.0_r36-arm64/manifest.json",
       "bytes": 13861,
       "sha256": "5b47e85e1d40790a8365b1bfce150380906ca1b0025a4b60e3e80612947ab76b"
@@ -136,11 +141,6 @@
       "path": "providers/aosp-adbd/android-15.0.0_r36-arm64/MODIFICATIONS.txt",
       "bytes": 155,
       "sha256": "2361f11d7702bc129cb4d4f3ec4823d984979a1f50dc763e5af5f9bd10c6e95a"
-    },
-    {
-      "path": "providers/aosp-adbd/android-15.0.0_r36-arm64/NOTICE/NOTICE.txt",
-      "bytes": 40,
-      "sha256": "17162dcd72b29bf83f58a1584553ee40435955ace0408115fd27963c6a234793"
     },
     {
       "path": "providers/aosp-adbd/android-15.0.0_r36-arm64/PAYLOAD-NOT-IN-GIT.md",
@@ -161,6 +161,11 @@
       "path": "providers/aosp-adbd/android-15.0.0_r36-arm64/SOURCE/SOURCE-SHARE.txt",
       "bytes": 187,
       "sha256": "6a116d3f79745a2731bf8310a2fdb9d2d3e66bd9da65db35a93e26741cbec5fe"
+    },
+    {
+      "path": "providers/aosp-adbd/android-15.0.0_r36-arm64/legal/retained/NOTICE.txt",
+      "bytes": 40,
+      "sha256": "17162dcd72b29bf83f58a1584553ee40435955ace0408115fd27963c6a234793"
     },
     {
       "path": "providers/aosp-adbd/android-15.0.0_r36-arm64/manifest.json",
@@ -189,8 +194,8 @@
     },
     {
       "path": "providers/aosp-fastboot/android-15.0.0_r36-linux-x86_64/manifest.json",
-      "bytes": 1438,
-      "sha256": "f4377812c6efe8bee12cf2998752bc8e61b513a632c94a0761fb2566b546af9d"
+      "bytes": 4221,
+      "sha256": "3992d7d8aeec2a93ddc1a3eabf38346ccd925b01c46b0cce0fd63f57595ef10f"
     },
     {
       "path": "providers/aosp-fastboot/android-15.0.0_r36-linux-x86_64/provenance/MODIFICATIONS.txt",
@@ -206,11 +211,6 @@
       "path": "providers/aosp-fastbootd/android-15.0.0_r36-arm64/MODIFICATIONS.txt",
       "bytes": 165,
       "sha256": "882e1892e079f35ba9729e20f0c96bd83db59baed4bb7f8d53c7803babd26092"
-    },
-    {
-      "path": "providers/aosp-fastbootd/android-15.0.0_r36-arm64/NOTICE/NOTICE.txt",
-      "bytes": 699605,
-      "sha256": "90fbea0db0aeec85d7d9f9a79cfa92816cf29a9542d90551fb39e60fe5934377"
     },
     {
       "path": "providers/aosp-fastbootd/android-15.0.0_r36-arm64/PAYLOAD-NOT-IN-GIT.md",
@@ -233,6 +233,11 @@
       "sha256": "0c193f1fc9ca0ede28842f733b5ec2692171e8cd30bde561579745fed46ae78a"
     },
     {
+      "path": "providers/aosp-fastbootd/android-15.0.0_r36-arm64/legal/retained/NOTICE.txt",
+      "bytes": 699605,
+      "sha256": "90fbea0db0aeec85d7d9f9a79cfa92816cf29a9542d90551fb39e60fe5934377"
+    },
+    {
       "path": "providers/aosp-fastbootd/android-15.0.0_r36-arm64/manifest.json",
       "bytes": 36867,
       "sha256": "b059f042be480e39018045d96f180010c65c6a7d2e5ecbd65c54e32d448c559f"
@@ -249,8 +254,8 @@
     },
     {
       "path": "providers/avbtool/android-15.0.0_r36-linux-x86_64/manifest.json",
-      "bytes": 1015,
-      "sha256": "3aeabfb871d6245aa703b9d5b411121d69b57f8238beb053453db6ec33d0cd74"
+      "bytes": 1786,
+      "sha256": "1a1da4d9bb6c143dd5ccc82a76f29b704afb042202999fc0a24eb48b0d8b5033"
     },
     {
       "path": "providers/avbtool/android-15.0.0_r36-linux-x86_64/provenance/PROVENANCE.json",
@@ -269,8 +274,8 @@
     },
     {
       "path": "providers/create_snapshot/android-15.0.0_r36-linux-x86_64/manifest.json",
-      "bytes": 1054,
-      "sha256": "17d2335e3712b78d5383f49f35d20da59436005df719e4c8454eb65e8a62a884"
+      "bytes": 4112,
+      "sha256": "3ef75016790c8c507783294431d9b7139e86188cad8c53bef36e2a51fb4ddb46"
     },
     {
       "path": "providers/create_snapshot/android-15.0.0_r36-linux-x86_64/provenance/PROVENANCE.json",
@@ -279,8 +284,8 @@
     },
     {
       "path": "providers/index.json",
-      "bytes": 2901,
-      "sha256": "c374eb73dcd98f4d7d12d4f29ce77c567153367756ca17edc64a89da070b7b85"
+      "bytes": 5437,
+      "sha256": "9b2786f0e1862d55d0535eae3edde962e48e1d8fae2342407c69462efebe6487"
     },
     {
       "path": "providers/inspect_cow/android-15.0.0_r36-linux-x86_64/PAYLOAD-NOT-IN-GIT.md",
@@ -294,8 +299,8 @@
     },
     {
       "path": "providers/inspect_cow/android-15.0.0_r36-linux-x86_64/manifest.json",
-      "bytes": 1191,
-      "sha256": "37fa8d40316cbcdbc13507fe7a9175b92e99d966b48fb1c93e1c3c7e5f9dd419"
+      "bytes": 4249,
+      "sha256": "c6f72cb21d9e257a77c79a22bcc72ffbe6d97330511294ec8b17b6868f8bf306"
     },
     {
       "path": "providers/inspect_cow/android-15.0.0_r36-linux-x86_64/provenance/MODIFICATIONS.txt",
@@ -319,8 +324,8 @@
     },
     {
       "path": "providers/mkdtimg/android-15.0.0_r36-linux-x86_64/manifest.json",
-      "bytes": 1003,
-      "sha256": "bd5b92574c24a6826577056b875ba61f7d45d8992d0244323916f5c632eb9dcd"
+      "bytes": 1457,
+      "sha256": "e8b5e5abc7891f900ec0be16536d037a50dae5cc8b93f618148dfda4c7c10c38"
     },
     {
       "path": "providers/mkdtimg/android-15.0.0_r36-linux-x86_64/provenance/PROVENANCE.json",
@@ -329,8 +334,258 @@
     },
     {
       "path": "providers/release-contract.json",
-      "bytes": 410,
-      "sha256": "1560bdbcc2c9a86582fe89ba49605fc5c79aadaf0649e772da0e987e0f297807"
+      "bytes": 412,
+      "sha256": "b357bb7cf20d7e4299274b9a54cc27dc4a4cc71218983a2e5b0d4762c735d822"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/MODIFICATIONS.txt",
+      "bytes": 178,
+      "sha256": "1b4b25ef836b7ea54bc8916f2fc74d336f60246d8842b11517cc008b7a01bd46"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/PAYLOAD-NOT-IN-GIT.md",
+      "bytes": 545,
+      "sha256": "9ea97b157d0cf2d4a436b80962cec7a5c3826775601ac56f93b336299b236e0b"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/PROVIDER-SOURCE.txt",
+      "bytes": 636,
+      "sha256": "eb36bc6be3ffbf0b6c899822fc7ddf2fb4751d57d4ac0d73af0fc24cbbf34d15"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/Android.bp",
+      "bytes": 7737,
+      "sha256": "6249c5e5067bd61cfbcf32a3c29e25d90b4901ef1f58f1e9df65c15cecf6cafa"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/OWNERS",
+      "bytes": 57,
+      "sha256": "b518d1b06e7d27d6a45947894d52b387cd13e531074a222c18f341939a3ab57f"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/dm_user_block_server.cpp",
+      "bytes": 5560,
+      "sha256": "9cd51f82e0dbd2d18a6e82e8d67f0dc251b59299e1aba6d45154add2387e7747"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/include/snapuserd/block_server.h",
+      "bytes": 3458,
+      "sha256": "3e303d0d2fff70da88da56338708934ef2173b52bfef73361caaa62b13a75ab8"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/include/snapuserd/dm_user_block_server.h",
+      "bytes": 2100,
+      "sha256": "520e7bba2be7de18c736a34622ae2a55ca194d3fde178bf485a1936bb51bc8ee"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/include/snapuserd/snapuserd_buffer.h",
+      "bytes": 2402,
+      "sha256": "512cd8e3f19ec747f5886a4c80ccbf5bccf0cd3ed57f921f5e32992ecffa2323"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/include/snapuserd/snapuserd_client.h",
+      "bytes": 4362,
+      "sha256": "462ba202059447c149d636af499dc8d282a9ff04c744c95a998af2607fc5af1c"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/include/snapuserd/snapuserd_kernel.h",
+      "bytes": 2757,
+      "sha256": "501300831a94e84118bc25a2b3ee87dc5e7fc1ae3dde6e22ab75756e23ef0dd2"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/snapuserd.rc",
+      "bytes": 537,
+      "sha256": "3a6966f87823b2726a231e7244adf78ad91d581bf4e8b1580630ebb82cc6c498"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/snapuserd_buffer.cpp",
+      "bytes": 2168,
+      "sha256": "7b41cc86548f3b4f3a2c6145b466a6476687c733b36a4a276a5de24c95e3bcf6"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/snapuserd_client.cpp",
+      "bytes": 12916,
+      "sha256": "1ec23ad797b93d2b7aceb1eb66de79ebccbf27f712015f09906f7cbc6fbe86c9"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+      "bytes": 7446,
+      "sha256": "bd8298fb250be6cddc7f958cd1827be83b3f71eaabaf1274307f98b566596836"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.h",
+      "bytes": 1578,
+      "sha256": "aebd5aa1ed3b3dcf735440cb0bea3687ee7fe465a8ec7a210e3039b5a34b1f33"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/snapuserd_extractor.cpp",
+      "bytes": 2003,
+      "sha256": "51561c9873922e6c27c01b54f9d27c43b261e416f53b92b11cba674ea8e8751d"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/snapuserd_logging.h",
+      "bytes": 779,
+      "sha256": "8ba2932c925fbd34261822c3113e5a709b63643fb41ff0c3d885a3d70beead20"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/testing/dm_user_harness.cpp",
+      "bytes": 2131,
+      "sha256": "6f67e61771e2a3ca17341f28a5b3a5fd3cff3d2f7d56d231015b6548e793ac5a"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/testing/dm_user_harness.h",
+      "bytes": 1641,
+      "sha256": "307d740e3dd8d0e3f9ab6f16232a159484ce6b5c872d71492aca2b986662a6a1"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/testing/harness.cpp",
+      "bytes": 3308,
+      "sha256": "73ba968e909b2a50d69dfc183b20a4e7e23f547fb2bbb868b91aaa255e1ad8e3"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/testing/harness.h",
+      "bytes": 1781,
+      "sha256": "96b03a312d8604d41d5db58a0ebe3ae60da16033621129fc30999978692a255b"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/testing/host_harness.cpp",
+      "bytes": 3686,
+      "sha256": "e52600701458f9a130c4e0890cfc8737ae40377c325a5ac82c7f130dabeb8c29"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/testing/host_harness.h",
+      "bytes": 3286,
+      "sha256": "e172fa8ad87d7054cd5bb34141aa9ff16a01fd799841b38e9b9b88c17898822a"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/testing/temp_device.h",
+      "bytes": 2046,
+      "sha256": "708ca7e13a42419e5b1a9a83a9fc611f6691ec8a5ef83e13a7763d46bf377beb"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/extractor.cpp",
+      "bytes": 2956,
+      "sha256": "88f5f5827c4cce4944c5236fa2fa2fd2d8e9060be90f6464ae0e2f97c2418781"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/extractor.h",
+      "bytes": 1464,
+      "sha256": "437cc9efbb0eb1cf4f1266de06e233dbbb17396ab7ebe5454fb37f563141d777"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/handler_manager.cpp",
+      "bytes": 13083,
+      "sha256": "319571914515e16ace0551abe61fad670415a3303cebee36ac27a9f6137032f2"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/handler_manager.h",
+      "bytes": 5334,
+      "sha256": "61d00b7cc052d3221384a92e9b1e3da7a3d9278e4c280cc0df6a407379735ab9"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/merge_worker.cpp",
+      "bytes": 22699,
+      "sha256": "219ddd0917b39347a21ba491e4f533c94dfaa5ebfe89f7add5b0c4ab90eefd48"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/merge_worker.h",
+      "bytes": 2072,
+      "sha256": "5df551078f9ab08552a7d4d34f7adcce14f1df2bf743033b7a25bd8d046519c0"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/read_worker.cpp",
+      "bytes": 25508,
+      "sha256": "76c1ac65268405fb6d52a475c4a4fcbdc7ad54f39d072b0c7f07902c54823d36"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/read_worker.h",
+      "bytes": 3173,
+      "sha256": "99156eee9533d55a04f60d3b48288faf576608abf2fec01834f12ed7f9a7bee1"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+      "bytes": 15461,
+      "sha256": "9a4f98037556bace6b726ede8acc71bffd1aadaed3b15ddae43e6625b7e6e9f6"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+      "bytes": 8580,
+      "sha256": "75a8f509568708e240d1d8f44c1055488390075c00ccc1c557c793940e1a05f0"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+      "bytes": 30706,
+      "sha256": "f21106937882158078bf0f58ce34a557b0dda4486c3b937796abd2da1402232a"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.h",
+      "bytes": 3679,
+      "sha256": "bd3acacbdf4ae2be08b69c0df1ddafa48ab2e04201efdcc0de655b34cb3cd78a"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_server.cpp",
+      "bytes": 15846,
+      "sha256": "8633f89bd0d50fa56aa9403521fe2044351c20b0b9b535eb7f58cd297887a21b"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_server.h",
+      "bytes": 3568,
+      "sha256": "e95d8223a381603b7eef94aab70e27387119951c9ae9593578b8ab02986aee4b"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_test.cpp",
+      "bytes": 53915,
+      "sha256": "8cd039f6e0a73101a2ab3d8cd8044cedf7a30c2b63c6fa3967c35c9290d1be83"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+      "bytes": 25786,
+      "sha256": "e7c0f7f53c84b1898248f5b54f9b1a553845e0822f3deef3e1ddb9687a2acaa3"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_verify.cpp",
+      "bytes": 8116,
+      "sha256": "fcb48d179915250ba90220d3e64d2f977251f8b72d893ca3374d92a9beeaecdb"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_verify.h",
+      "bytes": 2768,
+      "sha256": "f51b51608b22cfb3f5a6553d00c7939c8a138a443e2cdc4279629a7a237beba7"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/worker.cpp",
+      "bytes": 1848,
+      "sha256": "0983acdf2762d1d7c4499ef5272b22e516bb4e81b14da8136e694a2674bbc4c0"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/user-space-merge/worker.h",
+      "bytes": 1639,
+      "sha256": "348de3e9da5a251fc3d329e1f75589913a11d61ed8b2989e9b771ffe252be77e"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/utility.cpp",
+      "bytes": 2859,
+      "sha256": "cc2e132c31d8cfa4eb349d8cb70c7749ed3af9df8b831e0904d765ba2df20dd9"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/SOURCE/system/core/fs_mgr/libsnapshot/snapuserd/utility.h",
+      "bytes": 1059,
+      "sha256": "27387332460ef347524e9a69147935ff49f0d9ed873daacfd4893e04ca329843"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/legal/retained/system-core-MODULE_LICENSE_APACHE2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/manifest.json",
+      "bytes": 834,
+      "sha256": "5e46e7719616d6e01dc11f94cffb47d801355680dfa68da2ac73f2eef015836c"
+    },
+    {
+      "path": "providers/treeforge-adb/android-15.0.0_r36-linux-x86_64/manifest.json",
+      "bytes": 1206,
+      "sha256": "5ba373d9cc66d0efc4938fa7acf6c87ec8a5ec4f225182369b4d80eafadad5e3"
     },
     {
       "path": "providers/treeforge-adbd/android-15.0.0_r36-arm64/MODIFICATIONS.txt",
@@ -358,39 +613,24 @@
       "sha256": "53fe0200eb32e68b6fe869edb7526a1bcdb613314964906292a0be10432468ec"
     },
     {
+      "path": "providers/treeforge-adbd/android-15.0.0_r36-arm64/manifest.json",
+      "bytes": 879,
+      "sha256": "a99b776d3ed809513e440f89090fa3b286add239ed9e0ca63d637c2335ee85eb"
+    },
+    {
+      "path": "providers/treeforge-fastboot/android-15.0.0_r36-linux-x86_64/manifest.json",
+      "bytes": 3814,
+      "sha256": "e2e908d80084babb85ee26ef7685e0872419b0fbf95a92862bcb25fd295a51cd"
+    },
+    {
+      "path": "providers/treeforge-fastbootd/android-15.0.0_r36-arm64/manifest.json",
+      "bytes": 871,
+      "sha256": "a1f25b2766da137a8d8ad43dee45f28e050fa6654d0217190290ebcda656279f"
+    },
+    {
       "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/MODIFICATIONS.txt",
       "bytes": 613,
       "sha256": "c241354e845f6766287fe2b35a3e370bbc4576aeb5cf3125ff4b33b7f7e296e0"
-    },
-    {
-      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/NOTICE/NOTICE.txt",
-      "bytes": 431047,
-      "sha256": "33963402f481ee6a9d3b2ab3c91b3986cace6b1a2eb1a53aafa355d4096b592c"
-    },
-    {
-      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/NOTICE/libchrome-MODULE_LICENSE_BSD",
-      "bytes": 0,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-    },
-    {
-      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/NOTICE/libchrome-NOTICE",
-      "bytes": 1559,
-      "sha256": "7a209dd1b94cabdb5ea9c6f9164b9546ffa5daaa671e7767d49510db055f5c51"
-    },
-    {
-      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/NOTICE/libevent-LICENSE",
-      "bytes": 4528,
-      "sha256": "ff02effc9b331edcdac387d198691bfa3e575e7d244ad10cb826aa51ef085670"
-    },
-    {
-      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/NOTICE/libevent-MODULE_LICENSE_BSD_LIKE",
-      "bytes": 0,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-    },
-    {
-      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/NOTICE/system-core-MODULE_LICENSE_APACHE2",
-      "bytes": 0,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/PATCHES/treeforge-vabc-recovery.patch",
@@ -438,19 +678,84 @@
       "sha256": "e7d5c0c2c8e237a95a1b693ed8d7a0681b460bb08c059de722ffefba4c4843dc"
     },
     {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/legal/retained/NOTICE.txt",
+      "bytes": 431047,
+      "sha256": "33963402f481ee6a9d3b2ab3c91b3986cace6b1a2eb1a53aafa355d4096b592c"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/legal/retained/libchrome-MODULE_LICENSE_BSD",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/legal/retained/libchrome-NOTICE",
+      "bytes": 1559,
+      "sha256": "7a209dd1b94cabdb5ea9c6f9164b9546ffa5daaa671e7767d49510db055f5c51"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/legal/retained/libevent-LICENSE",
+      "bytes": 4528,
+      "sha256": "ff02effc9b331edcdac387d198691bfa3e575e7d244ad10cb826aa51ef085670"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/legal/retained/libevent-MODULE_LICENSE_BSD_LIKE",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/legal/retained/system-core-MODULE_LICENSE_APACHE2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
       "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/manifest.json",
       "bytes": 2694,
       "sha256": "7ed06571d1e68dc1677c0e7b074921a606efdd6327846dbfa21d34add7ad4f6d"
     },
     {
+      "path": "scripts/audit-dependencies",
+      "bytes": 16689,
+      "sha256": "db3c719a4c63f578b2021c1e3ed1eaae728ea6f87186e1c8ae88610c34b12514"
+    },
+    {
       "path": "scripts/build",
-      "bytes": 10891,
-      "sha256": "f85a83a88a14611f3f78a265d62cd1a23e4136c51b0dea327cdeb6db820e1cf4"
+      "bytes": 11548,
+      "sha256": "6c7c471c041f590ad2a5f264eec1922545757a4ced3ef53934abb6e117c54282"
+    },
+    {
+      "path": "scripts/package",
+      "bytes": 32133,
+      "sha256": "9ef3cf48df02c9c31a1d8b8100b615697da14cdd111c60827de03f246df892a0"
+    },
+    {
+      "path": "scripts/package_consumer.py",
+      "bytes": 7252,
+      "sha256": "048400265579bafc7844b1993a995687458312245b39e4678985d8bc6391c46b"
+    },
+    {
+      "path": "scripts/refresh-provider-index",
+      "bytes": 1764,
+      "sha256": "3f7d1335299aefeaa061c2850a197d9d0234c0f97cce546506356f740ef1d171"
     },
     {
       "path": "scripts/refresh-source-inventory",
       "bytes": 1193,
       "sha256": "ee0733bf01cd6696dd026bbb01e66a2ffd0c42fc58b937b7c8b71c3341b2936d"
+    },
+    {
+      "path": "scripts/release",
+      "bytes": 5956,
+      "sha256": "e4b445b5dea33537c28a014eb353e096c39942117c8020acdc4962164a6d2682"
+    },
+    {
+      "path": "scripts/sync-consumer-manifests",
+      "bytes": 11997,
+      "sha256": "dd454a31fcd3d1286830178e96174419151f488d28892ec0af3ba16b24cb647c"
+    },
+    {
+      "path": "scripts/verify",
+      "bytes": 12674,
+      "sha256": "d71afc1cde2833f278469cf4bedc43ecbd350972f5c40ce248ec56f4a7bfa5d5"
     },
     {
       "path": "tools/adb/baseline/aosp-adb.json",
@@ -466,6 +771,11 @@
       "path": "tools/adb/baseline/aosp-adbd.json",
       "bytes": 1628,
       "sha256": "443049b218da0a928249038f7403ef798c64abb9d8f2afcd35c01d7ce5c6720c"
+    },
+    {
+      "path": "tools/adb/patches/treeforge-host-adb-identity.patch",
+      "bytes": 21352,
+      "sha256": "89547180a1506f594c779c1823ac0be1f2cb0a5d6002dcc8cd7fdafdbaa749cb"
     },
     {
       "path": "tools/adb/patches/treeforge-recovery-standalone-adbd.patch",

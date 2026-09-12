@@ -1,0 +1,527 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import hashlib
+import json
+import tarfile
+import tempfile
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+PROVIDERS = ROOT / "providers"
+DIST = ROOT / "dist"
+ASSETS = DIST / "assets"
+
+
+def fail(message: str) -> None:
+    raise SystemExit(f"ERROR: {message}")
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+
+    with path.open("rb") as handle:
+        for chunk in iter(
+            lambda: handle.read(1024 * 1024),
+            b"",
+        ):
+            digest.update(chunk)
+
+    return digest.hexdigest()
+
+
+def safe_extract(
+    archive: Path,
+    destination: Path,
+) -> Path:
+    with tarfile.open(
+        archive,
+        "r:xz",
+    ) as handle:
+        for member in handle.getmembers():
+            relative = Path(member.name)
+
+            if (
+                relative.is_absolute()
+                or ".." in relative.parts
+                or member.issym()
+                or member.islnk()
+            ):
+                fail(
+                    f"unsafe archive member: {member.name}"
+                )
+
+        handle.extractall(
+            destination,
+            filter="data",
+        )
+
+    roots = [
+        path
+        for path in destination.iterdir()
+        if path.is_dir()
+    ]
+
+    if len(roots) != 1:
+        fail(
+            f"{archive.name}: expected one package root, "
+            f"found {len(roots)}"
+        )
+
+    return roots[0]
+
+
+def records_under(
+    package_root: Path,
+    relative_root: str,
+) -> list[dict[str, str]]:
+    root = package_root / relative_root
+
+    if not root.is_dir():
+        return []
+
+    result = []
+
+    for path in sorted(
+        candidate
+        for candidate in root.rglob("*")
+        if candidate.is_file()
+    ):
+        result.append(
+            {
+                "path": path.relative_to(
+                    package_root
+                ).as_posix(),
+                "sha256": sha256_file(path),
+            }
+        )
+
+    return result
+
+
+def root_record(
+    package_root: Path,
+    relative: str,
+) -> dict[str, str]:
+    path = package_root / relative
+
+    if not path.is_file():
+        fail(
+            f"release provenance missing: {relative}"
+        )
+
+    return {
+        "path": relative,
+        "sha256": sha256_file(path),
+    }
+
+
+index = json.loads(
+    (
+        DIST
+        / "index.json"
+    ).read_text()
+)
+
+dist_records = {
+    record["provider"]: record
+    for record in index["providers"]
+}
+
+expected_schema2 = {
+    "android-image-tools",
+    "aosp-adb",
+    "aosp-fastboot",
+    "avbtool",
+    "create_snapshot",
+    "inspect_cow",
+    "mkdtimg",
+    "treeforge-adb",
+    "treeforge-fastboot",
+}
+
+seen = set()
+changed = []
+unchanged = []
+
+for provider in sorted(expected_schema2):
+    record = dist_records.get(provider)
+
+    if record is None:
+        fail(
+            f"{provider}: absent from dist index"
+        )
+
+    release = (
+        index["android_release"]
+        + "-"
+        + record["platform"]
+    )
+
+    manifest_path = (
+        PROVIDERS
+        / provider
+        / release
+        / "manifest.json"
+    )
+
+    if not manifest_path.is_file():
+        fail(
+            f"{provider}: source manifest missing"
+        )
+
+    manifest = json.loads(
+        manifest_path.read_text()
+    )
+
+    if (
+        manifest.get("schema") != 2
+        or manifest.get("name") != provider
+        or manifest.get("release") != release
+    ):
+        fail(
+            f"{provider}: invalid schema-2 identity"
+        )
+
+    archive = (
+        ASSETS
+        / record["archive"]
+    )
+
+    if not archive.is_file():
+        fail(
+            f"{provider}: archive missing"
+        )
+
+    before = json.dumps(
+        manifest,
+        sort_keys=True,
+    )
+
+    with tempfile.TemporaryDirectory(
+        prefix=f"treeforge-sync-{provider}-"
+    ) as raw:
+        package_root = safe_extract(
+            archive,
+            Path(raw),
+        )
+
+        release_manifest_path = (
+            package_root
+            / "manifest.json"
+        )
+
+        if not release_manifest_path.is_file():
+            fail(
+                f"{provider}: release manifest missing"
+            )
+
+        release_manifest = json.loads(
+            release_manifest_path.read_text()
+        )
+
+        payload_records = release_manifest.get(
+            "payload_files"
+        )
+
+        if not isinstance(
+            payload_records,
+            list,
+        ):
+            fail(
+                f"{provider}: payload_files is invalid"
+            )
+
+        payload_by_path = {
+            item["path"]: item
+            for item in payload_records
+        }
+
+        payload_by_sha: dict[
+            str,
+            list[dict],
+        ] = {}
+
+        for item in payload_records:
+            payload_by_sha.setdefault(
+                item["sha256"],
+                [],
+            ).append(item)
+
+        executables = manifest.get(
+            "executables",
+            [],
+        )
+
+        runtime_files = manifest.get(
+            "runtime_files",
+            [],
+        )
+
+        for executable in executables:
+            normalized_path = executable[
+                "path"
+            ]
+
+            release_record = payload_by_path.get(
+                normalized_path
+            )
+
+            if release_record is None:
+                # A provider may expose a normalized cache
+                # name that differs from its AOSP module stem.
+                # Only accept an unambiguous single-file case.
+                if (
+                    len(executables) == 1
+                    and len(runtime_files) == 0
+                    and len(payload_records) == 1
+                ):
+                    release_record = (
+                        payload_records[0]
+                    )
+                else:
+                    old_matches = (
+                        payload_by_sha.get(
+                            executable["sha256"],
+                            [],
+                        )
+                    )
+
+                    if len(old_matches) != 1:
+                        fail(
+                            f"{provider}: cannot map "
+                            f"executable {normalized_path}; "
+                            f"old_sha_matches="
+                            f"{len(old_matches)}"
+                        )
+
+                    release_record = (
+                        old_matches[0]
+                    )
+
+            old_sha = executable[
+                "sha256"
+            ]
+
+            new_sha = release_record[
+                "sha256"
+            ]
+
+            executable[
+                "sha256"
+            ] = new_sha
+
+            print(
+                f"{provider}: executable "
+                f"{normalized_path}: "
+                f"{old_sha} -> {new_sha} "
+                f"release_path="
+                f"{release_record['path']}"
+            )
+
+        for runtime in runtime_files:
+            normalized_path = runtime[
+                "path"
+            ]
+
+            release_record = (
+                payload_by_path.get(
+                    normalized_path
+                )
+            )
+
+            if release_record is None:
+                fail(
+                    f"{provider}: runtime file "
+                    f"is not shipped at "
+                    f"{normalized_path}"
+                )
+
+            old_sha = runtime[
+                "sha256"
+            ]
+
+            new_sha = release_record[
+                "sha256"
+            ]
+
+            runtime[
+                "sha256"
+            ] = new_sha
+
+            if old_sha != new_sha:
+                print(
+                    f"{provider}: runtime "
+                    f"{normalized_path}: "
+                    f"{old_sha} -> {new_sha}"
+                )
+
+        # Consumer legal closure is exactly what ships.
+        legal_files = records_under(
+            package_root,
+            "legal",
+        )
+
+        if not legal_files:
+            fail(
+                f"{provider}: release legal closure empty"
+            )
+
+        # Consumer provenance is also exactly what ships.
+        #
+        # SOURCE/SOURCE-SHARE.* remains tracked in the
+        # repository as source-publication metadata, but is
+        # intentionally not a runtime/provider-cache artifact.
+        # Static consumer provenance contains only files whose
+        # bytes are stable independently of the Git commit that
+        # defines the release.
+        #
+        # SOURCE-REBUILD.json is generated at package time from
+        # the exact source commit. It remains mandatory release
+        # metadata and is verified separately by scripts/verify,
+        # but its commit-dependent hash cannot be part of the
+        # committed consumer manifest without creating a cycle.
+        provenance_files = records_under(
+            package_root,
+            "provenance",
+        )
+
+        provenance_files.sort(
+            key=lambda item: item["path"]
+        )
+
+        old_legal_paths = [
+            item["path"]
+            for item in manifest.get(
+                "legal_files",
+                [],
+            )
+        ]
+
+        old_provenance_paths = [
+            item["path"]
+            for item in manifest.get(
+                "provenance_files",
+                [],
+            )
+        ]
+
+        manifest[
+            "legal_files"
+        ] = legal_files
+
+        manifest[
+            "provenance_files"
+        ] = provenance_files
+
+        print(
+            f"{provider}: legal_files "
+            f"{len(old_legal_paths)} -> "
+            f"{len(legal_files)}"
+        )
+
+        print(
+            f"{provider}: provenance_files "
+            f"{len(old_provenance_paths)} -> "
+            f"{len(provenance_files)}"
+        )
+
+        removed_source_share = [
+            path
+            for path in old_provenance_paths
+            if path.startswith(
+                "SOURCE/"
+            )
+        ]
+
+        for path in removed_source_share:
+            print(
+                f"{provider}: consumer-only removal "
+                f"{path}"
+            )
+
+        # Validate every normalized record against
+        # actual release bytes before touching source.
+        for section in (
+            "legal_files",
+            "provenance_files",
+        ):
+            for item in manifest[
+                section
+            ]:
+                target = (
+                    package_root
+                    / item["path"]
+                )
+
+                if not target.is_file():
+                    fail(
+                        f"{provider}: normalized "
+                        f"{section} file absent: "
+                        f"{item['path']}"
+                    )
+
+                if (
+                    sha256_file(target)
+                    != item["sha256"]
+                ):
+                    fail(
+                        f"{provider}: normalized "
+                        f"{section} SHA mismatch: "
+                        f"{item['path']}"
+                    )
+
+    after = json.dumps(
+        manifest,
+        sort_keys=True,
+    )
+
+    if before != after:
+        manifest_path.write_text(
+            json.dumps(
+                manifest,
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n"
+        )
+
+        changed.append(provider)
+    else:
+        unchanged.append(provider)
+
+    seen.add(provider)
+
+
+if seen != expected_schema2:
+    fail(
+        "schema-2 provider set mismatch"
+    )
+
+print()
+print(
+    f"schema2_provider_count={len(seen)}"
+)
+print(
+    f"changed_provider_count={len(changed)}"
+)
+print(
+    f"unchanged_provider_count={len(unchanged)}"
+)
+
+for provider in changed:
+    print(
+        f"changed={provider}"
+    )
+
+for provider in unchanged:
+    print(
+        f"unchanged={provider}"
+    )
+
+print(
+    "source_share_files_deleted=NO"
+)
+print(
+    "TREEFORGE CONSUMER MANIFEST RELEASE-CLOSURE SYNC: PASS"
+)

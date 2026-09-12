@@ -1,0 +1,790 @@
+--- a/adb.cpp
++++ b/adb.cpp
+@@ -1428,6 +1428,17 @@
+             features.emplace_back(kFeatureLibusb);
+         }
+         features.emplace_back(kFeaturePushSync);
++
++        /*
++         * TreeForge host-server identity.
++         *
++         * Host-only by design:
++         *   - not part of supported_features()
++         *   - not sent to adbd in the connection banner
++         *   - does not change the ADB server protocol version
++         */
++        features.emplace_back("treeforge_host_identity");
++
+         SendOkay(reply_fd, FeatureSetToString(features));
+         return HostRequestResult::Handled;
+     }
+--- a/client/commandline.cpp
++++ b/client/commandline.cpp
+@@ -107,6 +107,7 @@
+         " devices [-l]             list connected devices (-l for long output)\n"
+         " help                     show this help message\n"
+         " version                  show version num\n"
++        " treeforge-info [--local] show TreeForge ADB client/server/transport diagnostics\n"
+         "\n"
+         "networking:\n"
+         " connect HOST[:PORT]      connect to a device via TCP/IP [default port=5555]\n"
+@@ -1405,6 +1406,718 @@
+     DISALLOW_COPY_AND_ASSIGN(AdbServerStateStreamsCallback);
+ };
+ 
++static const char* treeforge_usb_backend_name(int backend) {
++    switch (backend) {
++        case ::adb::proto::AdbServerStatus::LIBUSB:
++            return "LIBUSB";
++        case ::adb::proto::AdbServerStatus::NATIVE:
++            return "NATIVE";
++        default:
++            return "UNKNOWN";
++    }
++}
++
++static const char* treeforge_mdns_backend_name(int backend) {
++    switch (backend) {
++        case ::adb::proto::AdbServerStatus::BONJOUR:
++            return "BONJOUR";
++        case ::adb::proto::AdbServerStatus::OPENSCREEN:
++            return "OPENSCREEN";
++        default:
++            return "UNKNOWN";
++    }
++}
++
++// TreeForge presentation of AOSP's existing host:server-status reply.
++// No TreeForge-specific wire field or ADB protocol version is added.
++static constexpr char kTreeForgeHostIdentityFeature[] =
++        "treeforge_host_identity";
++
++
++static bool treeforge_query_server_identity() {
++    std::string result;
++    std::string error;
++
++    if (!adb_query(
++            "host:host-features",
++            &result,
++            &error)) {
++        return false;
++    }
++
++    const FeatureSet features =
++            StringToFeatureSet(result);
++
++    for (const std::string& feature : features) {
++        if (feature == kTreeForgeHostIdentityFeature) {
++            return true;
++        }
++    }
++
++    return false;
++}
++
++
++// TreeForge presentation of AOSP's existing host:server-status reply.
++// No TreeForge-specific protobuf field or ADB protocol version is added.
++class TreeForgeServerInfoStreamsCallback
++    : public DefaultStandardStreamsCallback {
++  public:
++    explicit TreeForgeServerInfoStreamsCallback(
++            bool identity_verified)
++        : DefaultStandardStreamsCallback(nullptr, nullptr),
++          identity_verified_(identity_verified) {}
++
++    bool OnStdout(
++            const char* buffer,
++            size_t length) override {
++        return OnStream(
++            &output_,
++            nullptr,
++            buffer,
++            length,
++            false
++        );
++    }
++
++    int Done(int status) {
++        fprintf(stdout,
++                "\nServer:\n"
++                "  reachable: yes\n"
++                "  variant: %s\n"
++                "  identity: %s\n",
++                identity_verified_
++                        ? "treeforge"
++                        : "unverified",
++                identity_verified_
++                        ? "verified"
++                        : "unverified");
++
++        if (output_.size() < 4) {
++            fprintf(stdout,
++                    "  metadata: unavailable\n");
++            return status;
++        }
++
++        /*
++         * AOSP host replies prefix the serialized protobuf with
++         * four hexadecimal length bytes.
++         */
++        std::string binary_proto_bytes{
++                output_.substr(4)};
++
++        ::adb::proto::AdbServerStatus server;
++
++        if (!server.ParseFromString(
++                binary_proto_bytes)) {
++            fprintf(stdout,
++                    "  metadata: malformed\n");
++            return status;
++        }
++
++        fprintf(stdout,
++                "  version: %s\n"
++                "  build: %s\n"
++                "  executable: %s\n"
++                "  log: %s\n"
++                "  os: %s\n"
++                "  usb_backend: %s%s\n"
++                "  mdns_backend: %s%s\n",
++                server.version().c_str(),
++                server.build().c_str(),
++                server.executable_absolute_path().c_str(),
++                server.log_absolute_path().c_str(),
++                server.os().c_str(),
++                treeforge_usb_backend_name(
++                        server.usb_backend()),
++                server.usb_backend_forced()
++                        ? " (forced)"
++                        : "",
++                treeforge_mdns_backend_name(
++                        server.mdns_backend()),
++                server.mdns_backend_forced()
++                        ? " (forced)"
++                        : "");
++
++        return status;
++    }
++
++  private:
++    bool identity_verified_;
++    std::string output_;
++
++    DISALLOW_COPY_AND_ASSIGN(
++            TreeForgeServerInfoStreamsCallback);
++};
++
++
++static void treeforge_print_server_info() {
++    const bool identity_verified =
++            treeforge_query_server_identity();
++
++    std::string error;
++
++    unique_fd fd(
++        adb_connect(
++            nullptr,
++            "host:server-status",
++            &error
++        )
++    );
++
++    if (fd < 0) {
++        fprintf(stdout,
++                "\nServer:\n"
++                "  reachable: no\n"
++                "  variant: unavailable\n"
++                "  identity: unavailable\n"
++                "  error: %s\n",
++                error.c_str());
++        return;
++    }
++
++    TreeForgeServerInfoStreamsCallback callback(
++            identity_verified);
++
++    read_and_dump(
++        fd,
++        false,
++        &callback
++    );
++}
++
++
++/*
++ * Read exactly one adb service frame.
++ *
++ * The existing AOSP track-devices protobuf service emits:
++ *
++ *     4 ASCII hexadecimal length bytes
++ *     serialized adb::proto::Devices payload
++ *
++ * We consume only the initial snapshot and then close the client-side
++ * connection. No new host service or wire format is introduced.
++ */
++static bool treeforge_read_exact(
++        int fd,
++        void* buffer,
++        size_t length) {
++    char* cursor = static_cast<char*>(buffer);
++
++    while (length > 0) {
++        int rc = adb_read(fd, cursor, length);
++
++        if (rc <= 0) {
++            return false;
++        }
++
++        cursor += rc;
++        length -= rc;
++    }
++
++    return true;
++}
++
++
++static std::string treeforge_device_enum_name(
++        const ::adb::proto::Device& device,
++        const char* field_name) {
++    const auto* descriptor = device.GetDescriptor();
++
++    if (descriptor == nullptr) {
++        return "UNKNOWN";
++    }
++
++    const auto* field = descriptor->FindFieldByName(field_name);
++
++    if (field == nullptr) {
++        return "UNKNOWN";
++    }
++
++    const auto* reflection = device.GetReflection();
++
++    if (reflection == nullptr) {
++        return "UNKNOWN";
++    }
++
++    const auto* value = reflection->GetEnum(device, field);
++
++    if (value == nullptr) {
++        return "UNKNOWN";
++    }
++
++    return value->name();
++}
++
++
++static const char* treeforge_value_or_unknown(
++        const std::string& value) {
++    return value.empty() ? "<unknown>" : value.c_str();
++}
++
++
++static bool treeforge_transport_state_ready(
++        ::adb::proto::ConnectionState state) {
++    switch (state) {
++        case ::adb::proto::ConnectionState::BOOTLOADER:
++        case ::adb::proto::ConnectionState::DEVICE:
++        case ::adb::proto::ConnectionState::HOST:
++        case ::adb::proto::ConnectionState::RECOVERY:
++        case ::adb::proto::ConnectionState::SIDELOAD:
++        case ::adb::proto::ConnectionState::RESCUE:
++            return true;
++
++        default:
++            return false;
++    }
++}
++
++
++static const char* treeforge_selector_name(
++        TransportType transport_type,
++        const char* serial,
++        TransportId transport_id) {
++    if (transport_id != 0) {
++        return "transport-id";
++    }
++
++    if (serial != nullptr) {
++        return "serial";
++    }
++
++    if (transport_type == kTransportUsb) {
++        return "usb";
++    }
++
++    if (transport_type == kTransportLocal) {
++        return "socket";
++    }
++
++    return "any";
++}
++
++
++static const char* treeforge_selection_error_status(
++        const std::string& error) {
++    if (error.find("more than one") != std::string::npos) {
++        return "ambiguous";
++    }
++
++    if (error.find("unauthorized") != std::string::npos) {
++        return "unauthorized";
++    }
++
++    if (error.find("authorizing") != std::string::npos) {
++        return "authorizing";
++    }
++
++    if (error.find("connecting") != std::string::npos) {
++        return "connecting";
++    }
++
++    if (error.find("offline") != std::string::npos) {
++        return "offline";
++    }
++
++    if (
++        error.find("permission") != std::string::npos
++        || error.find("Permission") != std::string::npos
++    ) {
++        return "no-permission";
++    }
++
++    if (
++        error.find("not found") != std::string::npos
++        || error.find("no device") != std::string::npos
++        || error.find("no emulator") != std::string::npos
++    ) {
++        return "not-found";
++    }
++
++    return "error";
++}
++
++
++static void treeforge_print_transport_info(
++        TransportType transport_type,
++        const char* serial,
++        TransportId transport_id) {
++    std::string error;
++
++    /*
++     * Reuse AOSP's existing structured device-tracker service.
++     *
++     * We deliberately request only the first snapshot. Closing the
++     * returned fd unregisters this client from further tracking.
++     */
++    unique_fd fd(
++        adb_connect(
++            nullptr,
++            "host:track-devices-proto-binary",
++            &error
++        )
++    );
++
++    if (fd < 0) {
++        fprintf(stdout,
++                "\nTransports:\n"
++                "  available: no\n"
++                "  error: %s\n",
++                error.c_str());
++        return;
++    }
++
++    char length_hex[5] = {};
++
++    if (!treeforge_read_exact(
++            fd.get(),
++            length_hex,
++            4)) {
++        fprintf(stdout,
++                "\nTransports:\n"
++                "  available: no\n"
++                "  error: failed to read snapshot length\n");
++        return;
++    }
++
++    unsigned int payload_length = 0;
++
++    if (sscanf(
++            length_hex,
++            "%4x",
++            &payload_length) != 1) {
++        fprintf(stdout,
++                "\nTransports:\n"
++                "  available: no\n"
++                "  error: malformed snapshot length\n");
++        return;
++    }
++
++    static constexpr unsigned int
++        kTreeForgeMaximumTransportSnapshot =
++            16 * 1024 * 1024;
++
++    if (payload_length >
++        kTreeForgeMaximumTransportSnapshot) {
++        fprintf(stdout,
++                "\nTransports:\n"
++                "  available: no\n"
++                "  error: snapshot exceeds safety limit\n");
++        return;
++    }
++
++    std::string payload(
++        payload_length,
++        '\0'
++    );
++
++    if (
++        payload_length != 0
++        && !treeforge_read_exact(
++            fd.get(),
++            payload.data(),
++            payload.size()
++        )
++    ) {
++        fprintf(stdout,
++                "\nTransports:\n"
++                "  available: no\n"
++                "  error: failed to read snapshot payload\n");
++        return;
++    }
++
++    ::adb::proto::Devices devices;
++
++    if (!devices.ParseFromString(payload)) {
++        fprintf(stdout,
++                "\nTransports:\n"
++                "  available: no\n"
++                "  error: malformed Devices protobuf\n");
++        return;
++    }
++
++    fprintf(stdout,
++            "\nTransports:\n"
++            "  available: yes\n"
++            "  count: %d\n",
++            devices.device_size());
++
++    int index = 0;
++
++    for (const auto& device : devices.device()) {
++        ++index;
++
++        const std::string state =
++            treeforge_device_enum_name(
++                device,
++                "state"
++            );
++
++        const std::string connection =
++            treeforge_device_enum_name(
++                device,
++                "connection_type"
++            );
++
++        fprintf(stdout,
++                "\n"
++                "  [%d]\n"
++                "    serial: %s\n"
++                "    state: %s\n"
++                "    connection: %s\n"
++                "    bus_address: %s\n"
++                "    product: %s\n"
++                "    model: %s\n"
++                "    device: %s\n"
++                "    negotiated_speed_mbps: %lld\n"
++                "    max_speed_mbps: %lld\n"
++                "    transport_id: %lld\n",
++                index,
++                treeforge_value_or_unknown(
++                    device.serial()
++                ),
++                state.c_str(),
++                connection.c_str(),
++                treeforge_value_or_unknown(
++                    device.bus_address()
++                ),
++                treeforge_value_or_unknown(
++                    device.product()
++                ),
++                treeforge_value_or_unknown(
++                    device.model()
++                ),
++                treeforge_value_or_unknown(
++                    device.device()
++                ),
++                static_cast<long long>(
++                    device.negotiated_speed()
++                ),
++                static_cast<long long>(
++                    device.max_speed()
++                ),
++                static_cast<long long>(
++                    device.transport_id()
++                ));
++    }
++
++    int ready = 0;
++    int connecting = 0;
++    int authorizing = 0;
++    int unauthorized = 0;
++    int no_permission = 0;
++    int detached = 0;
++    int offline = 0;
++    int bootloader = 0;
++    int android_device = 0;
++    int host = 0;
++    int recovery = 0;
++    int sideload = 0;
++    int rescue = 0;
++    int any = 0;
++    int unknown = 0;
++
++    for (const auto& device : devices.device()) {
++        if (treeforge_transport_state_ready(device.state())) {
++            ++ready;
++        }
++
++        switch (device.state()) {
++            case ::adb::proto::ConnectionState::ANY:
++                ++any;
++                break;
++
++            case ::adb::proto::ConnectionState::CONNECTING:
++                ++connecting;
++                break;
++
++            case ::adb::proto::ConnectionState::AUTHORIZING:
++                ++authorizing;
++                break;
++
++            case ::adb::proto::ConnectionState::UNAUTHORIZED:
++                ++unauthorized;
++                break;
++
++            case ::adb::proto::ConnectionState::NOPERMISSION:
++                ++no_permission;
++                break;
++
++            case ::adb::proto::ConnectionState::DETACHED:
++                ++detached;
++                break;
++
++            case ::adb::proto::ConnectionState::OFFLINE:
++                ++offline;
++                break;
++
++            case ::adb::proto::ConnectionState::BOOTLOADER:
++                ++bootloader;
++                break;
++
++            case ::adb::proto::ConnectionState::DEVICE:
++                ++android_device;
++                break;
++
++            case ::adb::proto::ConnectionState::HOST:
++                ++host;
++                break;
++
++            case ::adb::proto::ConnectionState::RECOVERY:
++                ++recovery;
++                break;
++
++            case ::adb::proto::ConnectionState::SIDELOAD:
++                ++sideload;
++                break;
++
++            case ::adb::proto::ConnectionState::RESCUE:
++                ++rescue;
++                break;
++
++            default:
++                ++unknown;
++                break;
++        }
++    }
++
++    fprintf(stdout,
++            "\nHealth:\n"
++            "  ready: %d\n"
++            "  connecting: %d\n"
++            "  authorizing: %d\n"
++            "  unauthorized: %d\n"
++            "  no_permission: %d\n"
++            "  detached: %d\n"
++            "  offline: %d\n"
++            "  bootloader: %d\n"
++            "  device: %d\n"
++            "  host: %d\n"
++            "  recovery: %d\n"
++            "  sideload: %d\n"
++            "  rescue: %d\n"
++            "  any: %d\n"
++            "  unknown: %d\n",
++            ready,
++            connecting,
++            authorizing,
++            unauthorized,
++            no_permission,
++            detached,
++            offline,
++            bootloader,
++            android_device,
++            host,
++            recovery,
++            sideload,
++            rescue,
++            any,
++            unknown);
++
++    fprintf(stdout,
++            "\nSelection:\n"
++            "  selector: %s\n",
++            treeforge_selector_name(
++                transport_type,
++                serial,
++                transport_id
++            ));
++
++    if (serial != nullptr) {
++        fprintf(stdout,
++                "  requested_serial: %s\n",
++                serial);
++    }
++
++    if (transport_id != 0) {
++        fprintf(stdout,
++                "  requested_transport_id: %llu\n",
++                static_cast<unsigned long long>(
++                    transport_id
++                ));
++    }
++
++    /*
++     * Ask AOSP's own transport resolver which transport the current
++     * -s/-t/-d/-e/ANDROID_SERIAL selection resolves to.
++     *
++     * This is the same mechanism used by the stock "transport-id"
++     * command. It avoids reimplementing MatchesTarget(), ambiguity
++     * rules, connection-state rejection, or selector precedence.
++     */
++    TransportId resolved_transport_id = 0;
++    std::string selection_error;
++
++    unique_fd selection_fd(
++        adb_connect(
++            &resolved_transport_id,
++            "host:features",
++            &selection_error,
++            true
++        )
++    );
++
++    if (selection_fd < 0) {
++        fprintf(stdout,
++                "  status: %s\n"
++                "  error: %s\n",
++                treeforge_selection_error_status(
++                    selection_error
++                ),
++                selection_error.c_str());
++
++        return;
++    }
++
++    fprintf(stdout,
++            "  status: resolved\n"
++            "  transport_id: %llu\n",
++            static_cast<unsigned long long>(
++                resolved_transport_id
++            ));
++
++    const ::adb::proto::Device* selected = nullptr;
++
++    for (const auto& device : devices.device()) {
++        if (
++            static_cast<TransportId>(
++                device.transport_id()
++            ) == resolved_transport_id
++        ) {
++            selected = &device;
++            break;
++        }
++    }
++
++    if (selected == nullptr) {
++        /*
++         * The transport set can legitimately change between our
++         * snapshot and AOSP's selector resolution.
++         */
++        fprintf(stdout,
++                "  snapshot_match: no\n");
++        return;
++    }
++
++    fprintf(stdout,
++            "  snapshot_match: yes\n"
++            "  serial: %s\n"
++            "  state: %s\n"
++            "  connection: %s\n",
++            treeforge_value_or_unknown(
++                selected->serial()
++            ),
++            treeforge_device_enum_name(
++                *selected,
++                "state"
++            ).c_str(),
++            treeforge_device_enum_name(
++                *selected,
++                "connection_type"
++            ).c_str());
++}
++
++
+ // A class that prints out human readable form of the protobuf message for "track-app" service
+ // (received in binary format).
+ class TrackAppStreamsCallback : public DefaultStandardStreamsCallback {
+@@ -1752,6 +2465,40 @@
+         /* Fall through */
+         --argc;
+         ++argv;
++    }
++
++    /*
++     * TreeForge host-tool diagnostics.
++     *
++     * --local is guaranteed not to contact or start an adb server.
++     * Without --local, reuse AOSP's existing host:server-status
++     * service and protobuf to describe the compatible server.
++     */
++    if (!strcmp(argv[0], "treeforge-info")) {
++        bool local_only = false;
++
++        if (argc == 2 && !strcmp(argv[1], "--local")) {
++            local_only = true;
++        } else if (argc != 1) {
++            error_exit("usage: adb treeforge-info [--local]");
++        }
++
++        fprintf(stdout,
++                "TreeForge ADB\n"
++                "Variant: treeforge\n"
++                "AOSP baseline: android-15.0.0_r36\n");
++        fprintf(stdout, "%s", adb_version().c_str());
++
++        if (!local_only) {
++            treeforge_print_server_info();
++            treeforge_print_transport_info(
++                transport_type,
++                serial,
++                transport_id
++            );
++        }
++
++        return 0;
+     }
+ 
+     /* adb_connect() commands */

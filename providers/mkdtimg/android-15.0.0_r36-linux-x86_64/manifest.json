@@ -12,8 +12,20 @@
   ],
   "legal_files": [
     {
+      "path": "legal/LEGAL-SOURCES.json",
+      "sha256": "64bfc7f9a42d4d57240c4362a93529a192a78992e23cc5f565ad8576a4f43e6e"
+    },
+    {
       "path": "legal/NOTICE.txt",
       "sha256": "9b19479104432f4f0c00eaed6aa98b1c29bb00253c967fee81e2f159a5ab1dc7"
+    },
+    {
+      "path": "legal/upstream/system/libufdt/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "legal/upstream/system/libufdt/NOTICE",
+      "sha256": "c12447b044d68da79c63ba0b57301d62d18f22a55893a91a4a0a2869043b322d"
     }
   ],
   "name": "mkdtimg",

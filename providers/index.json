@@ -2,66 +2,183 @@
   "android_release": "android-15.0.0_r36",
   "distribution": "GITHUB_RELEASE_ASSET",
   "providers": {
-    "aosp-adb": {
-      "canonical_payload": "bin/adb",
-      "canonical_payload_sha256": "1cf16f6b87dc63e95a83b3b6dce6711fc778b1c04565beb58e182fc21a6910f3",
-      "classification": "AOSP_REFERENCE_PROVIDER",
+    "android-image-tools": {
       "distribution": "GITHUB_RELEASE_ASSET",
-      "family": "adb",
-      "kind": "host",
-      "metadata_root": "providers/aosp-adb/android-15.0.0_r36-linux-x86_64",
-      "release": "android-15.0.0_r36-linux-x86_64"
+      "releases": [
+        {
+          "consumer_bundle": true,
+          "manifest_schema": 2,
+          "metadata_root": "providers/android-image-tools/android-15.0.0_r36-linux-x86_64",
+          "release": "android-15.0.0_r36-linux-x86_64"
+        }
+      ]
+    },
+    "aosp-adb": {
+      "distribution": "GITHUB_RELEASE_ASSET",
+      "releases": [
+        {
+          "consumer_bundle": true,
+          "manifest_schema": 2,
+          "metadata_root": "providers/aosp-adb/android-15.0.0_r36-linux-x86_64",
+          "release": "android-15.0.0_r36-linux-x86_64"
+        }
+      ]
     },
     "aosp-adbd": {
-      "canonical_payload": "rootfs/system/apex/com.android.adbd.capex",
-      "canonical_payload_sha256": "77999007b945dcf69d87f2f23c56276d7f3e7dbc9f5b0d5bc940c72daa3302f4",
-      "classification": "AOSP_REFERENCE_PROVIDER",
       "distribution": "GITHUB_RELEASE_ASSET",
-      "family": "adb",
-      "kind": "runtime",
-      "metadata_root": "providers/aosp-adbd/android-15.0.0_r36-arm64",
-      "release": "android-15.0.0_r36-arm64"
+      "releases": [
+        {
+          "consumer_bundle": false,
+          "manifest_schema": 1,
+          "metadata_root": "providers/aosp-adbd/android-15.0.0_r36-arm64",
+          "release": "android-15.0.0_r36-arm64"
+        }
+      ]
     },
     "aosp-adbd-recovery": {
-      "canonical_payload": "rootfs/system/bin/adbd",
-      "canonical_payload_sha256": "555ecbd819c6410811934236b02bc1ead86ffc10b5a2d8811b221a2dfc3863e1",
-      "classification": "AOSP_REFERENCE_PROVIDER",
       "distribution": "GITHUB_RELEASE_ASSET",
-      "family": "adb",
-      "kind": "runtime",
-      "metadata_root": "providers/aosp-adbd-recovery/android-15.0.0_r36-arm64",
-      "release": "android-15.0.0_r36-arm64"
+      "releases": [
+        {
+          "consumer_bundle": false,
+          "manifest_schema": 1,
+          "metadata_root": "providers/aosp-adbd-recovery/android-15.0.0_r36-arm64",
+          "release": "android-15.0.0_r36-arm64"
+        }
+      ]
     },
     "aosp-fastboot": {
-      "canonical_payload": "bin/fastboot",
-      "canonical_payload_sha256": "340c23293ee6f3fb60d689e8c2042d23ef969d511981c2df3c423973d6ff4898",
-      "classification": "AOSP_REFERENCE_PROVIDER",
       "distribution": "GITHUB_RELEASE_ASSET",
-      "family": "fastboot",
-      "kind": "host",
-      "metadata_root": "providers/aosp-fastboot/android-15.0.0_r36-linux-x86_64",
-      "release": "android-15.0.0_r36-linux-x86_64"
+      "releases": [
+        {
+          "consumer_bundle": true,
+          "manifest_schema": 2,
+          "metadata_root": "providers/aosp-fastboot/android-15.0.0_r36-linux-x86_64",
+          "release": "android-15.0.0_r36-linux-x86_64"
+        }
+      ]
     },
     "aosp-fastbootd": {
-      "canonical_payload": "rootfs/system/bin/fastbootd",
-      "canonical_payload_sha256": "36079d453dda5f10a23dcf7f09b5dcb886f59fe983f12b658a1c0830c2f75bec",
-      "classification": "AOSP_REFERENCE_PROVIDER",
       "distribution": "GITHUB_RELEASE_ASSET",
-      "family": "fastboot",
-      "kind": "runtime",
-      "metadata_root": "providers/aosp-fastbootd/android-15.0.0_r36-arm64",
-      "release": "android-15.0.0_r36-arm64"
+      "releases": [
+        {
+          "consumer_bundle": false,
+          "manifest_schema": 1,
+          "metadata_root": "providers/aosp-fastbootd/android-15.0.0_r36-arm64",
+          "release": "android-15.0.0_r36-arm64"
+        }
+      ]
+    },
+    "avbtool": {
+      "distribution": "GITHUB_RELEASE_ASSET",
+      "releases": [
+        {
+          "consumer_bundle": true,
+          "manifest_schema": 2,
+          "metadata_root": "providers/avbtool/android-15.0.0_r36-linux-x86_64",
+          "release": "android-15.0.0_r36-linux-x86_64"
+        }
+      ]
+    },
+    "create_snapshot": {
+      "distribution": "GITHUB_RELEASE_ASSET",
+      "releases": [
+        {
+          "consumer_bundle": true,
+          "manifest_schema": 2,
+          "metadata_root": "providers/create_snapshot/android-15.0.0_r36-linux-x86_64",
+          "release": "android-15.0.0_r36-linux-x86_64"
+        }
+      ]
+    },
+    "inspect_cow": {
+      "distribution": "GITHUB_RELEASE_ASSET",
+      "releases": [
+        {
+          "consumer_bundle": true,
+          "manifest_schema": 2,
+          "metadata_root": "providers/inspect_cow/android-15.0.0_r36-linux-x86_64",
+          "release": "android-15.0.0_r36-linux-x86_64"
+        }
+      ]
+    },
+    "mkdtimg": {
+      "distribution": "GITHUB_RELEASE_ASSET",
+      "releases": [
+        {
+          "consumer_bundle": true,
+          "manifest_schema": 2,
+          "metadata_root": "providers/mkdtimg/android-15.0.0_r36-linux-x86_64",
+          "release": "android-15.0.0_r36-linux-x86_64"
+        }
+      ]
+    },
+    "snapuserd_ramdisk": {
+      "distribution": "GITHUB_RELEASE_ASSET",
+      "releases": [
+        {
+          "consumer_bundle": false,
+          "manifest_schema": 1,
+          "metadata_root": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64",
+          "release": "android-15.0.0_r36-arm64"
+        }
+      ]
+    },
+    "treeforge-adb": {
+      "distribution": "GITHUB_RELEASE_ASSET",
+      "releases": [
+        {
+          "consumer_bundle": true,
+          "manifest_schema": 2,
+          "metadata_root": "providers/treeforge-adb/android-15.0.0_r36-linux-x86_64",
+          "release": "android-15.0.0_r36-linux-x86_64"
+        }
+      ]
+    },
+    "treeforge-adbd": {
+      "distribution": "GITHUB_RELEASE_ASSET",
+      "releases": [
+        {
+          "consumer_bundle": false,
+          "manifest_schema": 1,
+          "metadata_root": "providers/treeforge-adbd/android-15.0.0_r36-arm64",
+          "release": "android-15.0.0_r36-arm64"
+        }
+      ]
+    },
+    "treeforge-fastboot": {
+      "distribution": "GITHUB_RELEASE_ASSET",
+      "releases": [
+        {
+          "consumer_bundle": true,
+          "manifest_schema": 2,
+          "metadata_root": "providers/treeforge-fastboot/android-15.0.0_r36-linux-x86_64",
+          "release": "android-15.0.0_r36-linux-x86_64"
+        }
+      ]
+    },
+    "treeforge-fastbootd": {
+      "distribution": "GITHUB_RELEASE_ASSET",
+      "releases": [
+        {
+          "consumer_bundle": false,
+          "manifest_schema": 1,
+          "metadata_root": "providers/treeforge-fastbootd/android-15.0.0_r36-arm64",
+          "release": "android-15.0.0_r36-arm64"
+        }
+      ]
     },
     "treeforge-vabc-coordinator": {
-      "canonical_payload": "rootfs/system/bin/treeforge-vabc-coordinator",
-      "canonical_payload_sha256": "666417386eb6c0ba9d1c3e197b585879d3bc05cdb9ed4c9f1d40944ed969d393",
-      "classification": "TREEFORGE_MODIFIED_AOSP_PROVIDER",
       "distribution": "GITHUB_RELEASE_ASSET",
-      "family": "vabc",
-      "kind": "runtime",
-      "metadata_root": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64",
-      "release": "android-15.0.0_r36-arm64"
+      "releases": [
+        {
+          "consumer_bundle": false,
+          "manifest_schema": 1,
+          "metadata_root": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64",
+          "release": "android-15.0.0_r36-arm64"
+        }
+      ]
     }
   },
-  "schema": 1
+  "repository": "TreeForgeDEV/treeforge_toolchain",
+  "schema": 2
 }
