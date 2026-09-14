@@ -4,8 +4,8 @@
   "files": [
     {
       "path": ".gitignore",
-      "bytes": 167,
-      "sha256": "a69582aae86e7ed865bad47b863ab01ad60ae1e5eb31d94b9a4db2922abd1d66"
+      "bytes": 175,
+      "sha256": "6739ed22ec77909cbbcec63c4f63b6da618699cabb520a44d18181d52a6b4ff8"
     },
     {
       "path": "README.md",
@@ -46,6 +46,11 @@
       "path": "manifests/android-15.0.0_r36/tool-source-ownership.json",
       "bytes": 798,
       "sha256": "ab1a76dd297ca8126dfef1c8b5d2192fea465518e05e6a3958533f601273e267"
+    },
+    {
+      "path": "manifests/kernel/android-15.0.0_r0.94/google-providers.json",
+      "bytes": 2537,
+      "sha256": "19e1ccdd924c230caecee8cffd941ef736fd96a0a464307004d062c2199785bd"
     },
     {
       "path": "providers/android-image-tools/android-15.0.0_r36-linux-x86_64/PAYLOAD-NOT-IN-GIT.md",
@@ -135,7 +140,7 @@
     {
       "path": "providers/aosp-adbd-recovery/android-15.0.0_r36-arm64/manifest.json",
       "bytes": 13861,
-      "sha256": "5b47e85e1d40790a8365b1bfce150380906ca1b0025a4b60e3e80612947ab76b"
+      "sha256": "6c8a582b073c85639df8f3a6d898b6f309da7726fa76b60a486e2029308ed450"
     },
     {
       "path": "providers/aosp-adbd/android-15.0.0_r36-arm64/MODIFICATIONS.txt",
@@ -169,8 +174,8 @@
     },
     {
       "path": "providers/aosp-adbd/android-15.0.0_r36-arm64/manifest.json",
-      "bytes": 2046,
-      "sha256": "43c29f5c1de1fda3a6e171495a2676f5a20b7ddeca1d82e8ed6b88b6ed5d9a52"
+      "bytes": 2031,
+      "sha256": "9ede04e4715a0a4c2c867a8f95bcbed3936ab50787fcef3e7c9d4748cc085aa7"
     },
     {
       "path": "providers/aosp-fastboot/android-15.0.0_r36-linux-x86_64/PAYLOAD-NOT-IN-GIT.md",
@@ -240,7 +245,7 @@
     {
       "path": "providers/aosp-fastbootd/android-15.0.0_r36-arm64/manifest.json",
       "bytes": 36867,
-      "sha256": "b059f042be480e39018045d96f180010c65c6a7d2e5ecbd65c54e32d448c559f"
+      "sha256": "f2169e61753b5dd502f53e827772af1a84ab75a8812cc7461be9878ca762d95f"
     },
     {
       "path": "providers/avbtool/android-15.0.0_r36-linux-x86_64/PAYLOAD-NOT-IN-GIT.md",
@@ -579,8 +584,8 @@
     },
     {
       "path": "providers/snapuserd_ramdisk/android-15.0.0_r36-arm64/manifest.json",
-      "bytes": 834,
-      "sha256": "5e46e7719616d6e01dc11f94cffb47d801355680dfa68da2ac73f2eef015836c"
+      "bytes": 826,
+      "sha256": "a198e6ebc176b48d41521e5a8ba556161125f2668b4d66502d056b38e3d9cdda"
     },
     {
       "path": "providers/treeforge-adb/android-15.0.0_r36-linux-x86_64/manifest.json",
@@ -710,7 +715,7 @@
     {
       "path": "providers/treeforge-vabc-coordinator/android-15.0.0_r36-arm64/manifest.json",
       "bytes": 2694,
-      "sha256": "7ed06571d1e68dc1677c0e7b074921a606efdd6327846dbfa21d34add7ad4f6d"
+      "sha256": "906ccacfded1a944957c8bc505ac69f2b4227ce71214a0b4d2fe1792ec0bd0bd"
     },
     {
       "path": "scripts/audit-dependencies",
@@ -723,14 +728,29 @@
       "sha256": "6c7c471c041f590ad2a5f264eec1922545757a4ced3ef53934abb6e117c54282"
     },
     {
+      "path": "scripts/kernel-provider-cache",
+      "bytes": 11449,
+      "sha256": "b9c5c8dd0480585f93b43ad5ceff45a4f79b7761e523bc87a927c97fe8790fc0"
+    },
+    {
+      "path": "scripts/kernel-provider-materialize",
+      "bytes": 9375,
+      "sha256": "81c10575ed30799751b2c36efdbef90224a09a0d4d8794724627e76e84b36765"
+    },
+    {
+      "path": "scripts/kernel-treeforge-tools",
+      "bytes": 13900,
+      "sha256": "093d46994d077ef18e74da73b2478da5169f211894b5ba6a4dbc0604cfa2f6d7"
+    },
+    {
       "path": "scripts/package",
-      "bytes": 32133,
-      "sha256": "9ef3cf48df02c9c31a1d8b8100b615697da14cdd111c60827de03f246df892a0"
+      "bytes": 32565,
+      "sha256": "53127cdac910c911cf0ab0abc898733b4fb0f5b3ced88d8eeac14f2a66876b9a"
     },
     {
       "path": "scripts/package_consumer.py",
-      "bytes": 7252,
-      "sha256": "048400265579bafc7844b1993a995687458312245b39e4678985d8bc6391c46b"
+      "bytes": 8592,
+      "sha256": "6e606d49de20faca84c915a76dd4bacc7f8c48b24190cbb5de5289f5a413508b"
     },
     {
       "path": "scripts/refresh-provider-index",
@@ -754,8 +774,8 @@
     },
     {
       "path": "scripts/verify",
-      "bytes": 12674,
-      "sha256": "d71afc1cde2833f278469cf4bedc43ecbd350972f5c40ce248ec56f4a7bfa5d5"
+      "bytes": 15371,
+      "sha256": "ffb4bc2f64186cfdb9eb047d95bf28ee3edc8bf7d5805bed50532c13a1b643d1"
     },
     {
       "path": "tools/adb/baseline/aosp-adb.json",
