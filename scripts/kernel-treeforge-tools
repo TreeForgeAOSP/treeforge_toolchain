@@ -1,0 +1,672 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import shutil
+import sys
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+CACHE_ROOT = (
+    Path.home()
+    / ".cache"
+    / "treeforge"
+    / "android-host-provider"
+)
+
+KERNEL_CACHE = (
+    Path.home()
+    / ".cache"
+    / "treeforge"
+    / "providers"
+    / "kernel"
+)
+
+RESOLVED_FILE = (
+    KERNEL_CACHE
+    / "treeforge-tools.json"
+)
+
+TOOL_MAP = {
+    "mkbootimg": (
+        "android-image-tools",
+        "mkbootimg",
+    ),
+    "unpack_bootimg": (
+        "android-image-tools",
+        "unpack_bootimg",
+    ),
+    "avbtool": (
+        "avbtool",
+        "avbtool",
+    ),
+    "adb": (
+        "treeforge-adb",
+        "adb",
+    ),
+    "fastboot": (
+        "treeforge-fastboot",
+        "fastboot",
+    ),
+}
+
+
+class ToolError(RuntimeError):
+    pass
+
+
+def sha256(path: Path) -> str:
+    h = hashlib.sha256()
+
+    with path.open("rb") as f:
+        for chunk in iter(
+            lambda: f.read(1024 * 1024),
+            b"",
+        ):
+            h.update(chunk)
+
+    return h.hexdigest()
+
+
+def provider_manifest(
+    provider: str,
+) -> tuple[Path, dict]:
+    root = ROOT / "providers" / provider
+
+    manifests = sorted(
+        root.glob(
+            "android-15.0.0_r36-linux-x86_64/"
+            "manifest.json"
+        )
+    )
+
+    if len(manifests) != 1:
+        raise ToolError(
+            f"{provider}: expected exactly one "
+            f"Android 15 r36 linux-x86_64 manifest; "
+            f"found {len(manifests)}"
+        )
+
+    path = manifests[0]
+
+    try:
+        data = json.loads(
+            path.read_text(encoding="utf-8")
+        )
+    except Exception as exc:
+        raise ToolError(
+            f"{provider}: invalid manifest: {exc}"
+        ) from exc
+
+    if data.get("schema") != 2:
+        raise ToolError(
+            f"{provider}: expected schema 2, got "
+            f"{data.get('schema')!r}"
+        )
+
+    if data.get("name") != provider:
+        raise ToolError(
+            f"{provider}: manifest identity mismatch"
+        )
+
+    if data.get("platform") != "linux":
+        raise ToolError(
+            f"{provider}: expected linux provider"
+        )
+
+    if data.get("architecture") != "x86_64":
+        raise ToolError(
+            f"{provider}: expected x86_64 provider"
+        )
+
+    return path, data
+
+
+def executable_record(
+    manifest: dict,
+    executable: str,
+) -> dict:
+    records = manifest.get("executables")
+
+    if not isinstance(records, list):
+        raise ToolError(
+            "provider manifest has no executable list"
+        )
+
+    matches = [
+        record
+        for record in records
+        if isinstance(record, dict)
+        and record.get("name") == executable
+    ]
+
+    if len(matches) != 1:
+        raise ToolError(
+            f"expected exactly one executable record "
+            f"for {executable}; found {len(matches)}"
+        )
+
+    record = matches[0]
+
+    if not record.get("path"):
+        raise ToolError(
+            f"{executable}: manifest path missing"
+        )
+
+    if not record.get("sha256"):
+        raise ToolError(
+            f"{executable}: manifest SHA-256 missing"
+        )
+
+    return record
+
+
+def cache_root(
+    provider: str,
+    manifest: dict,
+) -> Path:
+    release = manifest.get("release")
+
+    if not isinstance(release, str) or not release:
+        raise ToolError(
+            f"{provider}: manifest release missing"
+        )
+
+    return (
+        CACHE_ROOT
+        / provider
+        / release
+    )
+
+
+def stage_root(
+    provider: str,
+    manifest: dict,
+) -> Path:
+    release = manifest["release"]
+
+    return (
+        ROOT
+        / "dist"
+        / "stage"
+        / f"{provider}-{release}"
+    )
+
+
+PAYLOAD_FAMILIES = {
+    "executables",
+    "runtime_files",
+}
+
+
+def provider_record_path(
+    *,
+    root: Path,
+    family: str,
+    relative: str,
+) -> Path:
+    """
+    Resolve one manifest record inside a provider package.
+
+    TreeForge provider packages keep runtime payload files under
+    payload/, while legal/provenance/package metadata remain at the
+    package root.
+
+    The root-relative fallback preserves compatibility with an
+    already-materialized legacy payload-only provider cache.
+    """
+
+    if family in PAYLOAD_FAMILIES:
+        packaged = root / "payload" / relative
+
+        if packaged.is_file():
+            return packaged
+
+    return root / relative
+
+
+def provider_payload_root(root: Path) -> Path:
+    """
+    Return the runtime payload directory for a provider package.
+    """
+
+    packaged = root / "payload"
+
+    if packaged.is_dir():
+        return packaged
+
+    return root
+
+
+def iter_hash_records(
+    manifest: dict,
+):
+    for family in (
+        "executables",
+        "runtime_files",
+        "legal_files",
+        "provenance_files",
+    ):
+        records = manifest.get(family, [])
+
+        if not isinstance(records, list):
+            continue
+
+        for record in records:
+            if not isinstance(record, dict):
+                continue
+
+            path = record.get("path")
+            digest = record.get("sha256")
+
+            if path and digest:
+                yield family, path, digest
+
+
+def verify_payload(
+    *,
+    provider: str,
+    root: Path,
+    manifest: dict,
+) -> None:
+    if not root.is_dir():
+        raise ToolError(
+            f"{provider}: payload root missing: {root}"
+        )
+
+    checked = 0
+
+    for family, relative, expected in (
+        iter_hash_records(manifest)
+    ):
+        path = provider_record_path(
+            root=root,
+            family=family,
+            relative=relative,
+        )
+
+        if not path.is_file():
+            raise ToolError(
+                f"{provider}: missing {family} file: "
+                f"{relative}"
+            )
+
+        actual = sha256(path)
+
+        if actual != expected:
+            raise ToolError(
+                f"{provider}: hash mismatch: {relative}\n"
+                f"expected={expected}\n"
+                f"actual={actual}"
+            )
+
+        checked += 1
+
+    if checked == 0:
+        raise ToolError(
+            f"{provider}: manifest contains no "
+            "verifiable payload records"
+        )
+
+
+def payload_state(
+    provider: str,
+    manifest: dict,
+) -> tuple[str, Path | None]:
+    cache = cache_root(provider, manifest)
+
+    if cache.is_dir():
+        try:
+            verify_payload(
+                provider=provider,
+                root=cache,
+                manifest=manifest,
+            )
+            return "CACHED", cache
+
+        except ToolError:
+            return "INVALID_CACHE", cache
+
+    stage = stage_root(provider, manifest)
+
+    if stage.is_dir():
+        try:
+            verify_payload(
+                provider=provider,
+                root=stage,
+                manifest=manifest,
+            )
+            return "STAGED", stage
+
+        except ToolError:
+            return "INVALID_STAGE", stage
+
+    return "MISSING", None
+
+
+def materialize_provider(
+    provider: str,
+    manifest: dict,
+) -> Path:
+    cache = cache_root(provider, manifest)
+
+    if cache.exists():
+        verify_payload(
+            provider=provider,
+            root=cache,
+            manifest=manifest,
+        )
+        return cache
+
+    stage = stage_root(provider, manifest)
+
+    verify_payload(
+        provider=provider,
+        root=stage,
+        manifest=manifest,
+    )
+
+    cache.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    temporary = cache.parent / (
+        f".{cache.name}.partial-{os.getpid()}"
+    )
+
+    if temporary.exists():
+        shutil.rmtree(temporary)
+
+    try:
+        shutil.copytree(
+            stage,
+            temporary,
+            symlinks=True,
+        )
+
+        verify_payload(
+            provider=provider,
+            root=temporary,
+            manifest=manifest,
+        )
+
+        temporary.rename(cache)
+
+    except Exception:
+        if temporary.exists():
+            shutil.rmtree(temporary)
+        raise
+
+    return cache
+
+
+def resolve_all(
+    *,
+    prepare: bool,
+) -> dict:
+    resolved_tools: dict[str, dict] = {}
+    provider_roots: dict[str, str] = {}
+    library_dirs: list[str] = []
+
+    loaded: dict[str, tuple[Path, dict]] = {}
+
+    for tool, (
+        provider,
+        executable,
+    ) in TOOL_MAP.items():
+
+        if provider not in loaded:
+            manifest_path, manifest = (
+                provider_manifest(provider)
+            )
+
+            if prepare:
+                root = materialize_provider(
+                    provider,
+                    manifest,
+                )
+            else:
+                state, root = payload_state(
+                    provider,
+                    manifest,
+                )
+
+                if root is None:
+                    raise ToolError(
+                        f"{provider}: payload unavailable"
+                    )
+
+                if state not in {
+                    "CACHED",
+                    "STAGED",
+                }:
+                    raise ToolError(
+                        f"{provider}: {state}: {root}"
+                    )
+
+            verify_payload(
+                provider=provider,
+                root=root,
+                manifest=manifest,
+            )
+
+            loaded[provider] = (
+                manifest_path,
+                manifest,
+            )
+
+            provider_roots[provider] = str(root)
+
+            lib64 = provider_payload_root(root) / "lib64"
+
+            if lib64.is_dir():
+                library_dirs.append(str(lib64))
+
+        manifest_path, manifest = loaded[provider]
+        root = Path(provider_roots[provider])
+
+        record = executable_record(
+            manifest,
+            executable,
+        )
+
+        path = provider_record_path(
+            root=root,
+            family="executables",
+            relative=record["path"],
+        )
+
+        actual = sha256(path)
+        expected = record["sha256"]
+
+        if actual != expected:
+            raise ToolError(
+                f"{tool}: executable SHA mismatch"
+            )
+
+        if not os.access(path, os.X_OK):
+            raise ToolError(
+                f"{tool}: executable bit missing: {path}"
+            )
+
+        resolved_tools[tool] = {
+            "provider": provider,
+            "release": manifest["release"],
+            "manifest": str(manifest_path),
+            "path": str(path),
+            "sha256": actual,
+        }
+
+    return {
+        "schema": 1,
+        "family": "treeforge-kernel-host-tools",
+        "tools": resolved_tools,
+        "provider_roots": provider_roots,
+        "runtime": {
+            "library_dirs": sorted(
+                set(library_dirs)
+            )
+        },
+    }
+
+
+def command_status() -> int:
+    print("TreeForge Kernel Host Tools")
+    print()
+
+    providers_seen = set()
+
+    for tool, (
+        provider,
+        executable,
+    ) in TOOL_MAP.items():
+
+        manifest_path, manifest = (
+            provider_manifest(provider)
+        )
+
+        state, root = payload_state(
+            provider,
+            manifest,
+        )
+
+        if provider not in providers_seen:
+            print(
+                f"{provider:24s} "
+                f"{state:14s} "
+                f"{root if root else '-'}"
+            )
+            providers_seen.add(provider)
+
+        if root is not None and state in {
+            "CACHED",
+            "STAGED",
+        }:
+            record = executable_record(
+                manifest,
+                executable,
+            )
+
+            path = provider_record_path(
+                root=root,
+                family="executables",
+                relative=record["path"],
+            )
+
+            okay = (
+                path.is_file()
+                and sha256(path)
+                == record["sha256"]
+            )
+
+            print(
+                f"  {tool:20s} "
+                f"{'READY' if okay else 'FAIL':6s} "
+                f"{path}"
+            )
+
+    return 0
+
+
+def command_prepare() -> int:
+    result = resolve_all(prepare=True)
+
+    RESOLVED_FILE.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    RESOLVED_FILE.write_text(
+        json.dumps(
+            result,
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    print("TreeForge Kernel Host Tools")
+    print()
+
+    for name, record in result["tools"].items():
+        print(
+            f"{name:20s} READY "
+            f"{record['path']}"
+        )
+
+    print()
+    print(f"Resolved contract: {RESOLVED_FILE}")
+
+    return 0
+
+
+def command_verify() -> int:
+    result = resolve_all(prepare=False)
+
+    print("TreeForge Kernel Host Tool Verification")
+    print()
+
+    for name, record in result["tools"].items():
+        print(
+            f"{name:20s} PASS  "
+            f"{record['sha256']}"
+        )
+
+    return 0
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Resolve existing TreeForge toolchain "
+            "providers for the kernel workflow."
+        )
+    )
+
+    parser.add_argument(
+        "command",
+        choices=(
+            "status",
+            "prepare",
+            "verify",
+        ),
+    )
+
+    return parser.parse_args()
+
+
+def main() -> int:
+    args = parse_args()
+
+    try:
+        if args.command == "status":
+            return command_status()
+
+        if args.command == "prepare":
+            return command_prepare()
+
+        if args.command == "verify":
+            return command_verify()
+
+        raise ToolError(
+            f"unsupported command: {args.command}"
+        )
+
+    except ToolError as exc:
+        print(
+            f"kernel-treeforge-tools: {exc}",
+            file=sys.stderr,
+        )
+        return 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

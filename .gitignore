@@ -11,7 +11,7 @@
 *.tmp
 *.tar
 *.tar.zst
-
+/.smoke/
 # Python
 __pycache__/
 *.pyc
