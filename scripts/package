@@ -1244,14 +1244,41 @@ def main() -> int:
     ASSETS.mkdir(parents=True)
     REPORTS.mkdir(parents=True)
 
+    requested_provider = (
+        os.environ.get(
+            "TREEFORGE_PACKAGE_PROVIDER"
+        )
+    )
+
+    package_providers = PROVIDERS
+
+    if requested_provider:
+        package_providers = tuple(
+            provider
+            for provider in PROVIDERS
+            if provider.provider_id
+            == requested_provider
+        )
+
+        if not package_providers:
+            die(
+                "unknown TREEFORGE_PACKAGE_PROVIDER: "
+                f"{requested_provider}"
+            )
+
+        print(
+            "package_provider_filter="
+            f"{requested_provider}"
+        )
+
     index_records = []
 
     for number, provider in enumerate(
-        PROVIDERS,
+        package_providers,
         start=1,
     ):
         print(
-            f"[{number:02d}/{len(PROVIDERS):02d}] "
+            f"[{number:02d}/{len(package_providers):02d}] "
             f"{provider.provider_id}"
         )
 
