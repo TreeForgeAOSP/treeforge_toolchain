@@ -51,6 +51,11 @@ AOSP_RUNTIME = ROOT / "out/build/aosp/arm64"
 TREEFORGE_HOST = ROOT / "out/build/treeforge/linux-x86_64"
 TREEFORGE_RUNTIME = ROOT / "out/build/treeforge/arm64"
 
+TREEFORGE_SOURCE = (
+    ROOT
+    / "work/android-15.0.0_r36-treeforge"
+)
+
 AOSP_PRODUCT = AOSP_RUNTIME / "target/product/module_arm64"
 TREEFORGE_PRODUCT = TREEFORGE_RUNTIME / "target/product/module_arm64"
 
@@ -202,10 +207,9 @@ PROVIDERS = (
         "avbtool",
         "linux-x86_64",
         "treeforge",
-        "host-single",
+        "host-python-source",
         "avbtool",
         ("external/avb",),
-        host_binary_name="avbtool",
         comparison_name="avbtool",
     ),
     Provider(
@@ -351,11 +355,12 @@ def release_revision(
     return RELEASE_REVISION
 
 
-def release_tag(provider: Provider) -> str:
+def release_tag(
+    provider: Provider,
+) -> str:
     return (
         f"{provider.provider_id}/"
-        f"{ANDROID_RELEASE}-"
-        f"{release_revision(provider)}"
+        f"{ANDROID_RELEASE}-1"
     )
 
 
@@ -878,7 +883,39 @@ def package_payload(
 
     source_files: list[Path] = []
 
-    if provider.kind == "host-single":
+    if provider.kind == "host-python-source":
+        if len(provider.source_projects) != 1:
+            die(
+                f"{provider.provider_id}: "
+                "host-python-source requires exactly one "
+                "source project"
+            )
+
+        source = (
+            TREEFORGE_SOURCE
+            / provider.source_projects[0]
+            / f"{provider.module}.py"
+        )
+
+        destination = (
+            payload
+            / "bin"
+            / provider.module
+        )
+
+        copy_file(
+            source,
+            destination,
+        )
+
+        # Python source tools remain directly executable through
+        # their upstream shebang while also remaining importable by
+        # consumers such as Boot Image's exact-order VBMeta path.
+        destination.chmod(0o755)
+
+        source_files.append(source)
+
+    elif provider.kind == "host-single":
         assert provider.host_binary_name is not None
 
         source = host_binary(
