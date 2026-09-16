@@ -1388,9 +1388,14 @@ def main() -> int:
         )
         print()
 
-    if len(index_records) != 17:
+    expected_provider_count = len(
+        package_providers
+    )
+
+    if len(index_records) != expected_provider_count:
         die(
-            "expected 17 provider packages, "
+            f"expected {expected_provider_count} "
+            "provider packages, "
             f"got {len(index_records)}"
         )
 
