@@ -145,6 +145,17 @@
         }
       ]
     },
+    "treeforge-adbd-chromiumos": {
+      "distribution": "GITHUB_RELEASE_ASSET",
+      "releases": [
+        {
+          "consumer_bundle": false,
+          "manifest_schema": 1,
+          "metadata_root": "providers/treeforge-adbd-chromiumos/android-15.0.0_r36-arm64",
+          "release": "android-15.0.0_r36-arm64"
+        }
+      ]
+    },
     "treeforge-fastboot": {
       "distribution": "GITHUB_RELEASE_ASSET",
       "releases": [

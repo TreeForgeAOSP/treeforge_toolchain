@@ -1,0 +1,43 @@
+TreeForge ChromiumOS Early-Userspace ADB Provider
+
+Provider:
+  treeforge-adbd-chromiumos
+
+Build module:
+  adbd.treeforge_chromiumos
+
+Binary:
+  treeforge-adbd-chromiumos
+
+Architecture:
+  arm64
+
+Build product:
+  module_arm64-trunk_staging-eng
+
+Source platform:
+  AOSP Android
+
+Source release:
+  android-15.0.0_r36
+
+Source project:
+  platform/packages/modules/adb
+
+Source revision:
+  a877adddefdf011bfb5d4045919c6df3d3727ed3
+
+TreeForge runtime target:
+  ChromiumOS early userspace
+
+Compile-time runtime profile:
+  TREEFORGE_CHROMIUMOS_EARLY_USERSPACE=1
+
+TreeForge source delta:
+  PATCHES/treeforge-chromiumos-early-userspace-adbd.patch
+
+Capability/security reference:
+  CAPABILITIES.md
+
+This provider remains derived from AOSP adbd and retains the
+standard ADB wire protocol and FunctionFS implementation.

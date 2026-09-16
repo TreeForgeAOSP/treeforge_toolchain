@@ -1,0 +1,33 @@
+TreeForge modifications to AOSP adbd for ChromiumOS early userspace
+
+The provider is built from AOSP android-15.0.0_r36
+packages/modules/adb.
+
+TreeForge maintains the delta as:
+
+  treeforge-chromiumos-early-userspace-adbd.patch
+
+Primary changes:
+
+- Adds module adbd.treeforge_chromiumos.
+- Adds TREEFORGE_CHROMIUMOS_EARLY_USERSPACE profile.
+- Keeps the daemon running as UID/GID 0.
+- Removes Android property-service requirements from startup.
+- Uses static TreeForge/ChromiumOS ADB CNXN identity.
+- Disables Android auth-framework integration for bring-up.
+- Retains standard ADB TLS/protocol implementation.
+- Disables Android watchdog accounting for this profile.
+- Uses USB FunctionFS without Android USB property lifecycle.
+- Leaves configfs/UDC ownership to TreeForge PID1.
+- Disables automatic TCP/VSOCK startup.
+- Disables JDWP initialization.
+- Uses a root early-userspace shell environment with TMPDIR=/tmp.
+- Skips Android adbd-to-shell SELinux transition.
+- Keeps ADB sync push/pull protocol.
+- Bypasses Android fs_config policy during sync.
+- Bypasses Android capability-xattr policy during sync.
+- Bypasses Android restorecon operations during sync.
+- Does not require /data for supported startup behavior.
+
+See CAPABILITIES.md for the full supported, unsupported, and
+device-validation-pending capability contract.

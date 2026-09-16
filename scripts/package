@@ -160,6 +160,15 @@ PROVIDERS = (
         binary_name="treeforge-adbd",
     ),
     Provider(
+        "treeforge-adbd-chromiumos",
+        "arm64",
+        "treeforge",
+        "runtime",
+        "adbd.treeforge_chromiumos",
+        ("packages/modules/adb",),
+        binary_name="treeforge-adbd-chromiumos",
+    ),
+    Provider(
         "treeforge-fastboot",
         "linux-x86_64",
         "treeforge",
@@ -707,6 +716,16 @@ def copy_metadata(
                 package
                 / "PATCHES/treeforge-vabc-recovery.patch",
             )
+
+    # Optional provider-specific capability/security
+    # documentation. Providers without this file are unchanged.
+    capabilities = source / "CAPABILITIES.md"
+
+    if capabilities.is_file():
+        copy_file(
+            capabilities,
+            package / "CAPABILITIES.md",
+        )
 
     ensure_legal(provider, package)
 
@@ -1305,9 +1324,9 @@ def main() -> int:
         )
         print()
 
-    if len(index_records) != 16:
+    if len(index_records) != 17:
         die(
-            "expected 16 provider packages, "
+            "expected 17 provider packages, "
             f"got {len(index_records)}"
         )
 

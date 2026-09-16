@@ -101,6 +101,7 @@
       "source": "packages/modules/adb",
       "treeforge_modules": [
         "adbd.treeforge_recovery",
+        "adbd.treeforge_chromiumos",
         "adbd_system_api_recovery"
       ]
     },
@@ -203,6 +204,10 @@
     {
       "applies_to": "packages/modules/adb",
       "path": "tools/adb/patches/treeforge-recovery-standalone-adbd.patch"
+    },
+    {
+      "applies_to": "packages/modules/adb",
+      "path": "tools/adb/patches/treeforge-chromiumos-early-userspace-adbd.patch"
     },
     {
       "applies_to": "system/core",

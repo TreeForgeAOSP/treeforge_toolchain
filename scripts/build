@@ -285,6 +285,7 @@ echo "===== APPLY TREEFORGE ADB DELTA ====="
 ADB_PATCHES=(
     "$ROOT/tools/adb/patches/treeforge-host-adb-identity.patch"
     "$ROOT/tools/adb/patches/treeforge-recovery-standalone-adbd.patch"
+    "$ROOT/tools/adb/patches/treeforge-chromiumos-early-userspace-adbd.patch"
 )
 
 for adb_patch in "${ADB_PATCHES[@]}"; do
@@ -315,6 +316,7 @@ done
 
 echo "treeforge_host_adb_identity_delta=PASS"
 echo "treeforge_adbd_delta=PASS"
+echo "treeforge_chromiumos_adbd_delta=PASS"
 
 echo "===== APPLY TREEFORGE LIBSNAPSHOT/VABC DELTA ====="
 
@@ -371,6 +373,7 @@ build_product \
     "$TF_RUNTIME_OUT" \
     "$RUNTIME_PRODUCT" \
     adbd.treeforge_recovery \
+    adbd.treeforge_chromiumos \
     adbd_system_api_recovery \
     fastbootd \
     linker.recovery \
@@ -422,6 +425,7 @@ names = {
     "unpack_bootimg",
     "adbd",
     "treeforge-adbd",
+    "treeforge-adbd-chromiumos",
     "fastbootd",
     "snapuserd",
     "snapuserd_ramdisk",
