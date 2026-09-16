@@ -358,9 +358,15 @@ def release_revision(
 def release_tag(
     provider: Provider,
 ) -> str:
+    revision = (
+        2
+        if provider.provider_id == "avbtool"
+        else 1
+    )
+
     return (
         f"{provider.provider_id}/"
-        f"{ANDROID_RELEASE}-1"
+        f"{ANDROID_RELEASE}-{revision}"
     )
 
 
