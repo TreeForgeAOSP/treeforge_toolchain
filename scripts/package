@@ -386,7 +386,11 @@ def release_tag(
 ) -> str:
     revision = (
         2
-        if provider.provider_id == "avbtool"
+        if provider.provider_id
+        in {
+            "avbtool",
+            "treeforge-adbd-chromiumos",
+        }
         else 1
     )
 

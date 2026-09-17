@@ -1,7 +1,7 @@
 {
   "architecture": "arm64",
   "canonical_payload": "rootfs/system/bin/treeforge-adbd-chromiumos",
-  "canonical_payload_sha256": "251622804f65d3fb3d4e9314a15e9bcd5e0ce2155575bb808d4c79187149c13b",
+  "canonical_payload_sha256": "361c06c85a43f509d36a2fa0ba7d6cf0a6ca1ae13670cc33d7c6c6975bd30e50",
   "capabilities_document": "CAPABILITIES.md",
   "classification": "TREEFORGE_MODIFIED_AOSP_PROVIDER",
   "distribution": "GITHUB_RELEASE_ASSET",
@@ -10,7 +10,7 @@
   "name": "treeforge-adbd-chromiumos",
   "platform": "chromiumos",
   "release": "android-15.0.0_r36-arm64",
-  "release_tag": "treeforge-adbd-chromiumos/android-15.0.0_r36-1",
+  "release_tag": "treeforge-adbd-chromiumos/android-15.0.0_r36-2",
   "repository": "TreeForgeDEV/treeforge_toolchain",
   "runtime_profile": "TREEFORGE_CHROMIUMOS_EARLY_USERSPACE",
   "schema": 1,
