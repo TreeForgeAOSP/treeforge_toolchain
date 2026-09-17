@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import tarfile
@@ -360,6 +361,19 @@ def verify_consumer_manifest(
                 )
 
 
+parser = argparse.ArgumentParser()
+
+parser.add_argument(
+    "--allow-partial-dist",
+    action="store_true",
+    help=(
+        "Allow dist/index.json to contain a verified subset "
+        "of the source provider catalog."
+    ),
+)
+
+args = parser.parse_args()
+
 index_path = DIST / "index.json"
 
 if not index_path.is_file():
@@ -416,12 +430,23 @@ source_names = set(
 
 dist_names = set(names)
 
-if source_names != dist_names:
-    fail(
-        "source catalog differs from dist provider set\n"
-        f"source={sorted(source_names)}\n"
-        f"dist={sorted(dist_names)}"
+if args.allow_partial_dist:
+    unknown_dist_names = (
+        dist_names - source_names
     )
+
+    if unknown_dist_names:
+        fail(
+            "dist contains provider(s) absent from source catalog\n"
+            f"unknown={sorted(unknown_dist_names)}"
+        )
+else:
+    if source_names != dist_names:
+        fail(
+            "source catalog differs from dist provider set\n"
+            f"source={sorted(source_names)}\n"
+            f"dist={sorted(dist_names)}"
+        )
 
 expected_assets: set[str] = set()
 consumer_count = 0

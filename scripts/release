@@ -82,11 +82,16 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-execute(
-    [
-        str(ROOT / "scripts" / "verify"),
-    ]
-)
+verify_command = [
+    str(ROOT / "scripts" / "verify"),
+]
+
+if args.provider:
+    verify_command.append(
+        "--allow-partial-dist"
+    )
+
+execute(verify_command)
 
 index = json.loads(
     (DIST / "index.json").read_text()
