@@ -156,6 +156,17 @@
         }
       ]
     },
+    "treeforge-busybox": {
+      "distribution": "GITHUB_RELEASE_ASSET",
+      "releases": [
+        {
+          "consumer_bundle": false,
+          "manifest_schema": 1,
+          "metadata_root": "providers/treeforge-busybox/android-15.0.0_r36-linux-arm64",
+          "release": "android-15.0.0_r36-linux-arm64"
+        }
+      ]
+    },
     "treeforge-fastboot": {
       "distribution": "GITHUB_RELEASE_ASSET",
       "releases": [

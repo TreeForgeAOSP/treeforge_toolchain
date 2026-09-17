@@ -97,6 +97,15 @@ class Provider:
     binary_name: str | None = None
     host_binary_name: str | None = None
     comparison_name: str | None = None
+    artifact_path: str | None = None
+    build_script: str = "scripts/build"
+    build_matrix: str | None = (
+        "manifests/android-15.0.0_r36/"
+        "tool-build-matrix.json"
+    )
+    source_inventory: str | None = (
+        "GITHUB-SOURCE-INVENTORY.json"
+    )
 
 
 PROVIDERS = (
@@ -201,6 +210,23 @@ PROVIDERS = (
         "treeforge-vabc-coordinator",
         ("system/core",),
         binary_name="treeforge-vabc-coordinator",
+    ),
+
+    Provider(
+        "treeforge-busybox",
+        "linux-arm64",
+        "treeforge",
+        "static-runtime",
+        "busybox",
+        (),
+        binary_name="busybox",
+        artifact_path=(
+            "out/build/treeforge/busybox/arm64/"
+            "payload/bin/busybox"
+        ),
+        build_script="scripts/build-busybox",
+        build_matrix=None,
+        source_inventory=None,
     ),
 
     Provider(
@@ -693,6 +719,7 @@ def copy_metadata(
             "legal",
             "provenance",
             "PATCHES",
+            "source",
         ):
             src = source / dirname
 
@@ -730,13 +757,14 @@ def copy_metadata(
 
     # Optional provider-specific capability/security
     # documentation. Providers without this file are unchanged.
-    capabilities = source / "CAPABILITIES.md"
+    if source is not None:
+        capabilities = source / "CAPABILITIES.md"
 
-    if capabilities.is_file():
-        copy_file(
-            capabilities,
-            package / "CAPABILITIES.md",
-        )
+        if capabilities.is_file():
+            copy_file(
+                capabilities,
+                package / "CAPABILITIES.md",
+            )
 
     ensure_legal(provider, package)
 
@@ -992,6 +1020,99 @@ def package_payload(
 
         source_files.append(source)
 
+    elif provider.kind == "static-runtime":
+        if not provider.artifact_path:
+            die(
+                f"{provider.provider_id}: "
+                "static-runtime artifact_path is missing"
+            )
+
+        if not provider.binary_name:
+            die(
+                f"{provider.provider_id}: "
+                "static-runtime binary_name is missing"
+            )
+
+        source = ROOT / provider.artifact_path
+
+        if not source.is_file():
+            die(
+                f"{provider.provider_id}: "
+                f"static runtime artifact missing: {source}"
+            )
+
+        header = subprocess.run(
+            [
+                "readelf",
+                "-h",
+                str(source),
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout
+
+        segments = subprocess.run(
+            [
+                "readelf",
+                "-l",
+                str(source),
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout
+
+        dynamic_result = subprocess.run(
+            [
+                "readelf",
+                "-d",
+                str(source),
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        dynamic_text = (
+            dynamic_result.stdout
+            + dynamic_result.stderr
+        )
+
+        if (
+            provider.platform == "linux-arm64"
+            and "AArch64" not in header
+        ):
+            die(
+                f"{provider.provider_id}: "
+                "static runtime is not AArch64"
+            )
+
+        if "INTERP" in segments:
+            die(
+                f"{provider.provider_id}: "
+                "static runtime unexpectedly has PT_INTERP"
+            )
+
+        if "(NEEDED)" in dynamic_text:
+            die(
+                f"{provider.provider_id}: "
+                "static runtime unexpectedly has DT_NEEDED"
+            )
+
+        destination = (
+            payload
+            / "bin"
+            / provider.binary_name
+        )
+
+        copy_file(
+            source,
+            destination,
+        )
+
+        source_files.append(source)
+
     elif provider.kind == "runtime":
         assert provider.binary_name is not None
 
@@ -1100,15 +1221,10 @@ def source_rebuild_record(
             provider.source_projects
         ),
         "build_module": provider.module,
-        "build_script": "scripts/build",
+        "build_script": provider.build_script,
         "package_script": "scripts/package",
-        "build_matrix": (
-            "manifests/android-15.0.0_r36/"
-            "tool-build-matrix.json"
-        ),
-        "source_inventory": (
-            "GITHUB-SOURCE-INVENTORY.json"
-        ),
+        "build_matrix": provider.build_matrix,
+        "source_inventory": provider.source_inventory,
         "release_tag": release_tag(provider),
     }
 

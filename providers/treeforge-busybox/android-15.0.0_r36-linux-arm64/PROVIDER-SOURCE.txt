@@ -1,0 +1,29 @@
+TreeForge BusyBox provider
+
+Runtime payload:
+  bin/busybox
+
+Upstream:
+  BusyBox 1.36.1
+  https://busybox.net/downloads/busybox-1.36.1.tar.bz2
+
+Build:
+  scripts/build-busybox
+
+Target:
+  aarch64-linux-musl
+
+Toolchain builder:
+  musl-cross-make
+  revision 227df8b99103f9c59f6570babf892978e293082f
+
+The release package carries:
+  - the static ARM64 BusyBox executable
+  - the exact BusyBox .config
+  - the corresponding BusyBox 1.36.1 source archive
+  - BusyBox GPL-2.0 license text
+  - musl COPYRIGHT/license attribution
+  - musl-cross-make build-tool attribution
+  - reproducible build provenance
+
+No Android runtime libraries are required.
