@@ -407,7 +407,7 @@ diff -ruN a/daemon/shell_service.cpp b/daemon/shell_service.cpp
 +        env["HOME"] = "/";
 +        env["HOSTNAME"] = GetHostName();
 +        env["LOGNAME"] = "root";
-+        env["PATH"] = "/bin:/sbin:/usr/bin:/usr/sbin:/system/bin";
++        env["PATH"] = "/dev/chromiumos-runtime/system/bin:/bin:/sbin:/usr/bin:/usr/sbin:/system/bin";
 +        env["SHELL"] = "/dev/chromiumos-runtime/system/bin/busybox";
 +        env["TMPDIR"] = "/tmp";
 +        env["USER"] = "root";

@@ -11,7 +11,7 @@
   "platform": "chromiumos",
   "release": "android-15.0.0_r36-arm64",
   "release_tag": "treeforge-adbd-chromiumos/android-15.0.0_r36-2",
-  "repository": "TreeForgeDEV/treeforge_toolchain",
+  "repository": "TreeForgeAOSP/treeforge_toolchain",
   "runtime_profile": "TREEFORGE_CHROMIUMOS_EARLY_USERSPACE",
   "schema": 1,
   "source": {

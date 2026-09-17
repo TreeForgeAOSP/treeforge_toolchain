@@ -29,7 +29,7 @@ RUNTIME_CONSUMER_REVISION_2_PROVIDERS = frozenset(
         "treeforge-vabc-coordinator",
     }
 )
-REPOSITORY = "TreeForgeDEV/treeforge_toolchain"
+REPOSITORY = "TreeForgeAOSP/treeforge_toolchain"
 
 TREEFORGE_ROOT = Path(
     os.environ.get(
@@ -372,6 +372,13 @@ def asset_stem(provider: Provider) -> str:
 def release_revision(
     provider: Provider,
 ) -> str:
+    # TREEFORGE_CHROMIUMOS_R36_3_RELEASE
+    if (
+        provider.provider_id
+        == "treeforge-adbd-chromiumos"
+    ):
+        return "3"
+
     if (
         provider.provider_id
         in RUNTIME_CONSUMER_REVISION_2_PROVIDERS
@@ -385,13 +392,15 @@ def release_tag(
     provider: Provider,
 ) -> str:
     revision = (
-        2
+        3
         if provider.provider_id
-        in {
-            "avbtool",
-            "treeforge-adbd-chromiumos",
-        }
-        else 1
+        == "treeforge-adbd-chromiumos"
+        else (
+            2
+            if provider.provider_id
+            == "avbtool"
+            else 1
+        )
     )
 
     return (
@@ -1135,6 +1144,76 @@ def package_payload(
             )
         )
 
+        if (
+            provider.provider_id
+            == "treeforge-adbd-chromiumos"
+        ):
+            # TREEFORGE_CHROMIUMOS_R36_3_SHELL_ROOTFS
+            busybox = (
+                ROOT
+                / "out"
+                / "build"
+                / "treeforge"
+                / "busybox"
+                / "arm64"
+                / "payload"
+                / "bin"
+                / "busybox"
+            )
+
+            applets = (
+                ROOT
+                / "tools"
+                / "adb"
+                / "chromiumos-busybox-applets.txt"
+            )
+
+            stager = (
+                ROOT
+                / "tools"
+                / "adb"
+                / "stage-chromiumos-shell-rootfs.py"
+            )
+
+            shell_manifest = (
+                payload
+                / "BUSYBOX-APPLETS.json"
+            )
+
+            for required in (
+                busybox,
+                applets,
+                stager,
+            ):
+                if not required.is_file():
+                    die(
+                        "treeforge-adbd-chromiumos: "
+                        "r36-3 shell dependency missing: "
+                        f"{required}"
+                    )
+
+            subprocess.run(
+                [
+                    str(stager),
+                    "--rootfs",
+                    str(
+                        payload
+                        / "rootfs"
+                    ),
+                    "--busybox",
+                    str(busybox),
+                    "--applets",
+                    str(applets),
+                    "--manifest",
+                    str(shell_manifest),
+                ],
+                check=True,
+            )
+
+            source_files.append(
+                busybox
+            )
+
     else:
         die(
             f"unknown provider kind: {provider.kind}"
@@ -1194,6 +1273,23 @@ def payload_records(
         for p in payload.rglob("*")
         if p.is_file()
     ):
+        # TREEFORGE_PAYLOAD_SYMLINK_RECORD_V1
+        if path.is_symlink():
+            records.append(
+                {
+                    "path": str(
+                        path.relative_to(
+                            payload
+                        )
+                    ),
+                    "kind": "symlink",
+                    "target": str(
+                        path.readlink()
+                    ),
+                }
+            )
+            continue
+
         records.append(
             {
                 "path": str(path.relative_to(payload)),
