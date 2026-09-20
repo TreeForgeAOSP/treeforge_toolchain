@@ -1,0 +1,391 @@
+#!/usr/bin/env bash
+
+main() {
+    ROOT=/home/skelitonlord/development/treeforge_toolchain
+
+    BUSYBOX_VERSION=1.36.1
+    BUSYBOX_SHA256=b8cc24c9574d809e7279c3be349795c5d5ceb6fdf19ca709f80cde50e47de314
+
+    MCM_REV=227df8b99103f9c59f6570babf892978e293082f
+    MCM_URL=https://github.com/richfelker/musl-cross-make.git
+
+    TARGET=aarch64-linux-musl
+    JOBS="${TREEFORGE_JOBS:-4}"
+
+    DOWNLOADS="$ROOT/work/downloads"
+
+    BUSYBOX_ARCHIVE="$DOWNLOADS/busybox-${BUSYBOX_VERSION}.tar.bz2"
+    BUSYBOX_URL="https://busybox.net/downloads/busybox-${BUSYBOX_VERSION}.tar.bz2"
+
+    MCM_ROOT="$ROOT/work/musl-cross-make-$MCM_REV"
+    TOOLCHAIN="$ROOT/out/toolchains/$TARGET"
+
+    BUSYBOX_WORK="$ROOT/work/busybox-${BUSYBOX_VERSION}"
+    BUILD_OUT="$ROOT/out/build/treeforge/busybox/arm64"
+
+    CONFIG="$ROOT/tools/busybox/configs/arm64-early-userspace.config"
+
+    fail() {
+        echo "ERROR: $*" >&2
+        return 1
+    }
+
+    for cmd in \
+        git \
+        make \
+        gcc \
+        g++ \
+        tar \
+        bzip2 \
+        curl \
+        sha256sum \
+        python3 \
+        readelf \
+        file
+    do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            fail "required command missing: $cmd"
+            return 1
+        fi
+    done
+
+    if [ ! -f "$CONFIG" ]; then
+        fail "canonical BusyBox config missing: $CONFIG"
+        return 1
+    fi
+
+    mkdir -p \
+        "$DOWNLOADS" \
+        "$ROOT/work" \
+        "$ROOT/out/toolchains"
+
+    echo "=== TREEFORGE BUSYBOX BUILD ==="
+    echo "busybox_version=$BUSYBOX_VERSION"
+    echo "busybox_sha256=$BUSYBOX_SHA256"
+    echo "musl_cross_make_revision=$MCM_REV"
+    echo "target=$TARGET"
+    echo "jobs=$JOBS"
+    echo
+
+    echo "===== MUSL-CROSS-MAKE ====="
+
+    if [ ! -d "$MCM_ROOT/.git" ]; then
+        if ! git clone "$MCM_URL" "$MCM_ROOT"; then
+            fail "unable to clone musl-cross-make"
+            return 1
+        fi
+    fi
+
+    if ! git -C "$MCM_ROOT" fetch origin; then
+        fail "unable to refresh musl-cross-make"
+        return 1
+    fi
+
+    if ! git -C "$MCM_ROOT" checkout --detach "$MCM_REV"; then
+        fail "unable to select musl-cross-make revision"
+        return 1
+    fi
+
+    ACTUAL_MCM_REV="$(
+        git -C "$MCM_ROOT" rev-parse HEAD
+    )"
+
+    if [ "$ACTUAL_MCM_REV" != "$MCM_REV" ]; then
+        fail "musl-cross-make revision mismatch"
+        return 1
+    fi
+
+    cat > "$MCM_ROOT/config.mak" <<EOF
+TARGET = $TARGET
+OUTPUT = $TOOLCHAIN
+
+COMMON_CONFIG += --disable-nls
+
+GCC_CONFIG += --enable-languages=c
+GCC_CONFIG += --disable-multilib
+GCC_CONFIG += --disable-libquadmath
+GCC_CONFIG += --disable-decimal-float
+GCC_CONFIG += --disable-libitm
+GCC_CONFIG += --disable-fixed-point
+EOF
+
+    CROSS="$TOOLCHAIN/bin/${TARGET}-"
+
+    if [ ! -x "${CROSS}gcc" ]; then
+        echo
+        echo "===== BUILD MUSL CROSS TOOLCHAIN ====="
+
+        if ! make \
+            -C "$MCM_ROOT" \
+            -j"$JOBS"
+        then
+            fail "musl cross-toolchain build failed"
+            return 1
+        fi
+
+        if ! make \
+            -C "$MCM_ROOT" \
+            install
+        then
+            fail "musl cross-toolchain install failed"
+            return 1
+        fi
+    fi
+
+    if [ ! -x "${CROSS}gcc" ]; then
+        fail "aarch64-linux-musl compiler unavailable after build"
+        return 1
+    fi
+
+    echo "compiler=$("${CROSS}gcc" --version | head -n 1)"
+    echo "linker=$("${CROSS}ld" --version | head -n 1)"
+
+    echo
+    echo "===== BUSYBOX SOURCE ====="
+
+    if [ ! -f "$BUSYBOX_ARCHIVE" ]; then
+        if ! curl \
+            -L \
+            --fail \
+            --show-error \
+            -o "$BUSYBOX_ARCHIVE" \
+            "$BUSYBOX_URL"
+        then
+            fail "BusyBox source download failed"
+            return 1
+        fi
+    fi
+
+    ACTUAL_SOURCE_SHA="$(
+        sha256sum "$BUSYBOX_ARCHIVE" \
+            | awk '{print $1}'
+    )"
+
+    echo "expected_source_sha256=$BUSYBOX_SHA256"
+    echo "actual_source_sha256=$ACTUAL_SOURCE_SHA"
+
+    if [ "$ACTUAL_SOURCE_SHA" != "$BUSYBOX_SHA256" ]; then
+        fail "BusyBox source checksum mismatch"
+        return 1
+    fi
+
+    # TREEFORGE_BUSYBOX_REPRODUCIBLE_ENV_V1
+    #
+    # BusyBox's Kconfig/build machinery otherwise incorporates
+    # wall-clock configuration/build timestamps. Derive one fixed
+    # epoch from the pinned upstream source archive and use it for
+    # both configuration and compilation.
+    SOURCE_DATE_EPOCH="$(
+        TREEFORGE_BUSYBOX_ARCHIVE="$BUSYBOX_ARCHIVE" \
+        python3 - <<'TREEFORGE_EPOCH_PY'
+from pathlib import Path
+import os
+import tarfile
+
+archive = Path(
+    os.environ["TREEFORGE_BUSYBOX_ARCHIVE"]
+)
+
+with tarfile.open(
+    archive,
+    mode="r:bz2",
+) as tf:
+    members = tf.getmembers()
+
+root_name = "busybox-1.36.1"
+
+root = next(
+    (
+        member
+        for member in members
+        if member.name.rstrip("/") == root_name
+    ),
+    None,
+)
+
+if root is not None:
+    epoch = int(root.mtime)
+else:
+    epoch = max(
+        int(member.mtime)
+        for member in members
+    )
+
+print(epoch)
+TREEFORGE_EPOCH_PY
+    )"
+
+    if [ -z "$SOURCE_DATE_EPOCH" ]; then
+        fail "unable to derive BusyBox SOURCE_DATE_EPOCH"
+        return 1
+    fi
+
+    export SOURCE_DATE_EPOCH
+    export KCONFIG_NOTIMESTAMP=1
+    export TZ=UTC
+    export LC_ALL=C
+    export LANG=C
+
+    echo "source_date_epoch=$SOURCE_DATE_EPOCH"
+    echo "kconfig_notimestamp=1"
+    echo "timezone=UTC"
+    echo "locale=C"
+
+    echo
+    echo "===== EXTRACT BUSYBOX ====="
+
+    rm -rf "$BUSYBOX_WORK"
+    mkdir -p "$BUSYBOX_WORK"
+
+    if ! tar \
+        -xjf "$BUSYBOX_ARCHIVE" \
+        --strip-components=1 \
+        -C "$BUSYBOX_WORK"
+    then
+        fail "BusyBox extraction failed"
+        return 1
+    fi
+
+    cp \
+        "$CONFIG" \
+        "$BUSYBOX_WORK/.config"
+
+    echo
+    echo "===== NORMALIZE CONFIG ====="
+
+    if ! make \
+        -C "$BUSYBOX_WORK" \
+        ARCH=arm64 \
+        CROSS_COMPILE="$CROSS" \
+        oldconfig \
+        </dev/null
+    then
+        fail "BusyBox config normalization failed"
+        return 1
+    fi
+
+    echo
+    echo "===== BUILD BUSYBOX ====="
+
+    if ! make \
+        -C "$BUSYBOX_WORK" \
+        ARCH=arm64 \
+        CROSS_COMPILE="$CROSS" \
+        -j"$JOBS"
+    then
+        fail "BusyBox build failed"
+        return 1
+    fi
+
+    if [ ! -f "$BUSYBOX_WORK/busybox" ]; then
+        fail "BusyBox binary missing after build"
+        return 1
+    fi
+
+    echo
+    echo "===== STATIC ELF VERIFICATION ====="
+
+    if ! readelf -h "$BUSYBOX_WORK/busybox" \
+        | grep -q 'Machine:.*AArch64'
+    then
+        fail "BusyBox is not AArch64"
+        return 1
+    fi
+
+    if readelf -l "$BUSYBOX_WORK/busybox" \
+        | grep -q 'INTERP'
+    then
+        fail "BusyBox unexpectedly has PT_INTERP"
+        return 1
+    fi
+
+    if readelf -d "$BUSYBOX_WORK/busybox" \
+        2>/dev/null \
+        | grep -q '(NEEDED)'
+    then
+        fail "BusyBox unexpectedly has DT_NEEDED dependencies"
+        return 1
+    fi
+
+    echo "machine_aarch64=PASS"
+    echo "interpreter_absent=PASS"
+    echo "dt_needed_zero=PASS"
+
+    echo
+    echo "===== MATERIALIZE OUTPUT ====="
+
+    rm -rf "$BUILD_OUT"
+
+    mkdir -p \
+        "$BUILD_OUT/payload/bin" \
+        "$BUILD_OUT/source" \
+        "$BUILD_OUT/legal/busybox" \
+        "$BUILD_OUT/legal/musl" \
+        "$BUILD_OUT/legal/musl-cross-make"
+
+    cp \
+        "$BUSYBOX_WORK/busybox" \
+        "$BUILD_OUT/payload/bin/busybox"
+
+    cp \
+        "$BUSYBOX_WORK/.config" \
+        "$BUILD_OUT/busybox.config"
+
+    cp \
+        "$BUSYBOX_ARCHIVE" \
+        "$BUILD_OUT/source/busybox-${BUSYBOX_VERSION}.tar.bz2"
+
+    cp \
+        "$BUSYBOX_WORK/LICENSE" \
+        "$BUILD_OUT/legal/busybox/GPL-2.0"
+
+    MUSL_COPYRIGHT="$MCM_ROOT/musl-1.2.6.orig/COPYRIGHT"
+
+    if [ ! -f "$MUSL_COPYRIGHT" ]; then
+        fail "musl 1.2.6 COPYRIGHT file missing"
+        return 1
+    fi
+
+    cp \
+        "$MUSL_COPYRIGHT" \
+        "$BUILD_OUT/legal/musl/COPYRIGHT"
+
+    if [ -f "$MCM_ROOT/LICENSE" ]; then
+        cp \
+            "$MCM_ROOT/LICENSE" \
+            "$BUILD_OUT/legal/musl-cross-make/LICENSE"
+    fi
+
+    if [ -f "$MCM_ROOT/COPYRIGHT" ]; then
+        cp \
+            "$MCM_ROOT/COPYRIGHT" \
+            "$BUILD_OUT/legal/musl-cross-make/COPYRIGHT"
+    fi
+
+    cp \
+        "$MCM_ROOT/config.mak" \
+        "$BUILD_OUT/musl-cross-make.config"
+
+    printf '%s\n' "$MCM_REV" \
+        > "$BUILD_OUT/musl-cross-make.revision"
+
+    printf '%s\n' "$SOURCE_DATE_EPOCH" \
+        > "$BUILD_OUT/source-date-epoch"
+
+    echo
+    echo "===== FINAL OUTPUT ====="
+
+    file "$BUILD_OUT/payload/bin/busybox"
+
+    sha256sum \
+        "$BUILD_OUT/payload/bin/busybox" \
+        "$BUILD_OUT/busybox.config" \
+        "$BUILD_OUT/source/busybox-${BUSYBOX_VERSION}.tar.bz2"
+
+    echo
+    echo "TREEFORGE BUSYBOX BUILD: PASS"
+
+    return 0
+}
+
+main "$@"

@@ -1,0 +1,27 @@
+Pixel Partitioner early-userspace adbd modifications
+
+Base:
+  Android 15 r36
+  platform/packages/modules/adb
+  revision a877adddefdf011bfb5d4045919c6df3d3727ed3
+
+TreeForge delta:
+  PATCHES/pixel-partitioner-early-userspace-adbd.patch
+
+Runtime contract:
+  - module: adbd.pixel_partitioner
+  - binary: pixel-partitioner-adbd
+  - profile: PIXEL_PARTITIONER_EARLY_USERSPACE
+  - product name: pixel-partitioner
+  - product model: Pixel Partitioner
+  - product device: tangorpro
+  - FunctionFS: /dev/usb-ffs/adb
+  - root uid/gid retained for bring-up
+  - Android framework/property-service assumptions bypassed
+  - authentication disabled for bring-up
+  - shell root: /dev/pixel-partitioner-runtime
+  - BusyBox shell provided by the packaged runtime closure
+
+Normal Android and Recovery adbd variants are not modified by this
+provider's runtime policy; the special behavior is compile-time gated by
+PIXEL_PARTITIONER_EARLY_USERSPACE.

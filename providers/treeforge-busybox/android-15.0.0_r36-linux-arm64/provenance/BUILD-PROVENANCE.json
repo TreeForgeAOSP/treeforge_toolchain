@@ -1,0 +1,21 @@
+{
+  "binary_rebuild_verified": true,
+  "binutils": "GNU ld (GNU Binutils) 2.44",
+  "busybox_binary_sha256": "531d479411a97d90186a08ad2f873e3f3c48a4b569f100dccfecead5d56e49ac",
+  "busybox_config_sha256": "0a1c8a757a261061be52efbd797af11ad4908ede422171b8e7e68ea89cbe333a",
+  "busybox_source_sha256": "b8cc24c9574d809e7279c3be349795c5d5ceb6fdf19ca709f80cde50e47de314",
+  "busybox_version": "1.36.1",
+  "canonical_build_script": "scripts/build-busybox",
+  "config_rebuild_verified": true,
+  "dt_needed": 0,
+  "gcc": "aarch64-linux-musl-gcc (GCC) 9.4.0",
+  "interp_segments": 0,
+  "kconfig_notimestamp": true,
+  "linkage": "static",
+  "musl_cross_make_revision": "227df8b99103f9c59f6570babf892978e293082f",
+  "musl_version": "1.2.6",
+  "provider": "treeforge-busybox",
+  "schema": 1,
+  "source_date_epoch": 1684449257,
+  "target": "aarch64-linux-musl"
+}

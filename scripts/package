@@ -29,7 +29,7 @@ RUNTIME_CONSUMER_REVISION_2_PROVIDERS = frozenset(
         "treeforge-vabc-coordinator",
     }
 )
-REPOSITORY = "TreeForgeDEV/treeforge_toolchain"
+REPOSITORY = "TreeForgeAOSP/treeforge_toolchain"
 
 TREEFORGE_ROOT = Path(
     os.environ.get(
@@ -50,6 +50,11 @@ AOSP_RUNTIME = ROOT / "out/build/aosp/arm64"
 
 TREEFORGE_HOST = ROOT / "out/build/treeforge/linux-x86_64"
 TREEFORGE_RUNTIME = ROOT / "out/build/treeforge/arm64"
+
+TREEFORGE_SOURCE = (
+    ROOT
+    / "work/android-15.0.0_r36-treeforge"
+)
 
 AOSP_PRODUCT = AOSP_RUNTIME / "target/product/module_arm64"
 TREEFORGE_PRODUCT = TREEFORGE_RUNTIME / "target/product/module_arm64"
@@ -92,6 +97,16 @@ class Provider:
     binary_name: str | None = None
     host_binary_name: str | None = None
     comparison_name: str | None = None
+    artifact_path: str | None = None
+    build_script: str = "scripts/build"
+    prepare_source_script: str | None = None
+    build_matrix: str | None = (
+        "manifests/android-15.0.0_r36/"
+        "tool-build-matrix.json"
+    )
+    source_inventory: str | None = (
+        "GITHUB-SOURCE-INVENTORY.json"
+    )
 
 
 PROVIDERS = (
@@ -160,6 +175,16 @@ PROVIDERS = (
         binary_name="treeforge-adbd",
     ),
     Provider(
+        "pixel-partitioner-adbd",
+        "arm64",
+        "pixel-partitioner",
+        "runtime",
+        "adbd.pixel_partitioner",
+        ("packages/modules/adb",),
+        binary_name="pixel-partitioner-adbd",
+        prepare_source_script="scripts/prepare-source",
+    ),
+    Provider(
         "treeforge-fastboot",
         "linux-x86_64",
         "treeforge",
@@ -190,13 +215,29 @@ PROVIDERS = (
     ),
 
     Provider(
+        "treeforge-busybox",
+        "linux-arm64",
+        "treeforge",
+        "static-runtime",
+        "busybox",
+        (),
+        binary_name="busybox",
+        artifact_path=(
+            "out/build/treeforge/busybox/arm64/"
+            "payload/bin/busybox"
+        ),
+        build_script="scripts/build-busybox",
+        build_matrix=None,
+        source_inventory=None,
+    ),
+
+    Provider(
         "avbtool",
         "linux-x86_64",
         "treeforge",
-        "host-single",
+        "host-python-source",
         "avbtool",
         ("external/avb",),
-        host_binary_name="avbtool",
         comparison_name="avbtool",
     ),
     Provider(
@@ -342,11 +383,19 @@ def release_revision(
     return RELEASE_REVISION
 
 
-def release_tag(provider: Provider) -> str:
+def release_tag(
+    provider: Provider,
+) -> str:
+    revision = (
+        2
+        if provider.provider_id
+        == "avbtool"
+        else 1
+    )
+
     return (
         f"{provider.provider_id}/"
-        f"{ANDROID_RELEASE}-"
-        f"{release_revision(provider)}"
+        f"{ANDROID_RELEASE}-{revision}"
     )
 
 
@@ -553,11 +602,36 @@ def add_runtime_closure(
 ) -> list[Path]:
     copied_sources: list[Path] = []
 
-    queue: deque[Path] = deque([entry_binary])
+    queue: deque[tuple[Path, Path]] = deque(
+        [(product, entry_binary)]
+    )
     seen: set[Path] = set()
 
+    def optional_runtime_file(
+        source_product: Path,
+        name: str,
+    ) -> Path | None:
+        candidates = [
+            path
+            for path in runtime_index(
+                source_product
+            ).get(name, [])
+            if path.is_file()
+        ]
+
+        if not candidates:
+            return None
+
+        return sorted(
+            candidates,
+            key=lambda path: runtime_candidate_rank(
+                source_product,
+                path,
+            ),
+        )[0]
+
     while queue:
-        source = queue.popleft()
+        source_product, source = queue.popleft()
 
         if source in seen:
             continue
@@ -565,7 +639,7 @@ def add_runtime_closure(
         seen.add(source)
 
         destination_rel = runtime_destination(
-            product,
+            source_product,
             source,
         )
 
@@ -577,26 +651,89 @@ def add_runtime_closure(
         copied_sources.append(source)
 
         for needed in readelf_needed(source):
-            candidate = runtime_file(product, needed)
+            # Prefer the requested provider's runtime output so an
+            # AOSP-fallback interpreter does not replace already
+            # available TreeForge runtime libraries.
+            candidate_product = product
+            candidate = optional_runtime_file(
+                candidate_product,
+                needed,
+            )
+
+            if (
+                candidate is None
+                and source_product != product
+            ):
+                candidate_product = source_product
+                candidate = optional_runtime_file(
+                    candidate_product,
+                    needed,
+                )
+
+            if candidate is None:
+                die(
+                    "runtime dependency not found: "
+                    f"{needed}; "
+                    f"primary={product}; "
+                    f"secondary={source_product}"
+                )
 
             if candidate not in seen:
-                queue.append(candidate)
+                queue.append(
+                    (
+                        candidate_product,
+                        candidate,
+                    )
+                )
 
         interpreter = readelf_interpreter(source)
 
         if interpreter:
             interpreter_name = Path(interpreter).name
 
-            try:
-                candidate = runtime_file(
-                    product,
+            candidate_product = source_product
+            candidate = optional_runtime_file(
+                candidate_product,
+                interpreter_name,
+            )
+
+            # A thin TreeForge module build can omit linker64 because
+            # linker64 itself is not a dependency that Soong needs to
+            # materialize while compiling adbd. Use the corresponding
+            # pinned AOSP r36 runtime product only when that interpreter
+            # is absent from the TreeForge product.
+            if (
+                candidate is None
+                and source_product == TREEFORGE_PRODUCT
+            ):
+                candidate_product = AOSP_PRODUCT
+                candidate = optional_runtime_file(
+                    candidate_product,
                     interpreter_name,
                 )
-            except SystemExit:
-                candidate = None
 
-            if candidate is not None and candidate not in seen:
-                queue.append(candidate)
+                if candidate is not None:
+                    print(
+                        "runtime_interpreter_fallback="
+                        f"{interpreter_name}:"
+                        f"{candidate}"
+                    )
+
+            if candidate is None:
+                die(
+                    "runtime interpreter not found: "
+                    f"{interpreter_name}; "
+                    f"primary={source_product}; "
+                    f"fallback={AOSP_PRODUCT}"
+                )
+
+            if candidate not in seen:
+                queue.append(
+                    (
+                        candidate_product,
+                        candidate,
+                    )
+                )
 
     return copied_sources
 
@@ -673,6 +810,7 @@ def copy_metadata(
             "legal",
             "provenance",
             "PATCHES",
+            "source",
         ):
             src = source / dirname
 
@@ -706,6 +844,17 @@ def copy_metadata(
                 patch,
                 package
                 / "PATCHES/treeforge-vabc-recovery.patch",
+            )
+
+    # Optional provider-specific capability/security
+    # documentation. Providers without this file are unchanged.
+    if source is not None:
+        capabilities = source / "CAPABILITIES.md"
+
+        if capabilities.is_file():
+            copy_file(
+                capabilities,
+                package / "CAPABILITIES.md",
             )
 
     ensure_legal(provider, package)
@@ -859,7 +1008,39 @@ def package_payload(
 
     source_files: list[Path] = []
 
-    if provider.kind == "host-single":
+    if provider.kind == "host-python-source":
+        if len(provider.source_projects) != 1:
+            die(
+                f"{provider.provider_id}: "
+                "host-python-source requires exactly one "
+                "source project"
+            )
+
+        source = (
+            TREEFORGE_SOURCE
+            / provider.source_projects[0]
+            / f"{provider.module}.py"
+        )
+
+        destination = (
+            payload
+            / "bin"
+            / provider.module
+        )
+
+        copy_file(
+            source,
+            destination,
+        )
+
+        # Python source tools remain directly executable through
+        # their upstream shebang while also remaining importable by
+        # consumers such as Boot Image's exact-order VBMeta path.
+        destination.chmod(0o755)
+
+        source_files.append(source)
+
+    elif provider.kind == "host-single":
         assert provider.host_binary_name is not None
 
         source = host_binary(
@@ -930,6 +1111,99 @@ def package_payload(
 
         source_files.append(source)
 
+    elif provider.kind == "static-runtime":
+        if not provider.artifact_path:
+            die(
+                f"{provider.provider_id}: "
+                "static-runtime artifact_path is missing"
+            )
+
+        if not provider.binary_name:
+            die(
+                f"{provider.provider_id}: "
+                "static-runtime binary_name is missing"
+            )
+
+        source = ROOT / provider.artifact_path
+
+        if not source.is_file():
+            die(
+                f"{provider.provider_id}: "
+                f"static runtime artifact missing: {source}"
+            )
+
+        header = subprocess.run(
+            [
+                "readelf",
+                "-h",
+                str(source),
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout
+
+        segments = subprocess.run(
+            [
+                "readelf",
+                "-l",
+                str(source),
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout
+
+        dynamic_result = subprocess.run(
+            [
+                "readelf",
+                "-d",
+                str(source),
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        dynamic_text = (
+            dynamic_result.stdout
+            + dynamic_result.stderr
+        )
+
+        if (
+            provider.platform == "linux-arm64"
+            and "AArch64" not in header
+        ):
+            die(
+                f"{provider.provider_id}: "
+                "static runtime is not AArch64"
+            )
+
+        if "INTERP" in segments:
+            die(
+                f"{provider.provider_id}: "
+                "static runtime unexpectedly has PT_INTERP"
+            )
+
+        if "(NEEDED)" in dynamic_text:
+            die(
+                f"{provider.provider_id}: "
+                "static runtime unexpectedly has DT_NEEDED"
+            )
+
+        destination = (
+            payload
+            / "bin"
+            / provider.binary_name
+        )
+
+        copy_file(
+            source,
+            destination,
+        )
+
+        source_files.append(source)
+
     elif provider.kind == "runtime":
         assert provider.binary_name is not None
 
@@ -947,6 +1221,76 @@ def package_payload(
                 payload,
             )
         )
+
+        if (
+            provider.provider_id
+            == "pixel-partitioner-adbd"
+        ):
+            # PIXEL_PARTITIONER_ADBD_R36_1_SHELL_ROOTFS
+            busybox = (
+                ROOT
+                / "out"
+                / "build"
+                / "treeforge"
+                / "busybox"
+                / "arm64"
+                / "payload"
+                / "bin"
+                / "busybox"
+            )
+
+            applets = (
+                ROOT
+                / "tools"
+                / "adb"
+                / "pixel-partitioner-busybox-applets.txt"
+            )
+
+            stager = (
+                ROOT
+                / "tools"
+                / "adb"
+                / "stage-pixel-partitioner-shell-rootfs.py"
+            )
+
+            shell_manifest = (
+                payload
+                / "BUSYBOX-APPLETS.json"
+            )
+
+            for required in (
+                busybox,
+                applets,
+                stager,
+            ):
+                if not required.is_file():
+                    die(
+                        "pixel-partitioner-adbd: "
+                        "r36-1 shell dependency missing: "
+                        f"{required}"
+                    )
+
+            subprocess.run(
+                [
+                    str(stager),
+                    "--rootfs",
+                    str(
+                        payload
+                        / "rootfs"
+                    ),
+                    "--busybox",
+                    str(busybox),
+                    "--applets",
+                    str(applets),
+                    "--manifest",
+                    str(shell_manifest),
+                ],
+                check=True,
+            )
+
+            source_files.append(
+                busybox
+            )
 
     else:
         die(
@@ -1007,6 +1351,23 @@ def payload_records(
         for p in payload.rglob("*")
         if p.is_file()
     ):
+        # TREEFORGE_PAYLOAD_SYMLINK_RECORD_V1
+        if path.is_symlink():
+            records.append(
+                {
+                    "path": str(
+                        path.relative_to(
+                            payload
+                        )
+                    ),
+                    "kind": "symlink",
+                    "target": str(
+                        path.readlink()
+                    ),
+                }
+            )
+            continue
+
         records.append(
             {
                 "path": str(path.relative_to(payload)),
@@ -1038,15 +1399,11 @@ def source_rebuild_record(
             provider.source_projects
         ),
         "build_module": provider.module,
-        "build_script": "scripts/build",
+        "build_script": provider.build_script,
+        "prepare_source_script": provider.prepare_source_script,
         "package_script": "scripts/package",
-        "build_matrix": (
-            "manifests/android-15.0.0_r36/"
-            "tool-build-matrix.json"
-        ),
-        "source_inventory": (
-            "GITHUB-SOURCE-INVENTORY.json"
-        ),
+        "build_matrix": provider.build_matrix,
+        "source_inventory": provider.source_inventory,
         "release_tag": release_tag(provider),
     }
 
@@ -1188,14 +1545,41 @@ def main() -> int:
     ASSETS.mkdir(parents=True)
     REPORTS.mkdir(parents=True)
 
+    requested_provider = (
+        os.environ.get(
+            "TREEFORGE_PACKAGE_PROVIDER"
+        )
+    )
+
+    package_providers = PROVIDERS
+
+    if requested_provider:
+        package_providers = tuple(
+            provider
+            for provider in PROVIDERS
+            if provider.provider_id
+            == requested_provider
+        )
+
+        if not package_providers:
+            die(
+                "unknown TREEFORGE_PACKAGE_PROVIDER: "
+                f"{requested_provider}"
+            )
+
+        print(
+            "package_provider_filter="
+            f"{requested_provider}"
+        )
+
     index_records = []
 
     for number, provider in enumerate(
-        PROVIDERS,
+        package_providers,
         start=1,
     ):
         print(
-            f"[{number:02d}/{len(PROVIDERS):02d}] "
+            f"[{number:02d}/{len(package_providers):02d}] "
             f"{provider.provider_id}"
         )
 
@@ -1305,9 +1689,14 @@ def main() -> int:
         )
         print()
 
-    if len(index_records) != 16:
+    expected_provider_count = len(
+        package_providers
+    )
+
+    if len(index_records) != expected_provider_count:
         die(
-            "expected 16 provider packages, "
+            f"expected {expected_provider_count} "
+            "provider packages, "
             f"got {len(index_records)}"
         )
 

@@ -1,0 +1,26 @@
+{
+  "provider": "treeforge-busybox",
+  "records": [
+    {
+      "bytes": 18348,
+      "path": "legal/busybox/GPL-2.0",
+      "sha256": "bbfc9843646d483c334664f651c208b9839626891d8f17604db2146962f43548"
+    },
+    {
+      "bytes": 6196,
+      "path": "legal/musl/COPYRIGHT",
+      "sha256": "b870108ec5e7790e9f9919064f1b9421d62d5f9b0e6c230c6adf7ea2da62e97b"
+    },
+    {
+      "bytes": 601,
+      "path": "legal/musl-cross-make/COPYRIGHT",
+      "sha256": "1e7cf04e318d8dcf00b2cfa3035c7e4e445da7f8851d1dcfebd7d4b5ac257f5a"
+    },
+    {
+      "bytes": 1068,
+      "path": "legal/musl-cross-make/LICENSE",
+      "sha256": "6512d6cdd05bb1e71491518b8b2ffe14927bdc13c21dd205c653ba65f7b7c72c"
+    }
+  ],
+  "schema": 1
+}

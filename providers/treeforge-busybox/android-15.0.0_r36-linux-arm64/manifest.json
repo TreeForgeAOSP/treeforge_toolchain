@@ -1,0 +1,43 @@
+{
+  "architecture": "arm64",
+  "canonical_payload": "bin/busybox",
+  "canonical_payload_sha256": "531d479411a97d90186a08ad2f873e3f3c48a4b569f100dccfecead5d56e49ac",
+  "configuration": {
+    "path": "provenance/busybox.config",
+    "sha256": "0a1c8a757a261061be52efbd797af11ad4908ede422171b8e7e68ea89cbe333a"
+  },
+  "device_specific": false,
+  "distribution": "GITHUB_RELEASE_ASSET",
+  "family": "busybox",
+  "kind": "static-runtime",
+  "linkage": "static",
+  "name": "treeforge-busybox",
+  "platform": "linux-arm64",
+  "release": "android-15.0.0_r36-linux-arm64",
+  "release_tag": "treeforge-busybox/android-15.0.0_r36-1",
+  "repository": "TreeForgeDEV/treeforge_toolchain",
+  "reproducibility": {
+    "binary_rebuild_verified": true,
+    "config_rebuild_verified": true,
+    "kconfig_notimestamp": true,
+    "source_date_epoch": 1684449257
+  },
+  "runtime_dt_needed": 0,
+  "runtime_interpreter": null,
+  "schema": 1,
+  "source": {
+    "package_path": "source/busybox-1.36.1.tar.bz2",
+    "project": "BusyBox",
+    "sha256": "b8cc24c9574d809e7279c3be349795c5d5ceb6fdf19ca709f80cde50e47de314",
+    "url": "https://busybox.net/downloads/busybox-1.36.1.tar.bz2",
+    "version": "1.36.1"
+  },
+  "toolchain": {
+    "binutils": "GNU ld (GNU Binutils) 2.44",
+    "builder": "musl-cross-make",
+    "gcc": "aarch64-linux-musl-gcc (GCC) 9.4.0",
+    "musl_version": "1.2.6",
+    "revision": "227df8b99103f9c59f6570babf892978e293082f",
+    "target": "aarch64-linux-musl"
+  }
+}

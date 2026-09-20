@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import tarfile
@@ -46,10 +47,24 @@ def safe_extract(
                     f"unsafe archive path: {member.name}"
                 )
 
-            if member.issym() or member.islnk():
+            if member.islnk():
                 fail(
-                    f"archive link prohibited: {member.name}"
+                    f"archive hard link prohibited: {member.name}"
                 )
+
+            if member.issym():
+                link_target = Path(
+                    member.linkname
+                )
+
+                if (
+                    link_target.is_absolute()
+                    or ".." in link_target.parts
+                ):
+                    fail(
+                        "unsafe archive symlink target: "
+                        f"{member.name} -> {member.linkname}"
+                    )
 
         handle.extractall(
             destination,
@@ -57,9 +72,237 @@ def safe_extract(
         )
 
 
+def verify_payload_symlinks(
+    package_root: Path,
+) -> None:
+    manifest_path = (
+        package_root
+        / "manifest.json"
+    )
+
+    if not manifest_path.is_file():
+        fail(
+            f"manifest.json missing: {package_root}"
+        )
+
+    manifest = json.loads(
+        manifest_path.read_text()
+    )
+
+    records = manifest.get(
+        "payload_files",
+        []
+    )
+
+    if not isinstance(
+        records,
+        list,
+    ):
+        fail(
+            "manifest payload_files must be a list"
+        )
+
+    payload_root = (
+        package_root
+        / "payload"
+    )
+
+    if not payload_root.is_dir():
+        fail(
+            f"payload directory missing: {package_root}"
+        )
+
+    declared: dict[str, str] = {}
+
+    for record in records:
+        if not isinstance(
+            record,
+            dict,
+        ):
+            fail(
+                "manifest payload record is not an object"
+            )
+
+        if record.get(
+            "kind"
+        ) != "symlink":
+            continue
+
+        relative_text = record.get(
+            "path"
+        )
+
+        target_text = record.get(
+            "target"
+        )
+
+        if (
+            not isinstance(
+                relative_text,
+                str,
+            )
+            or not relative_text
+        ):
+            fail(
+                "manifest symlink has invalid path"
+            )
+
+        if (
+            not isinstance(
+                target_text,
+                str,
+            )
+            or not target_text
+        ):
+            fail(
+                "manifest symlink has invalid target: "
+                f"{relative_text}"
+            )
+
+        relative = Path(
+            relative_text
+        )
+
+        target = Path(
+            target_text
+        )
+
+        if (
+            relative.is_absolute()
+            or ".." in relative.parts
+        ):
+            fail(
+                "unsafe manifest symlink path: "
+                f"{relative_text}"
+            )
+
+        if (
+            target.is_absolute()
+            or ".." in target.parts
+        ):
+            fail(
+                "unsafe manifest symlink target: "
+                f"{relative_text} -> {target_text}"
+            )
+
+        if relative_text in declared:
+            fail(
+                "duplicate manifest symlink path: "
+                f"{relative_text}"
+            )
+
+        declared[
+            relative_text
+        ] = target_text
+
+    actual: dict[str, str] = {}
+
+    for candidate in payload_root.rglob(
+        "*"
+    ):
+        if not candidate.is_symlink():
+            continue
+
+        relative_text = str(
+            candidate.relative_to(
+                payload_root
+            )
+        )
+
+        target_text = str(
+            candidate.readlink()
+        )
+
+        actual[
+            relative_text
+        ] = target_text
+
+    declared_paths = set(
+        declared
+    )
+
+    actual_paths = set(
+        actual
+    )
+
+    if actual_paths != declared_paths:
+        fail(
+            "payload symlink set differs from manifest\n"
+            f"declared={sorted(declared_paths)}\n"
+            f"actual={sorted(actual_paths)}"
+        )
+
+    payload_resolved = (
+        payload_root.resolve()
+    )
+
+    for relative_text in sorted(
+        declared
+    ):
+        expected_target = declared[
+            relative_text
+        ]
+
+        actual_target = actual[
+            relative_text
+        ]
+
+        if actual_target != expected_target:
+            fail(
+                "payload symlink target mismatch: "
+                f"{relative_text}\n"
+                f"expected={expected_target}\n"
+                f"actual={actual_target}"
+            )
+
+        symlink_path = (
+            payload_root
+            / relative_text
+        )
+
+        if not symlink_path.is_symlink():
+            fail(
+                "manifest-declared symlink missing: "
+                f"{relative_text}"
+            )
+
+        try:
+            resolved = (
+                symlink_path.resolve(
+                    strict=True
+                )
+            )
+        except FileNotFoundError:
+            fail(
+                "payload symlink target missing: "
+                f"{relative_text} -> {actual_target}"
+            )
+
+        try:
+            resolved.relative_to(
+                payload_resolved
+            )
+        except ValueError:
+            fail(
+                "payload symlink escapes payload root: "
+                f"{relative_text} -> {actual_target}"
+            )
+
+        if not resolved.is_file():
+            fail(
+                "payload symlink does not resolve "
+                "to a regular file: "
+                f"{relative_text} -> {actual_target}"
+            )
+
+
 def verify_internal_sha256(
     package_root: Path,
 ) -> None:
+    verify_payload_symlinks(
+        package_root
+    )
+
     ledger = package_root / "SHA256SUMS"
 
     if not ledger.is_file():
@@ -360,6 +603,19 @@ def verify_consumer_manifest(
                 )
 
 
+parser = argparse.ArgumentParser()
+
+parser.add_argument(
+    "--allow-partial-dist",
+    action="store_true",
+    help=(
+        "Allow dist/index.json to contain a verified subset "
+        "of the source provider catalog."
+    ),
+)
+
+args = parser.parse_args()
+
 index_path = DIST / "index.json"
 
 if not index_path.is_file():
@@ -416,12 +672,23 @@ source_names = set(
 
 dist_names = set(names)
 
-if source_names != dist_names:
-    fail(
-        "source catalog differs from dist provider set\n"
-        f"source={sorted(source_names)}\n"
-        f"dist={sorted(dist_names)}"
+if args.allow_partial_dist:
+    unknown_dist_names = (
+        dist_names - source_names
     )
+
+    if unknown_dist_names:
+        fail(
+            "dist contains provider(s) absent from source catalog\n"
+            f"unknown={sorted(unknown_dist_names)}"
+        )
+else:
+    if source_names != dist_names:
+        fail(
+            "source catalog differs from dist provider set\n"
+            f"source={sorted(source_names)}\n"
+            f"dist={sorted(dist_names)}"
+        )
 
 expected_assets: set[str] = set()
 consumer_count = 0

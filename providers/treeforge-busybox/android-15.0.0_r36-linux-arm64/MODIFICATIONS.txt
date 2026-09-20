@@ -1,0 +1,13 @@
+TreeForge does not patch the BusyBox 1.36.1 source for this provider.
+
+The TreeForge delta consists of build configuration only:
+
+- target: aarch64-linux-musl
+- architecture: AArch64 / arm64
+- static linking enabled
+- TreeForge early-userspace applet selection
+- no dynamic ELF interpreter
+- no DT_NEEDED runtime dependencies
+
+The exact configuration is retained at:
+provenance/busybox.config
