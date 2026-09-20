@@ -1,0 +1,338 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="${TREEFORGE_TOOLCHAIN_ROOT:-$(cd "$SCRIPT_DIR/.." && pwd)}"
+
+WORKSPACE="$(cd "$ROOT/.." && pwd)"
+TREEFORGE="${TREEFORGE_ROOT:-$WORKSPACE/treeforge}"
+AOSP="${TREEFORGE_AOSP_SOURCE:-$TREEFORGE/aosp}"
+
+RELEASE="android-15.0.0_r36"
+TF_SOURCE="$ROOT/work/android-15.0.0_r36-treeforge"
+
+fail() {
+    printf 'ERROR: %s\n' "$*" >&2
+    exit 1
+}
+
+require() {
+    command -v "$1" >/dev/null 2>&1 ||
+        fail "required command missing: $1"
+}
+
+verify_project() {
+    local path="$1"
+    local expected="$2"
+    local actual
+
+    test -d "$AOSP/$path" ||
+        fail "missing AOSP project: $path"
+
+    actual="$(git -C "$AOSP/$path" rev-parse HEAD)"
+
+    printf '%-32s expected=%s\n' "$path" "$expected"
+    printf '%-32s actual=%s\n' "$path" "$actual"
+
+    test "$actual" = "$expected" ||
+        fail "revision mismatch: $path"
+
+    test -z "$(
+        git -C "$AOSP/$path" status \
+            --porcelain \
+            --untracked-files=no
+    )" || fail "AOSP project has tracked modifications: $path"
+}
+
+for command in git rsync patch sha256sum python3; do
+    require "$command"
+done
+
+test -f "$AOSP/build/envsetup.sh" ||
+    fail "AOSP envsetup missing"
+
+echo "=== TREEFORGE PREPARE SOURCE ==="
+date --iso-8601=seconds
+echo
+echo "release=$RELEASE"
+echo "source=$AOSP"
+echo "destination=$TF_SOURCE"
+echo
+
+echo "===== VERIFY SAVED BASE ====="
+
+verify_project \
+    packages/modules/adb \
+    a877adddefdf011bfb5d4045919c6df3d3727ed3
+
+verify_project \
+    system/core \
+    00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad
+
+verify_project \
+    external/avb \
+    d289c2ba6de359471b23d594623b906876bc48a0
+
+verify_project \
+    system/libufdt \
+    13e8728f0cffde9369df671f7b293a048a99c7ed
+
+verify_project \
+    system/extras \
+    288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5
+
+verify_project \
+    system/tools/mkbootimg \
+    ca3fa710f8bcbb9d3e6a3929ba3ecc841aca0677
+
+echo
+echo "source_identity=PASS"
+echo
+
+echo "===== RECONSTRUCT TREEFORGE SOURCE ====="
+
+rm -rf "$TF_SOURCE"
+mkdir -p "$TF_SOURCE"
+
+echo "Staging shared AOSP source..."
+
+rsync -a \
+    --delete \
+    --human-readable \
+    --info=progress2 \
+    --exclude='/.repo/' \
+    --exclude='.git' \
+    --exclude='/out/' \
+    --exclude='/out-*/' \
+    --exclude='/packages/modules/adb/' \
+    --exclude='/system/core/' \
+    --exclude='/external/avb/' \
+    --exclude='/system/libufdt/' \
+    --exclude='/system/extras/' \
+    --exclude='/system/tools/mkbootimg/' \
+    --link-dest="$AOSP/" \
+    "$AOSP/" \
+    "$TF_SOURCE/"
+
+echo
+echo "shared_source_view=PASS"
+echo
+
+for project in \
+    packages/modules/adb \
+    system/core \
+    external/avb \
+    system/libufdt \
+    system/extras \
+    system/tools/mkbootimg
+do
+    echo "Staging modified project base: $project"
+
+    mkdir -p "$TF_SOURCE/$(dirname "$project")"
+
+    rsync -a \
+        --human-readable \
+        --info=progress2 \
+        --exclude='.git' \
+        "$AOSP/$project/" \
+        "$TF_SOURCE/$project/"
+
+    echo "$project: PASS"
+done
+
+echo
+echo "===== MATERIALIZE VNDK NOTICE TREES ====="
+
+while IFS= read -r -d '' src; do
+    rel="${src#"$AOSP/"}"
+    dst="$TF_SOURCE/$rel"
+
+    rm -rf "$dst"
+    mkdir -p "$dst"
+
+    rsync -aL "$src/" "$dst/"
+done < <(
+    find "$AOSP/prebuilts/vndk" \
+        -type d \
+        -path '*/common/NOTICE_FILES' \
+        -print0
+)
+
+echo "vndk_notice_materialization=PASS"
+echo
+
+echo "===== APPLY SAVED TREEFORGE MODIFICATIONS ====="
+
+ADB_PATCHES=(
+    "$ROOT/tools/adb/patches/treeforge-host-adb-identity.patch"
+    "$ROOT/tools/adb/patches/treeforge-recovery-standalone-adbd.patch"
+    "$ROOT/tools/adb/patches/pixel-partitioner-early-userspace-adbd.patch"
+)
+
+for adb_patch in "${ADB_PATCHES[@]}"; do
+    test -f "$adb_patch" ||
+        fail "missing saved patch: $adb_patch"
+
+    echo "Applying $(basename "$adb_patch")"
+
+    patch \
+        --dry-run \
+        -p1 \
+        -d "$TF_SOURCE/packages/modules/adb" \
+        < "$adb_patch" \
+        >/dev/null
+
+    patch \
+        -p1 \
+        -d "$TF_SOURCE/packages/modules/adb" \
+        < "$adb_patch"
+done
+
+VABC_PATCH="$ROOT/tools/vabc/patches/treeforge-vabc-recovery.patch"
+
+test -f "$VABC_PATCH" ||
+    fail "missing saved VABC patch"
+
+echo "Applying $(basename "$VABC_PATCH")"
+
+patch \
+    --dry-run \
+    -d "$TF_SOURCE/system/core" \
+    -p1 \
+    < "$VABC_PATCH" \
+    >/dev/null
+
+patch \
+    -d "$TF_SOURCE/system/core" \
+    -p1 \
+    < "$VABC_PATCH"
+
+echo
+echo "saved_modifications=PASS"
+echo
+
+echo "===== WRITE REBUILD RECORD ====="
+
+TREEFORGE_TOOLCHAIN_ROOT="$ROOT" \
+TREEFORGE_AOSP_SOURCE="$AOSP" \
+TREEFORGE_PREPARED_SOURCE="$TF_SOURCE" \
+python3 - <<'__TREEFORGE_RECORD_PY__'
+from pathlib import Path
+from datetime import datetime, timezone
+import hashlib
+import json
+import os
+import subprocess
+
+root = Path(
+    os.environ["TREEFORGE_TOOLCHAIN_ROOT"]
+).resolve()
+
+aosp = Path(
+    os.environ["TREEFORGE_AOSP_SOURCE"]
+).resolve()
+
+source = Path(
+    os.environ["TREEFORGE_PREPARED_SOURCE"]
+).resolve()
+
+projects = [
+    "packages/modules/adb",
+    "system/core",
+    "external/avb",
+    "system/libufdt",
+    "system/extras",
+    "system/tools/mkbootimg",
+]
+
+patches = [
+    root / "tools/adb/patches/treeforge-host-adb-identity.patch",
+    root / "tools/adb/patches/treeforge-recovery-standalone-adbd.patch",
+    root / "tools/adb/patches/pixel-partitioner-early-userspace-adbd.patch",
+    root / "tools/vabc/patches/treeforge-vabc-recovery.patch",
+]
+
+def sha256(path):
+    digest = hashlib.sha256()
+
+    with path.open("rb") as handle:
+        for chunk in iter(
+            lambda: handle.read(1024 * 1024),
+            b"",
+        ):
+            digest.update(chunk)
+
+    return digest.hexdigest()
+
+revisions = {}
+
+for project in projects:
+    revisions[project] = subprocess.check_output(
+        [
+            "git",
+            "-C",
+            str(aosp / project),
+            "rev-parse",
+            "HEAD",
+        ],
+        text=True,
+    ).strip()
+
+try:
+    toolchain_commit = subprocess.check_output(
+        [
+            "git",
+            "-C",
+            str(root),
+            "rev-parse",
+            "HEAD",
+        ],
+        text=True,
+    ).strip()
+except subprocess.CalledProcessError:
+    toolchain_commit = None
+
+record = {
+    "schema_version": 1,
+    "android_release": "android-15.0.0_r36",
+    "prepared_at_utc": datetime.now(
+        timezone.utc
+    ).isoformat(),
+    "toolchain_git_commit": toolchain_commit,
+    "aosp_source": str(aosp),
+    "prepared_source": str(source),
+    "source_projects": revisions,
+    "saved_modifications": {
+        str(path.relative_to(root)): sha256(path)
+        for path in patches
+    },
+    "build_products": {
+        "host":
+            "module_x86_64-trunk_staging-eng",
+        "runtime":
+            "module_arm64-trunk_staging-eng",
+    },
+    "pixel_partitioner_build_module":
+        "adbd.pixel_partitioner",
+}
+
+marker = source / ".treeforge-source-ready.json"
+
+marker.write_text(
+    json.dumps(
+        record,
+        indent=2,
+        sort_keys=True,
+    ) + "\n"
+)
+
+print(f"rebuild_record={marker}")
+__TREEFORGE_RECORD_PY__
+
+echo
+echo "TREEFORGE_PREPARE_SOURCE=PASS"
+echo "BUILDS INVOKED: 0"
+echo "DEVICE TOUCHED: NO"
+echo "ADB INVOKED: NO"
+echo "FASTBOOT INVOKED: NO"
+echo "TERMINAL CLOSED: NO"

@@ -3,58 +3,51 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="${TREEFORGE_TOOLCHAIN_ROOT:-$(cd "$SCRIPT_DIR/.." && pwd)}"
-WORKSPACE="$(cd "$ROOT/.." && pwd)"
-TREEFORGE="${TREEFORGE_ROOT:-$WORKSPACE/treeforge}"
-AOSP="${TREEFORGE_AOSP_SOURCE:-$TREEFORGE/aosp}"
 
-RELEASE=android-15.0.0_r36
-HOST_PRODUCT=module_x86_64-trunk_staging-eng
-RUNTIME_PRODUCT=module_arm64-trunk_staging-eng
+RELEASE="android-15.0.0_r36"
 
-JOBS="${TREEFORGE_BUILD_JOBS:-8}"
-
-AOSP_HOST_OUT="$ROOT/out/build/aosp/linux-x86_64"
-AOSP_RUNTIME_OUT="$ROOT/out/build/aosp/arm64"
+HOST_PRODUCT="module_x86_64-trunk_staging-eng"
+RUNTIME_PRODUCT="module_arm64-trunk_staging-eng"
 
 TF_SOURCE="$ROOT/work/android-15.0.0_r36-treeforge"
 TF_HOST_OUT="$ROOT/out/build/treeforge/linux-x86_64"
 TF_RUNTIME_OUT="$ROOT/out/build/treeforge/arm64"
 
-REPORT="$ROOT/out/reports"
+READY_MARKER="$TF_SOURCE/.treeforge-source-ready.json"
+
+JOBS="${TREEFORGE_BUILD_JOBS:-8}"
 
 fail() {
     printf 'ERROR: %s\n' "$*" >&2
     exit 1
 }
 
-require() {
-    command -v "$1" >/dev/null 2>&1 ||
-        fail "required command missing: $1"
-}
+usage() {
+    cat <<'EOF'
+Usage:
+  ./scripts/build host
+  ./scripts/build runtime
+  ./scripts/build host <module>
+  ./scripts/build runtime <module>
 
-verify_project() {
-    local path="$1"
-    local expected="$2"
-    local actual
+Examples:
+  ./scripts/build host adb
+  ./scripts/build host fastboot
+  ./scripts/build runtime adbd.pixel_partitioner
 
-    test -d "$AOSP/$path" ||
-        fail "missing AOSP project: $path"
+This command ONLY builds.
 
-    actual="$(
-        git -C "$AOSP/$path" rev-parse HEAD
-    )"
+It does not:
+  - reconstruct source
+  - apply patches
+  - perform reference builds
+  - clean output
+  - package providers
+  - create releases
 
-    printf '%-32s expected=%s\n' "$path" "$expected"
-    printf '%-32s actual=%s\n'   "$path" "$actual"
-
-    test "$actual" = "$expected" ||
-        fail "revision mismatch: $path"
-
-    test -z "$(
-        git -C "$AOSP/$path" status \
-            --porcelain \
-            --untracked-files=no
-    )" || fail "AOSP project has tracked modifications: $path"
+To reconstruct the saved TreeForge source modifications:
+  ./scripts/prepare-source
+EOF
 }
 
 build_product() {
@@ -64,18 +57,10 @@ build_product() {
     shift 3
 
     (
-        # AOSP envsetup must be sourced from the root of the source tree
-        # being built. The pristine line uses the canonical AOSP root;
-        # the TreeForge line uses its isolated derived AOSP root.
         cd "$source_root" || exit 1
-
-        test -f "$source_root/build/envsetup.sh" ||
-            fail "envsetup missing from source root: $source_root"
 
         export OUT_DIR="$out_dir"
 
-        # AOSP envsetup intentionally probes variables such as TOP before
-        # assigning them. Do not leak this wrapper's `set -u` into it.
         set +u
 
         # shellcheck disable=SC1091
@@ -87,448 +72,110 @@ build_product() {
     )
 }
 
-echo "=== TREEFORGE COMPLETE ANDROID TOOLCHAIN BUILD ==="
+MODE="${1:-}"
+TARGET_MODULE="${2:-}"
+
+if [[ "$MODE" == "-h" || "$MODE" == "--help" ]]; then
+    usage
+    exit 0
+fi
+
+if [[ -z "$MODE" ]]; then
+    usage
+    exit 2
+fi
+
+if [[ $# -gt 2 ]]; then
+    fail "too many arguments"
+fi
+
+case "$MODE" in
+    host)
+        SELECTED_PRODUCT="$HOST_PRODUCT"
+        SELECTED_OUT="$TF_HOST_OUT"
+
+        DEFAULT_MODULES=(
+            adb
+            fastboot
+            avbtool
+            mkdtimg
+            create_snapshot
+            inspect_cow.treeforge
+            lpdump
+            lpunpack
+            simg2img
+            mkbootimg
+            unpack_bootimg
+        )
+        ;;
+    runtime)
+        SELECTED_PRODUCT="$RUNTIME_PRODUCT"
+        SELECTED_OUT="$TF_RUNTIME_OUT"
+
+        DEFAULT_MODULES=(
+            adbd.treeforge_recovery
+            adbd.pixel_partitioner
+            adbd_system_api_recovery
+            fastbootd
+            linker.recovery
+            snapuserd_ramdisk
+            treeforge-vabc-coordinator
+        )
+        ;;
+    *)
+        usage
+        fail "unknown build mode: $MODE"
+        ;;
+esac
+
+test -d "$TF_SOURCE" ||
+    fail "prepared TreeForge source missing; run ./scripts/prepare-source"
+
+test -f "$READY_MARKER" ||
+    fail "prepared-source marker missing; run ./scripts/prepare-source"
+
+test -f "$TF_SOURCE/build/envsetup.sh" ||
+    fail "prepared TreeForge source is incomplete"
+
+if [[ -n "$TARGET_MODULE" ]]; then
+    BUILD_MODULES=("$TARGET_MODULE")
+else
+    BUILD_MODULES=("${DEFAULT_MODULES[@]}")
+fi
+
+mkdir -p "$SELECTED_OUT"
+
+echo "=== TREEFORGE BUILD ==="
 date --iso-8601=seconds
 echo
-
-echo "===== BUILD CONTRACT ====="
-echo "android_release=$RELEASE"
-echo "host_product=$HOST_PRODUCT"
-echo "runtime_product=$RUNTIME_PRODUCT"
+echo "release=$RELEASE"
+echo "mode=$MODE"
+echo "product=$SELECTED_PRODUCT"
+echo "out=$SELECTED_OUT"
+echo "target=${TARGET_MODULE:-default-set}"
 echo "jobs=$JOBS"
 echo
-
-for command in \
-    git \
-    rsync \
-    patch \
-    sha256sum \
-    python3
-do
-    require "$command"
-done
-
-test -f "$AOSP/build/envsetup.sh" ||
-    fail "AOSP envsetup missing"
-
-test -f \
-    "$ROOT/manifests/$RELEASE/revisions.json" ||
-    fail "full pinned revisions.json missing"
-
-test -f \
-    "$ROOT/manifests/$RELEASE/tool-build-matrix.json" ||
-    fail "tool build matrix missing"
-
-echo "===== PINNED SOURCE VERIFICATION ====="
-
-verify_project \
-    packages/modules/adb \
-    a877adddefdf011bfb5d4045919c6df3d3727ed3
-
-verify_project \
-    system/core \
-    00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad
-
-verify_project \
-    external/avb \
-    d289c2ba6de359471b23d594623b906876bc48a0
-
-verify_project \
-    system/libufdt \
-    13e8728f0cffde9369df671f7b293a048a99c7ed
-
-verify_project \
-    system/extras \
-    288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5
-
-verify_project \
-    system/tools/mkbootimg \
-    ca3fa710f8bcbb9d3e6a3929ba3ecc841aca0677
-
+echo "source_preparation=REUSED"
+echo "compiled_output=PRESERVED"
+echo "build_invocations=1"
 echo
-echo "source_identity=PASS"
-echo "aosp_tracked_source_clean=PASS"
-echo
-
-echo "===== REFRESH GITHUB SOURCE INVENTORY ====="
-
-"$ROOT/scripts/refresh-source-inventory"
-
-echo
-echo "===== CLEAN GENERATED BUILD ROOTS ====="
-
-rm -rf \
-    "$AOSP_HOST_OUT" \
-    "$AOSP_RUNTIME_OUT" \
-    "$TF_HOST_OUT" \
-    "$TF_RUNTIME_OUT" \
-    "$TF_SOURCE"
-
-mkdir -p \
-    "$AOSP_HOST_OUT" \
-    "$AOSP_RUNTIME_OUT" \
-    "$TF_HOST_OUT" \
-    "$TF_RUNTIME_OUT" \
-    "$REPORT"
-
-echo "generated_roots_clean=PASS"
-echo
-
-echo "============================================================"
-echo "PRISTINE AOSP REFERENCE LINE"
-echo "============================================================"
-echo
-
-echo "===== AOSP HOST TOOLS ====="
-
-build_product \
-    "$AOSP" \
-    "$AOSP_HOST_OUT" \
-    "$HOST_PRODUCT" \
-    adb \
-    fastboot \
-    avbtool \
-    mkdtimg \
-    create_snapshot \
-    inspect_cow \
-    lpdump \
-    lpunpack \
-    simg2img \
-    mkbootimg \
-    unpack_bootimg
-
-echo
-echo "aosp_host_tools=PASS"
-echo
-
-echo "===== AOSP ARM64 RUNTIME TOOLS ====="
-
-build_product \
-    "$AOSP" \
-    "$AOSP_RUNTIME_OUT" \
-    "$RUNTIME_PRODUCT" \
-    adbd \
-    adbd.recovery \
-    com.android.adbd \
-    fastbootd \
-    linker.recovery \
-    snapuserd_ramdisk
-
-echo
-echo "aosp_runtime_tools=PASS"
-echo
-
-echo "============================================================"
-echo "CREATE ISOLATED TREEFORGE SOURCE LINE"
-echo "============================================================"
-echo
-
-mkdir -p "$TF_SOURCE"
-
-rsync -a \
-    --delete \
-    --exclude='/.repo/' \
-    --exclude='.git' \
-    --exclude='/out/' \
-    --exclude='/out-*/' \
-    --exclude='/packages/modules/adb/' \
-    --exclude='/system/core/' \
-    --exclude='/external/avb/' \
-    --exclude='/system/libufdt/' \
-    --exclude='/system/extras/' \
-    --exclude='/system/tools/mkbootimg/' \
-    --link-dest="$AOSP/" \
-    "$AOSP/" \
-    "$TF_SOURCE/"
-
-for project in \
-    packages/modules/adb \
-    system/core \
-    external/avb \
-    system/libufdt \
-    system/extras \
-    system/tools/mkbootimg
-do
-    mkdir -p "$TF_SOURCE/$(dirname "$project")"
-
-    rsync -a \
-        --exclude='.git' \
-        "$AOSP/$project/" \
-        "$TF_SOURCE/$project/"
-done
-
-echo "treeforge_source_view=PASS"
-echo
-
-echo "===== MATERIALIZE VNDK NOTICE TREES ====="
-
-while IFS= read -r -d '' src; do
-    rel="${src#"$AOSP/"}"
-    dst="$TF_SOURCE/$rel"
-
-    rm -rf "$dst"
-    mkdir -p "$dst"
-
-    # VNDK NOTICE_FILES may contain links whose targets are sensitive
-    # to source-tree layout. Materialize their contents so the derived
-    # TreeForge source tree is self-consistent for Soong license checks.
-    rsync -aL "$src/" "$dst/"
-done < <(
-    find "$AOSP/prebuilts/vndk"         -type d         -path '*/common/NOTICE_FILES'         -print0
-)
-
-echo "vndk_notice_materialization=PASS"
-echo
-
-echo "===== APPLY TREEFORGE ADB DELTA ====="
-
-ADB_PATCHES=(
-    "$ROOT/tools/adb/patches/treeforge-host-adb-identity.patch"
-    "$ROOT/tools/adb/patches/treeforge-recovery-standalone-adbd.patch"
-    "$ROOT/tools/adb/patches/treeforge-chromiumos-early-userspace-adbd.patch"
-)
-
-for adb_patch in "${ADB_PATCHES[@]}"; do
-    if [[ ! -f "$adb_patch" ]]; then
-        fail "TreeForge ADB patch missing: $adb_patch"
-    fi
-
-    echo "Applying $(basename "$adb_patch")"
-
-    if ! patch \
-        --dry-run \
-        -p1 \
-        -d "$TF_SOURCE/packages/modules/adb" \
-        < "$adb_patch" \
-        >/dev/null
-    then
-        fail "TreeForge ADB patch dry-run failed: $adb_patch"
-    fi
-
-    if ! patch \
-        -p1 \
-        -d "$TF_SOURCE/packages/modules/adb" \
-        < "$adb_patch"
-    then
-        fail "TreeForge ADB patch failed: $adb_patch"
-    fi
-done
-
-echo "treeforge_host_adb_identity_delta=PASS"
-echo "treeforge_adbd_delta=PASS"
-echo "treeforge_chromiumos_adbd_delta=PASS"
-
-echo "===== APPLY TREEFORGE LIBSNAPSHOT/VABC DELTA ====="
-
-VABC_PATCH="$ROOT/tools/vabc/patches/treeforge-vabc-recovery.patch"
-
-test -f "$VABC_PATCH" ||
-    fail "TreeForge VABC patch missing"
-
-patch \
-    --dry-run \
-    -d "$TF_SOURCE/system/core" \
-    -p1 \
-    < "$VABC_PATCH"
-
-patch \
-    -d "$TF_SOURCE/system/core" \
-    -p1 \
-    < "$VABC_PATCH"
-
-echo "treeforge_vabc_delta=PASS"
-echo
-
-echo "============================================================"
-echo "TREEFORGE TOOL LINE"
-echo "============================================================"
-echo
-
-echo "===== TREEFORGE HOST TOOLS ====="
 
 build_product \
     "$TF_SOURCE" \
-    "$TF_HOST_OUT" \
-    "$HOST_PRODUCT" \
-    adb \
-    fastboot \
-    avbtool \
-    mkdtimg \
-    create_snapshot \
-    inspect_cow.treeforge \
-    lpdump \
-    lpunpack \
-    simg2img \
-    mkbootimg \
-    unpack_bootimg
+    "$SELECTED_OUT" \
+    "$SELECTED_PRODUCT" \
+    "${BUILD_MODULES[@]}"
 
 echo
-echo "treeforge_host_tools=PASS"
-echo
-
-echo "===== TREEFORGE ARM64 RUNTIME TOOLS ====="
-
-build_product \
-    "$TF_SOURCE" \
-    "$TF_RUNTIME_OUT" \
-    "$RUNTIME_PRODUCT" \
-    adbd.treeforge_recovery \
-    adbd.treeforge_chromiumos \
-    adbd_system_api_recovery \
-    fastbootd \
-    linker.recovery \
-    snapuserd_ramdisk \
-    treeforge-vabc-coordinator
-
-echo
-echo "treeforge_runtime_tools=PASS"
-echo
-
-echo "============================================================"
-echo "ARTIFACT INVENTORY"
-echo "============================================================"
-echo
-
-TREEFORGE_TOOLCHAIN_ROOT="$ROOT" python3 - <<'PY'
-from pathlib import Path
-import hashlib
-import json
-import os
-
-root = Path(
-    os.environ["TREEFORGE_TOOLCHAIN_ROOT"]
-).resolve()
-
-roots = {
-    "aosp_host":
-        root / "out/build/aosp/linux-x86_64",
-    "aosp_runtime":
-        root / "out/build/aosp/arm64",
-    "treeforge_host":
-        root / "out/build/treeforge/linux-x86_64",
-    "treeforge_runtime":
-        root / "out/build/treeforge/arm64",
-}
-
-names = {
-    "adb",
-    "fastboot",
-    "avbtool",
-    "mkdtimg",
-    "create_snapshot",
-    "inspect_cow",
-    "inspect_cow.treeforge",
-    "lpdump",
-    "lpunpack",
-    "simg2img",
-    "mkbootimg",
-    "unpack_bootimg",
-    "adbd",
-    "treeforge-adbd",
-    "treeforge-adbd-chromiumos",
-    "fastbootd",
-    "snapuserd",
-    "snapuserd_ramdisk",
-    "treeforge-vabc-coordinator",
-    "com.android.adbd.apex",
-    "com.android.adbd.capex",
-}
-
-records = []
-
-for line, search_root in roots.items():
-    if not search_root.exists():
-        continue
-
-    for path in sorted(search_root.rglob("*")):
-        if not path.is_file():
-            continue
-
-        if path.name not in names:
-            continue
-
-        digest = hashlib.sha256()
-
-        with path.open("rb") as fh:
-            for chunk in iter(
-                lambda: fh.read(1024 * 1024),
-                b"",
-            ):
-                digest.update(chunk)
-
-        records.append(
-            {
-                "line": line,
-                "path": str(path),
-                "bytes": path.stat().st_size,
-                "sha256": digest.hexdigest(),
-            }
-        )
-
-report = {
-    "schema": 1,
-    "android_release": "android-15.0.0_r36",
-    "artifacts": records,
-}
-
-report_path = (
-    root
-    / "out/reports/build-artifacts.json"
-)
-
-report_path.write_text(
-    json.dumps(report, indent=2) + "\n"
-)
-
-print(f"artifact_records={len(records)}")
-print(f"artifact_report={report_path}")
-
-for record in records:
-    print(
-        f"{record['line']:18} "
-        f"{record['bytes']:10} "
-        f"{record['sha256']} "
-        f"{record['path']}"
-    )
-PY
-
-echo
-echo "===== AOSP SOURCE IMMUTABILITY CHECK ====="
-
-for project in \
-    packages/modules/adb \
-    system/core \
-    external/avb \
-    system/libufdt \
-    system/extras \
-    system/tools/mkbootimg
-do
-    state="$(
-        git -C "$AOSP/$project" status \
-            --porcelain \
-            --untracked-files=no
-    )"
-
-    if test -n "$state"; then
-        printf '%s\n' "$state"
-        fail "AOSP source changed: $project"
-    fi
-
-    echo "$project=UNCHANGED"
-done
-
-echo
-echo "aosp_reference_source_untouched=PASS"
-echo
-
-echo "===== FINAL ====="
-echo "aosp_reference_build=PASS"
-echo "treeforge_build=PASS"
-echo "github_source_inputs_preserved=PASS"
-echo "build_artifact_inventory=PASS"
-echo "release_packaging_started=NO"
-echo "github_release_created=NO"
-echo "commit_created=NO"
-echo "push_performed=NO"
-echo
-echo "TREEFORGE COMPLETE ANDROID TOOLCHAIN BUILD: PASS"
+echo "TREEFORGE_BUILD=PASS"
+echo "build_mode=$MODE"
+echo "build_product=$SELECTED_PRODUCT"
+echo "build_target=${TARGET_MODULE:-default-set}"
+echo "build_invocations=1"
+echo "source_rebuilds=0"
+echo "reference_builds=0"
+echo "opposite_architecture_builds=0"
+echo "DEVICE TOUCHED: NO"
+echo "ADB INVOKED: NO"
+echo "FASTBOOT INVOKED: NO"
+echo "TERMINAL CLOSED: NO"

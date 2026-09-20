@@ -99,6 +99,7 @@ class Provider:
     comparison_name: str | None = None
     artifact_path: str | None = None
     build_script: str = "scripts/build"
+    prepare_source_script: str | None = None
     build_matrix: str | None = (
         "manifests/android-15.0.0_r36/"
         "tool-build-matrix.json"
@@ -174,13 +175,14 @@ PROVIDERS = (
         binary_name="treeforge-adbd",
     ),
     Provider(
-        "treeforge-adbd-chromiumos",
+        "pixel-partitioner-adbd",
         "arm64",
-        "treeforge",
+        "pixel-partitioner",
         "runtime",
-        "adbd.treeforge_chromiumos",
+        "adbd.pixel_partitioner",
         ("packages/modules/adb",),
-        binary_name="treeforge-adbd-chromiumos",
+        binary_name="pixel-partitioner-adbd",
+        prepare_source_script="scripts/prepare-source",
     ),
     Provider(
         "treeforge-fastboot",
@@ -372,13 +374,6 @@ def asset_stem(provider: Provider) -> str:
 def release_revision(
     provider: Provider,
 ) -> str:
-    # TREEFORGE_CHROMIUMOS_R36_3_RELEASE
-    if (
-        provider.provider_id
-        == "treeforge-adbd-chromiumos"
-    ):
-        return "3"
-
     if (
         provider.provider_id
         in RUNTIME_CONSUMER_REVISION_2_PROVIDERS
@@ -392,15 +387,10 @@ def release_tag(
     provider: Provider,
 ) -> str:
     revision = (
-        3
+        2
         if provider.provider_id
-        == "treeforge-adbd-chromiumos"
-        else (
-            2
-            if provider.provider_id
-            == "avbtool"
-            else 1
-        )
+        == "avbtool"
+        else 1
     )
 
     return (
@@ -612,11 +602,36 @@ def add_runtime_closure(
 ) -> list[Path]:
     copied_sources: list[Path] = []
 
-    queue: deque[Path] = deque([entry_binary])
+    queue: deque[tuple[Path, Path]] = deque(
+        [(product, entry_binary)]
+    )
     seen: set[Path] = set()
 
+    def optional_runtime_file(
+        source_product: Path,
+        name: str,
+    ) -> Path | None:
+        candidates = [
+            path
+            for path in runtime_index(
+                source_product
+            ).get(name, [])
+            if path.is_file()
+        ]
+
+        if not candidates:
+            return None
+
+        return sorted(
+            candidates,
+            key=lambda path: runtime_candidate_rank(
+                source_product,
+                path,
+            ),
+        )[0]
+
     while queue:
-        source = queue.popleft()
+        source_product, source = queue.popleft()
 
         if source in seen:
             continue
@@ -624,7 +639,7 @@ def add_runtime_closure(
         seen.add(source)
 
         destination_rel = runtime_destination(
-            product,
+            source_product,
             source,
         )
 
@@ -636,26 +651,89 @@ def add_runtime_closure(
         copied_sources.append(source)
 
         for needed in readelf_needed(source):
-            candidate = runtime_file(product, needed)
+            # Prefer the requested provider's runtime output so an
+            # AOSP-fallback interpreter does not replace already
+            # available TreeForge runtime libraries.
+            candidate_product = product
+            candidate = optional_runtime_file(
+                candidate_product,
+                needed,
+            )
+
+            if (
+                candidate is None
+                and source_product != product
+            ):
+                candidate_product = source_product
+                candidate = optional_runtime_file(
+                    candidate_product,
+                    needed,
+                )
+
+            if candidate is None:
+                die(
+                    "runtime dependency not found: "
+                    f"{needed}; "
+                    f"primary={product}; "
+                    f"secondary={source_product}"
+                )
 
             if candidate not in seen:
-                queue.append(candidate)
+                queue.append(
+                    (
+                        candidate_product,
+                        candidate,
+                    )
+                )
 
         interpreter = readelf_interpreter(source)
 
         if interpreter:
             interpreter_name = Path(interpreter).name
 
-            try:
-                candidate = runtime_file(
-                    product,
+            candidate_product = source_product
+            candidate = optional_runtime_file(
+                candidate_product,
+                interpreter_name,
+            )
+
+            # A thin TreeForge module build can omit linker64 because
+            # linker64 itself is not a dependency that Soong needs to
+            # materialize while compiling adbd. Use the corresponding
+            # pinned AOSP r36 runtime product only when that interpreter
+            # is absent from the TreeForge product.
+            if (
+                candidate is None
+                and source_product == TREEFORGE_PRODUCT
+            ):
+                candidate_product = AOSP_PRODUCT
+                candidate = optional_runtime_file(
+                    candidate_product,
                     interpreter_name,
                 )
-            except SystemExit:
-                candidate = None
 
-            if candidate is not None and candidate not in seen:
-                queue.append(candidate)
+                if candidate is not None:
+                    print(
+                        "runtime_interpreter_fallback="
+                        f"{interpreter_name}:"
+                        f"{candidate}"
+                    )
+
+            if candidate is None:
+                die(
+                    "runtime interpreter not found: "
+                    f"{interpreter_name}; "
+                    f"primary={source_product}; "
+                    f"fallback={AOSP_PRODUCT}"
+                )
+
+            if candidate not in seen:
+                queue.append(
+                    (
+                        candidate_product,
+                        candidate,
+                    )
+                )
 
     return copied_sources
 
@@ -1146,9 +1224,9 @@ def package_payload(
 
         if (
             provider.provider_id
-            == "treeforge-adbd-chromiumos"
+            == "pixel-partitioner-adbd"
         ):
-            # TREEFORGE_CHROMIUMOS_R36_3_SHELL_ROOTFS
+            # PIXEL_PARTITIONER_ADBD_R36_1_SHELL_ROOTFS
             busybox = (
                 ROOT
                 / "out"
@@ -1165,14 +1243,14 @@ def package_payload(
                 ROOT
                 / "tools"
                 / "adb"
-                / "chromiumos-busybox-applets.txt"
+                / "pixel-partitioner-busybox-applets.txt"
             )
 
             stager = (
                 ROOT
                 / "tools"
                 / "adb"
-                / "stage-chromiumos-shell-rootfs.py"
+                / "stage-pixel-partitioner-shell-rootfs.py"
             )
 
             shell_manifest = (
@@ -1187,8 +1265,8 @@ def package_payload(
             ):
                 if not required.is_file():
                     die(
-                        "treeforge-adbd-chromiumos: "
-                        "r36-3 shell dependency missing: "
+                        "pixel-partitioner-adbd: "
+                        "r36-1 shell dependency missing: "
                         f"{required}"
                     )
 
@@ -1322,6 +1400,7 @@ def source_rebuild_record(
         ),
         "build_module": provider.module,
         "build_script": provider.build_script,
+        "prepare_source_script": provider.prepare_source_script,
         "package_script": "scripts/package",
         "build_matrix": provider.build_matrix,
         "source_inventory": provider.source_inventory,
