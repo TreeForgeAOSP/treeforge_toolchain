@@ -185,6 +185,15 @@ PROVIDERS = (
         prepare_source_script="scripts/prepare-source",
     ),
     Provider(
+        "treeforge-bootstrap-adbd",
+        "arm64",
+        "treeforge-bootstrap",
+        "runtime",
+        "adbd.treeforge_bootstrap",
+        ("packages/modules/adb",),
+        binary_name="treeforge-bootstrap-adbd",
+    ),
+    Provider(
         "treeforge-fastboot",
         "linux-x86_64",
         "treeforge",
@@ -1222,11 +1231,11 @@ def package_payload(
             )
         )
 
-        if (
-            provider.provider_id
-            == "pixel-partitioner-adbd"
+        if provider.provider_id in (
+            "pixel-partitioner-adbd",
+            "treeforge-bootstrap-adbd",
         ):
-            # PIXEL_PARTITIONER_ADBD_R36_1_SHELL_ROOTFS
+            # EARLY_USERSPACE_ADBD_R36_1_SHELL_ROOTFS
             busybox = (
                 ROOT
                 / "out"
@@ -1239,18 +1248,36 @@ def package_payload(
                 / "busybox"
             )
 
+            if (
+                provider.provider_id
+                == "pixel-partitioner-adbd"
+            ):
+                applet_filename = (
+                    "pixel-partitioner-busybox-applets.txt"
+                )
+                stager_filename = (
+                    "stage-pixel-partitioner-shell-rootfs.py"
+                )
+            else:
+                applet_filename = (
+                    "treeforge-bootstrap-busybox-applets.txt"
+                )
+                stager_filename = (
+                    "stage-treeforge-bootstrap-shell-rootfs.py"
+                )
+
             applets = (
                 ROOT
                 / "tools"
                 / "adb"
-                / "pixel-partitioner-busybox-applets.txt"
+                / applet_filename
             )
 
             stager = (
                 ROOT
                 / "tools"
                 / "adb"
-                / "stage-pixel-partitioner-shell-rootfs.py"
+                / stager_filename
             )
 
             shell_manifest = (
@@ -1265,7 +1292,7 @@ def package_payload(
             ):
                 if not required.is_file():
                     die(
-                        "pixel-partitioner-adbd: "
+                        f"{provider.provider_id}: "
                         "r36-1 shell dependency missing: "
                         f"{required}"
                     )

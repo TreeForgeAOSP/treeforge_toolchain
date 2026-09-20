@@ -36,6 +36,11 @@
       "sha256": "28842b7370b9917e201ebc8cca607544f5c6c1f69220a06e182d2ab1e97aaa46"
     },
     {
+      "bytes": 11164,
+      "path": "docs/providers/treeforge-bootstrap-adbd.md",
+      "sha256": "133d8a1e90c6089cf0312dcbec53613f5a64f9b41ba029d4b983b4950b0bc1c0"
+    },
+    {
       "bytes": 239974,
       "path": "manifests/android-15.0.0_r36/manifest.xml",
       "sha256": "9608e346716ced6118249ac10325b14914826de8cb5e49dd9548ae85be1ee145"
@@ -296,9 +301,9 @@
       "sha256": "db3282046c3db4bc51c7c4fd31baeb1b0f18a31d7b0c815b21176372ae1526b4"
     },
     {
-      "bytes": 6113,
+      "bytes": 6454,
       "path": "providers/index.json",
-      "sha256": "0817d13485bcdf29d4c5f22652675286b49e3c832616a1d8e1d7ef0695eadb2b"
+      "sha256": "e3016334d3a412d8c17d7b741b54111024db177f82f54e077fc005df60a4f752"
     },
     {
       "bytes": 337,
@@ -681,6 +686,31 @@
       "sha256": "a99b776d3ed809513e440f89090fa3b286add239ed9e0ca63d637c2335ee85eb"
     },
     {
+      "bytes": 11164,
+      "path": "providers/treeforge-bootstrap-adbd/android-15.0.0_r36-arm64/CAPABILITIES.md",
+      "sha256": "133d8a1e90c6089cf0312dcbec53613f5a64f9b41ba029d4b983b4950b0bc1c0"
+    },
+    {
+      "bytes": 946,
+      "path": "providers/treeforge-bootstrap-adbd/android-15.0.0_r36-arm64/MODIFICATIONS.txt",
+      "sha256": "f1a303415355eed1fe75845301224ed381cf249cefc0dabbe6eabbf03e6e9e4a"
+    },
+    {
+      "bytes": 19760,
+      "path": "providers/treeforge-bootstrap-adbd/android-15.0.0_r36-arm64/PATCHES/treeforge-bootstrap-early-userspace-adbd.patch",
+      "sha256": "ed2ba87408fafa23a674ff4b8601e6a573a84306f804a279a5988872c12882c1"
+    },
+    {
+      "bytes": 822,
+      "path": "providers/treeforge-bootstrap-adbd/android-15.0.0_r36-arm64/PROVIDER-SOURCE.txt",
+      "sha256": "4063056b6553e57e33e87b1eba4f119a8b22a81cc10e5eee62bf28fd2a06c830"
+    },
+    {
+      "bytes": 1009,
+      "path": "providers/treeforge-bootstrap-adbd/android-15.0.0_r36-arm64/manifest.json",
+      "sha256": "377cb66bc95c286febfc12bbb4bb01a9d717fcf7f26714274086ecd071f907b9"
+    },
+    {
       "bytes": 1268,
       "path": "providers/treeforge-busybox/android-15.0.0_r36-linux-arm64/CAPABILITIES.md",
       "sha256": "b5086817afddbd490a0e8acfb1f7dc19b3c5ecc373a518a8a16bf221b58390e4"
@@ -891,9 +921,9 @@
       "sha256": "093d46994d077ef18e74da73b2478da5169f211894b5ba6a4dbc0604cfa2f6d7"
     },
     {
-      "bytes": 42928,
+      "bytes": 43745,
       "path": "scripts/package",
-      "sha256": "f21ca4500160a14adcd9ade667e9ca50f17c6e9df5b052a243d8fb229f173858"
+      "sha256": "102d2b7acaa759e8b876f4ecc72476665c6eb46d91fe80433e2a0b4a1ab3aa05"
     },
     {
       "bytes": 8592,
@@ -961,6 +991,11 @@
       "sha256": "dea6c4df7aa1fd1e26de8990fae1591a3d6d280ad412096fc60843d05c257ed1"
     },
     {
+      "bytes": 19760,
+      "path": "tools/adb/patches/treeforge-bootstrap-early-userspace-adbd.patch",
+      "sha256": "ed2ba87408fafa23a674ff4b8601e6a573a84306f804a279a5988872c12882c1"
+    },
+    {
       "bytes": 19655,
       "path": "tools/adb/patches/treeforge-chromiumos-early-userspace-adbd.patch",
       "sha256": "d99a3f3c28653e10fdc60090c4dc25b75dc165a8723f0c171ea6c1c48ce07749"
@@ -994,6 +1029,21 @@
       "bytes": 3746,
       "path": "tools/adb/stage-pixel-partitioner-shell-rootfs.py",
       "sha256": "1cb0f8943a0f796c21a8ccdf29324a0f39c044d9d93502108bfc61f684f3b1b9"
+    },
+    {
+      "bytes": 3746,
+      "path": "tools/adb/stage-treeforge-bootstrap-shell-rootfs.py",
+      "sha256": "1cb0f8943a0f796c21a8ccdf29324a0f39c044d9d93502108bfc61f684f3b1b9"
+    },
+    {
+      "bytes": 98,
+      "path": "tools/adb/treeforge-bootstrap-busybox-applets.txt",
+      "sha256": "a00610ab32840bcb292dc427afa0df38022faaff0290bb2b1ef04793f74c9848"
+    },
+    {
+      "bytes": 1483,
+      "path": "tools/adb/treeforge-bootstrap-shell-r36-1.json",
+      "sha256": "1b888567b1ce96612a804edd18fba7349c24cf7c9f21b5b23e9b36fb14ed95e0"
     },
     {
       "bytes": 29360,

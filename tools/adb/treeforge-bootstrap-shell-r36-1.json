@@ -1,0 +1,64 @@
+{
+  "busybox": {
+    "applet_count": 21,
+    "applets": [
+      "id",
+      "ls",
+      "cat",
+      "ps",
+      "mount",
+      "dmesg",
+      "uname",
+      "grep",
+      "sed",
+      "awk",
+      "head",
+      "tail",
+      "find",
+      "mkdir",
+      "rm",
+      "cp",
+      "mv",
+      "chmod",
+      "chown",
+      "ln",
+      "readlink"
+    ],
+    "destination": "rootfs/system/bin/busybox",
+    "sha256": "531d479411a97d90186a08ad2f873e3f3c48a4b569f100dccfecead5d56e49ac",
+    "source": "out/build/treeforge/busybox/arm64/payload/bin/busybox"
+  },
+  "environment": {
+    "HOME": "/",
+    "LOGNAME": "root",
+    "PATH": "/dev/treeforge-bootstrap-runtime/system/bin:/bin:/sbin:/usr/bin:/usr/sbin:/system/bin",
+    "SHELL": "/dev/treeforge-bootstrap-runtime/system/bin/busybox",
+    "TMPDIR": "/tmp",
+    "USER": "root"
+  },
+  "exec": {
+    "command": [
+      "/dev/treeforge-bootstrap-runtime/system/bin/busybox",
+      "sh",
+      "-c",
+      "<command>"
+    ],
+    "interactive": [
+      "/dev/treeforge-bootstrap-runtime/system/bin/busybox",
+      "sh"
+    ]
+  },
+  "provider": "treeforge-bootstrap-adbd",
+  "release_tag": "treeforge-bootstrap-adbd/android-15.0.0_r36-1",
+  "runtime_profile": "TREEFORGE_BOOTSTRAP_EARLY_USERSPACE",
+  "schema_version": 1,
+  "unchanged": {
+    "auth_policy": true,
+    "functionfs": true,
+    "normal_android_adbd": true,
+    "recovery_adbd": true,
+    "root_bringup_policy": true,
+    "selinux_bypass": true,
+    "sync_behavior": true
+  }
+}

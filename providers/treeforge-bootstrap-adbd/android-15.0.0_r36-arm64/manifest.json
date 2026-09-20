@@ -1,0 +1,25 @@
+{
+  "architecture": "arm64",
+  "canonical_payload": "rootfs/system/bin/treeforge-bootstrap-adbd",
+  "canonical_payload_sha256": "46ab32860fc78a7556c47b71e8f4a2089f43492fd78bc30727f94a3b466e4109",
+  "capabilities_document": "CAPABILITIES.md",
+  "classification": "TREEFORGE_MODIFIED_AOSP_PROVIDER",
+  "distribution": "GITHUB_RELEASE_ASSET",
+  "family": "adb",
+  "kind": "runtime",
+  "name": "treeforge-bootstrap-adbd",
+  "platform": "treeforge-bootstrap",
+  "release": "android-15.0.0_r36-arm64",
+  "release_tag": "treeforge-bootstrap-adbd/android-15.0.0_r36-1",
+  "repository": "TreeForgeAOSP/treeforge_toolchain",
+  "runtime_profile": "TREEFORGE_BOOTSTRAP_EARLY_USERSPACE",
+  "schema": 1,
+  "source": {
+    "platform": "android",
+    "platform_release": "android-15.0.0_r36",
+    "project": "platform/packages/modules/adb",
+    "revision": "a877adddefdf011bfb5d4045919c6df3d3727ed3",
+    "source_path": "packages/modules/adb"
+  },
+  "source_patch": "PATCHES/treeforge-bootstrap-early-userspace-adbd.patch"
+}

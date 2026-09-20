@@ -1,0 +1,27 @@
+TreeForge Bootstrap early-userspace adbd modifications
+
+Base:
+  Android 15 r36
+  platform/packages/modules/adb
+  revision a877adddefdf011bfb5d4045919c6df3d3727ed3
+
+TreeForge delta:
+  PATCHES/treeforge-bootstrap-early-userspace-adbd.patch
+
+Runtime contract:
+  - module: adbd.treeforge_bootstrap
+  - binary: treeforge-bootstrap-adbd
+  - profile: TREEFORGE_BOOTSTRAP_EARLY_USERSPACE
+  - product name: treeforge-bootstrap
+  - product model: TreeForge Bootstrap
+  - product device: tangorpro
+  - FunctionFS: /dev/usb-ffs/adb
+  - root uid/gid retained for bring-up
+  - Android framework/property-service assumptions bypassed
+  - authentication disabled for bring-up
+  - shell root: /dev/treeforge-bootstrap-runtime
+  - BusyBox shell provided by the packaged runtime closure
+
+Normal Android and Recovery adbd variants are not modified by this
+provider's runtime policy; the special behavior is compile-time gated by
+TREEFORGE_BOOTSTRAP_EARLY_USERSPACE.
