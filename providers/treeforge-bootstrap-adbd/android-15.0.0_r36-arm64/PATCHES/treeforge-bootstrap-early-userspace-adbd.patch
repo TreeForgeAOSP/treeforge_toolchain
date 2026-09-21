@@ -1,0 +1,552 @@
+diff -ruN a/adb.cpp b/adb.cpp
+--- a/adb.cpp	2026-09-16 23:07:15.344070882 -0400
++++ b/adb.cpp	2026-09-16 23:07:15.391400545 -0400
+@@ -192,7 +192,9 @@
+ #if ADB_HOST
+     t->SetConnectionEstablished(true);
+ #elif defined(__ANDROID__)
+-    IncrementActiveConnections();
++    if (!adbd_is_treeforge_bootstrap_early_userspace()) {
++        IncrementActiveConnections();
++    }
+ #endif
+ }
+ 
+@@ -206,7 +208,9 @@
+     LOG(INFO) << t->serial_name() << ": offline";
+ 
+ #if !ADB_HOST && defined(__ANDROID__)
+-    DecrementActiveConnections();
++    if (!adbd_is_treeforge_bootstrap_early_userspace()) {
++        DecrementActiveConnections();
++    }
+ #endif
+ 
+     t->SetConnectionState(kCsOffline);
+@@ -293,15 +297,30 @@
+     std::vector<std::string> connection_properties;
+ 
+ #if !ADB_HOST
+-    static const char* cnxn_props[] = {
+-        "ro.product.name",
+-        "ro.product.model",
+-        "ro.product.device",
+-    };
+-
+-    for (const auto& prop : cnxn_props) {
+-        std::string value = std::string(prop) + "=" + android::base::GetProperty(prop, "");
+-        connection_properties.push_back(value);
++    if (adbd_is_treeforge_bootstrap_early_userspace()) {
++        /*
++         * Keep the standard ADB CNXN format while providing identity
++         * without Android's property service.
++         */
++        connection_properties.emplace_back(
++                "ro.product.name=treeforge-bootstrap");
++        connection_properties.emplace_back(
++                "ro.product.model=TreeForge Bootstrap");
++        connection_properties.emplace_back(
++                "ro.product.device=tangorpro");
++    } else {
++        static const char* cnxn_props[] = {
++            "ro.product.name",
++            "ro.product.model",
++            "ro.product.device",
++        };
++
++        for (const auto& prop : cnxn_props) {
++            std::string value =
++                    std::string(prop) + "=" +
++                    android::base::GetProperty(prop, "");
++            connection_properties.push_back(value);
++        }
+     }
+ #endif
+ 
+diff -ruN a/adb.h b/adb.h
+--- a/adb.h	2026-09-16 23:07:15.343872842 -0400
++++ b/adb.h	2026-09-16 23:07:15.391202324 -0400
+@@ -203,6 +203,10 @@
+ 
+ extern const char* adb_device_banner;
+ 
++// TreeForge device-runtime policy. The normal AOSP/Recovery variants
++// return false; adbd.treeforge_bootstrap returns true.
++bool adbd_is_treeforge_bootstrap_early_userspace();
++
+ #define CHUNK_SIZE (64 * 1024)
+ 
+ // Argument delimeter for adb abb command.
+diff -ruN a/Android.bp b/Android.bp
+--- a/Android.bp	2026-09-16 23:07:15.343646228 -0400
++++ b/Android.bp	2026-09-16 23:07:15.390940504 -0400
+@@ -867,6 +867,25 @@
+     ],
+ }
+ 
++// TreeForge Bootstrap early-userspace daemon.
++//
++// This keeps the standard AOSP ADB protocol and FunctionFS transport,
++// while replacing Android runtime policy assumptions with an explicit
++// TreeForge early-userspace policy.
++//
++// Keep the normal and TreeForge Recovery daemons unchanged.
++cc_binary {
++    name: "adbd.treeforge_bootstrap",
++    defaults: [
++        "adbd_binary_defaults",
++    ],
++    recovery: true,
++    stem: "treeforge-bootstrap-adbd",
++    cflags: [
++        "-DTREEFORGE_BOOTSTRAP_EARLY_USERSPACE=1",
++    ],
++}
++
+ phony {
+     // Interface between adbd in a module and the system.
+     name: "adbd_system_api",
+diff -ruN a/daemon/auth.cpp b/daemon/auth.cpp
+--- a/daemon/auth.cpp	2026-09-16 23:07:15.344503803 -0400
++++ b/daemon/auth.cpp	2026-09-16 23:07:15.391867549 -0400
+@@ -295,7 +295,20 @@
+ }
+ 
+ void adbd_notify_framework_connected_key(atransport* t) {
+-    t->auth_id = adbd_auth_notify_auth(auth_ctx, t->auth_key.data(), t->auth_key.size());
++    if (adbd_is_treeforge_bootstrap_early_userspace()) {
++        /*
++         * TreeForge Bootstrap early userspace has no Android auth framework.
++         * auth_required=false still permits normal ADB TLS negotiation,
++         * but there is no framework key database to notify afterward.
++         */
++        return;
++    }
++
++    t->auth_id =
++            adbd_auth_notify_auth(
++                    auth_ctx,
++                    t->auth_key.data(),
++                    t->auth_key.size());
+ }
+ 
+ int adbd_tls_verify_cert(X509_STORE_CTX* ctx, std::string* auth_key) {
+diff -ruN a/daemon/file_sync_service.cpp b/daemon/file_sync_service.cpp
+--- a/daemon/file_sync_service.cpp	2026-09-16 23:07:15.344643664 -0400
++++ b/daemon/file_sync_service.cpp	2026-09-16 23:07:15.392015265 -0400
+@@ -70,6 +70,17 @@
+ 
+ // TODO(b/346842318): Delete this function once we no longer need compatibility with < V.
+ static bool should_use_fs_config([[maybe_unused]] const std::string& path) {
++    if (adbd_is_treeforge_bootstrap_early_userspace()) {
++        /*
++         * TreeForge Bootstrap early userspace has no Android fs_config
++         * ownership/mode/capability policy.
++         *
++         * Preserve the mode supplied by the sync protocol and the
++         * filesystem's normal ownership semantics instead.
++         */
++        return false;
++    }
++
+     // adbd_fs_config comes from the system, which means that it could be old. Old versions of
+     // adbd_fs_config will rewrite the permissions unconditionally, which would prevent the host
+     // permissions from ever being used. We can't check getuid() == 0 here to defend against old
+@@ -86,6 +97,14 @@
+ }
+ 
+ static bool update_capabilities(const char* path, uint64_t capabilities) {
++    if (adbd_is_treeforge_bootstrap_early_userspace()) {
++        /*
++         * TreeForge Bootstrap early userspace does not apply Android platform
++         * filesystem capability xattrs.
++         */
++        return true;
++    }
++
+ #if defined(__ANDROID__)
+     if (capabilities == 0) {
+         // Ensure we clean up in case the capabilities weren't 0 in the past.
+@@ -138,7 +157,9 @@
+ 
+ #if defined(__ANDROID__)
+             // Not all filesystems support setting SELinux labels. http://b/23530370.
+-            selinux_android_restorecon(partial_path.c_str(), 0);
++            if (!adbd_is_treeforge_bootstrap_early_userspace()) {
++                selinux_android_restorecon(partial_path.c_str(), 0);
++            }
+ #endif
+ 
+             if (!update_capabilities(partial_path.c_str(), capabilities)) return false;
+@@ -391,7 +412,9 @@
+ 
+ #if defined(__ANDROID__)
+             // Not all filesystems support setting SELinux labels. http://b/23530370.
+-            selinux_android_restorecon(path, 0);
++            if (!adbd_is_treeforge_bootstrap_early_userspace()) {
++                selinux_android_restorecon(path, 0);
++            }
+ #endif
+ 
+             // fchown clears the setuid bit - restore it if present.
+diff -ruN a/daemon/main.cpp b/daemon/main.cpp
+--- a/daemon/main.cpp	2026-09-16 23:07:15.344332392 -0400
++++ b/daemon/main.cpp	2026-09-16 23:07:15.391695467 -0400
+@@ -59,11 +59,27 @@
+ #include "daemon/transport_daemon.h"
+ #include "daemon/watchdog.h"
+ 
++bool adbd_is_treeforge_bootstrap_early_userspace() {
++#if defined(TREEFORGE_BOOTSTRAP_EARLY_USERSPACE)
++    return true;
++#else
++    return false;
++#endif
++}
++
+ #if defined(__ANDROID__)
+ static const char* root_seclabel = nullptr;
+ static const char* tim_seclabel = nullptr;
+ 
+ static bool should_drop_privileges() {
++#if defined(TREEFORGE_BOOTSTRAP_EARLY_USERSPACE)
++    /*
++     * TreeForge Bootstrap bring-up owns the physical-access policy outside adbd.
++     * Keep the daemon root and do not consult Android properties.
++     */
++    return false;
++#endif
++
+ #if defined(TREEFORGE_RECOVERY_STANDALONE)
+     /*
+      * TreeForge Recovery owns this daemon before Android second-stage
+@@ -108,6 +124,15 @@
+ }
+ 
+ static void drop_privileges() {
++#if defined(TREEFORGE_BOOTSTRAP_EARLY_USERSPACE)
++    /*
++     * No Android UID/GID/minijail transition is part of the early
++     * TreeForge Bootstrap runtime contract.
++     */
++    LOG(INFO) << "TreeForge Bootstrap adbd retaining uid=0 gid=0";
++    return;
++#endif
++
+     ScopedMinijail jail(minijail_new());
+ 
+     // Add extra groups:
+@@ -185,7 +210,8 @@
+         // minijail_enter() will abort if any priv-dropping step fails.
+         minijail_enter(jail.get());
+ 
+-#if !defined(TREEFORGE_RECOVERY_STANDALONE)
++#if !defined(TREEFORGE_RECOVERY_STANDALONE) && \
++        !defined(TREEFORGE_BOOTSTRAP_EARLY_USERSPACE)
+         if (root_seclabel != nullptr) {
+             if (selinux_android_setcon(root_seclabel) < 0) {
+                 // If we failed to become root, don't try again to avoid a
+@@ -199,6 +225,7 @@
+ }
+ #endif
+ 
++#if !defined(TREEFORGE_BOOTSTRAP_EARLY_USERSPACE)
+ static void setup_adb(const std::vector<std::string>& addrs) {
+ #if defined(__ANDROID__)
+     // Get the first valid port from addrs and setup mDNS.
+@@ -221,6 +248,7 @@
+         init_transport_socket_server(addr);
+     }
+ }
++#endif
+ 
+ int adbd_main() {
+     umask(0);
+@@ -238,11 +266,26 @@
+     LOG(INFO) << "TreeForge standalone Recovery adbd";
+ #endif
+ 
+-    // We need to call this even if auth isn't enabled because the file
+-    // descriptor will always be open.
++#if defined(TREEFORGE_BOOTSTRAP_EARLY_USERSPACE)
++    /*
++     * Explicit bring-up authentication policy.
++     *
++     * Authentication is intentionally disabled for this experimental
++     * physical-access environment. A later TreeForge policy can replace
++     * this without changing the ADB wire protocol.
++     */
++    auth_required = false;
++
++    LOG(INFO) << "TreeForge Bootstrap early-userspace adbd";
++#endif
++
++#if !defined(TREEFORGE_BOOTSTRAP_EARLY_USERSPACE)
++    // Android init normally owns this authentication control socket.
+     adbd_cloexec_auth_socket();
++#endif
+ 
+-#if defined(__ANDROID__)
++#if defined(__ANDROID__) && \
++        !defined(TREEFORGE_BOOTSTRAP_EARLY_USERSPACE)
+     bool device_unlocked = android::base::GetProperty("ro.boot.verifiedbootstate", "") == "orange";
+     if (device_unlocked || __android_log_is_debuggable()) {
+ #if defined(__ANDROID_RECOVERY__)
+@@ -272,14 +315,17 @@
+     drop_privileges();
+ #endif
+ 
+-#if defined(__ANDROID__)
++#if defined(__ANDROID__) && \
++        !defined(TREEFORGE_BOOTSTRAP_EARLY_USERSPACE)
+     // A thread gets spawned as a side-effect of initializing the watchdog, so it needs to happen
+     // after we drop privileges.
+     watchdog::Initialize();
+ #endif
+ 
+-    // adbd_auth_init will spawn a thread, so we need to defer it until after selinux transitions.
++#if !defined(TREEFORGE_BOOTSTRAP_EARLY_USERSPACE)
++    // Android authentication owns its own thread and framework-facing state.
+     adbd_auth_init();
++#endif
+ 
+     bool is_usb = false;
+ 
+@@ -291,6 +337,20 @@
+     }
+ #endif
+ 
++#if defined(TREEFORGE_BOOTSTRAP_EARLY_USERSPACE)
++    /*
++     * Early TreeForge Bootstrap ADB is USB FunctionFS only.
++     *
++     * PID1 owns configfs, gadget composition and UDC binding.
++     * Do not consult Android TCP/listen properties or silently expose
++     * the daemon over TCP when FunctionFS is absent.
++     */
++    if (!is_usb) {
++        LOG(WARNING)
++                << "TreeForge Bootstrap adbd: "
++                << "FunctionFS endpoint unavailable; no transport started";
++    }
++#else
+     // If one of these properties is set, also listen on that port.
+     // If one of the properties isn't set and we couldn't listen on usb, listen
+     // on the default port.
+@@ -328,11 +388,15 @@
+         setup_adb(addrs);
+     }
+ 
++#endif
++
+     LOG(INFO) << "adbd started";
+ 
++#if !defined(TREEFORGE_BOOTSTRAP_EARLY_USERSPACE)
+     D("adbd_main(): pre init_jdwp()");
+     init_jdwp();
+     D("adbd_main(): post init_jdwp()");
++#endif
+ 
+     D("Event loop starting");
+     fdevent_loop();
+@@ -389,7 +453,14 @@
+ 
+     close_stdin();
+ 
++#if !defined(TREEFORGE_BOOTSTRAP_EARLY_USERSPACE)
++    /*
++     * Android tracing consults persist.adb.trace_mask and uses Android
++     * trace/log paths. Early TreeForge Bootstrap uses normal stderr/kernel-side
++     * bring-up logging instead.
++     */
+     adb_trace_init(argv);
++#endif
+ 
+     D("Handling main()");
+     return adbd_main();
+diff -ruN a/daemon/shell_service.cpp b/daemon/shell_service.cpp
+--- a/daemon/shell_service.cpp	2026-09-16 23:07:15.344806910 -0400
++++ b/daemon/shell_service.cpp	2026-09-16 23:07:15.436317412 -0400
+@@ -229,6 +229,10 @@
+     char buf[HOST_NAME_MAX];
+     if (gethostname(buf, sizeof(buf)) != -1 && strcmp(buf, "localhost") != 0) return buf;
+ 
++    if (adbd_is_treeforge_bootstrap_early_userspace()) {
++        return "treeforge-bootstrap";
++    }
++
+     return android::base::GetProperty("ro.product.device", "android");
+ }
+ 
+@@ -253,7 +257,12 @@
+     }
+ 
+     // Construct the environment for the child before we fork.
+-    passwd* pw = getpwuid(getuid());
++    passwd* pw = nullptr;
++
++    if (!adbd_is_treeforge_bootstrap_early_userspace()) {
++        pw = getpwuid(getuid());
++    }
++
+     std::unordered_map<std::string, std::string> env;
+     if (environ) {
+         char** current = environ;
+@@ -269,7 +278,21 @@
+         }
+     }
+ 
+-    if (pw != nullptr) {
++    if (adbd_is_treeforge_bootstrap_early_userspace()) {
++        /*
++         * Freestanding early-userspace shell environment.
++         *
++         * No /data, Android package user, or framework initialization
++         * is required.
++         */
++        env["HOME"] = "/";
++        env["HOSTNAME"] = GetHostName();
++        env["LOGNAME"] = "root";
++        env["PATH"] = "/dev/treeforge-bootstrap-runtime/system/bin:/bin:/sbin:/usr/bin:/usr/sbin:/system/bin";
++        env["SHELL"] = "/dev/treeforge-bootstrap-runtime/system/bin/busybox";
++        env["TMPDIR"] = "/tmp";
++        env["USER"] = "root";
++    } else if (pw != nullptr) {
+         env["HOME"] = pw->pw_dir;
+         env["HOSTNAME"] = GetHostName();
+         env["LOGNAME"] = pw->pw_name;
+@@ -369,30 +392,41 @@
+         }
+ 
+ #ifdef __ANDROID_RECOVERY__
+-        // Special routine for recovery. Switch to shell domain when adbd is
+-        // is running with dropped privileged (i.e. not running as root) and
+-        // is built for the recovery mode. This is required because recovery
+-        // rootfs is not labeled and everything is labeled just as rootfs.
+-        char* con = nullptr;
+-        if (getcon(&con) == 0) {
+-            if (!strcmp(con, "u:r:adbd:s0")) {
+-                if (selinux_android_setcon("u:r:shell:s0") < 0) {
+-                    LOG(FATAL) << "Could not set SELinux context for subprocess";
++        if (!adbd_is_treeforge_bootstrap_early_userspace()) {
++            // Special routine for Android Recovery. TreeForge Bootstrap PID1 does
++            // not establish Android adbd/shell SELinux domains.
++            char* con = nullptr;
++            if (getcon(&con) == 0) {
++                if (!strcmp(con, "u:r:adbd:s0")) {
++                    if (selinux_android_setcon("u:r:shell:s0") < 0) {
++                        LOG(FATAL) << "Could not set SELinux context for subprocess";
++                    }
+                 }
++                freecon(con);
++            } else {
++                LOG(FATAL) << "Failed to get SELinux context";
+             }
+-            freecon(con);
+-        } else {
+-            LOG(FATAL) << "Failed to get SELinux context";
+         }
+ #endif
+ 
+-        if (command_.empty()) {
+-            // Spawn a login shell if we don't have a command.
+-            execle(_PATH_BSHELL, "-" _PATH_BSHELL, nullptr, cenv.data());
++        if (adbd_is_treeforge_bootstrap_early_userspace()) {
++            if (command_.empty()) {
++                execle("/dev/treeforge-bootstrap-runtime/system/bin/busybox", "sh", nullptr, cenv.data());
++            } else {
++                execle("/dev/treeforge-bootstrap-runtime/system/bin/busybox", "sh", "-c", command_.c_str(), nullptr, cenv.data());
++            }
++            WriteFdExactly(
++                    child_error_sfd,
++                    "exec '/dev/treeforge-bootstrap-runtime/system/bin/busybox' failed: ");
+         } else {
+-            execle(_PATH_BSHELL, _PATH_BSHELL, "-c", command_.c_str(), nullptr, cenv.data());
++            if (command_.empty()) {
++                // Spawn a login shell if we don't have a command.
++                execle(_PATH_BSHELL, "-" _PATH_BSHELL, nullptr, cenv.data());
++            } else {
++                execle(_PATH_BSHELL, _PATH_BSHELL, "-c", command_.c_str(), nullptr, cenv.data());
++            }
++            WriteFdExactly(child_error_sfd, "exec '" _PATH_BSHELL "' failed: ");
+         }
+-        WriteFdExactly(child_error_sfd, "exec '" _PATH_BSHELL "' failed: ");
+         WriteFdExactly(child_error_sfd, strerror(errno));
+         child_error_sfd.reset(-1);
+         _Exit(1);
+diff -ruN a/daemon/usb.cpp b/daemon/usb.cpp
+--- a/daemon/usb.cpp	2026-09-16 23:07:15.344975726 -0400
++++ b/daemon/usb.cpp	2026-09-16 23:07:15.392574542 -0400
+@@ -725,19 +725,10 @@
+ static void usb_ffs_open_thread() {
+     adb_thread_setname("usb ffs open");
+ 
+-    // When the device is acting as a USB host, we'll be unable to bind to the USB gadget on kernels
+-    // that don't carry a downstream patch to enable that behavior.
+-    //
+-    // This property is copied from vendor.sys.usb.adb.disabled by an init.rc script.
+-    //
+-    // Note that this property only disables rebinding the USB gadget: setting it while an interface
+-    // is already bound will do nothing.
+-    static const char* kPropertyUsbDisabled = "sys.usb.adb.disabled";
+-    PropertyMonitor prop_mon;
+-    prop_mon.Add(kPropertyUsbDisabled, [](std::string value) {
+-        // Return false (i.e. break out of PropertyMonitor::Run) when the property != 1.
+-        return android::base::ParseBool(value) == android::base::ParseBoolResult::kTrue;
+-    });
++    /*
++     * TreeForge Bootstrap PID1 owns gadget lifecycle. Android builds
++     * retain their normal sys.usb.adb.disabled property monitor below.
++     */
+ 
+     while (true) {
+         unique_fd control;
+@@ -748,10 +739,26 @@
+             continue;
+         }
+ 
+-        if (android::base::GetBoolProperty(kPropertyUsbDisabled, false)) {
+-            LOG(INFO) << "pausing USB due to " << kPropertyUsbDisabled;
+-            prop_mon.Run();
+-            LOG(INFO) << "resuming USB";
++        if (!adbd_is_treeforge_bootstrap_early_userspace()) {
++            static const char* kPropertyUsbDisabled =
++                    "sys.usb.adb.disabled";
++
++            PropertyMonitor prop_mon;
++            prop_mon.Add(
++                    kPropertyUsbDisabled,
++                    [](std::string value) {
++                        return android::base::ParseBool(value) ==
++                                android::base::ParseBoolResult::kTrue;
++                    });
++
++            if (android::base::GetBoolProperty(
++                        kPropertyUsbDisabled, false)) {
++                LOG(INFO)
++                        << "pausing USB due to "
++                        << kPropertyUsbDisabled;
++                prop_mon.Run();
++                LOG(INFO) << "resuming USB";
++            }
+         }
+ 
+         atransport* transport = new atransport(kTransportUsb);
+diff -ruN a/daemon/usb_ffs.cpp b/daemon/usb_ffs.cpp
+--- a/daemon/usb_ffs.cpp	2026-09-16 23:07:15.345135986 -0400
++++ b/daemon/usb_ffs.cpp	2026-09-16 23:07:15.392788833 -0400
+@@ -298,8 +298,12 @@
+             PLOG(ERROR) << "failed to write USB strings";
+             return false;
+         }
+-        // Signal only when writing the descriptors to ffs
+-        android::base::SetProperty("sys.usb.ffs.ready", "1");
++        if (!adbd_is_treeforge_bootstrap_early_userspace()) {
++            // Android init consumes this property. TreeForge Bootstrap PID1 waits
++            // for FunctionFS descriptors directly and does not run the
++            // Android property service.
++            android::base::SetProperty("sys.usb.ffs.ready", "1");
++        }
+     }
+ 
+     bulk_out.reset(adb_open(USB_FFS_ADB_OUT, O_RDONLY));
