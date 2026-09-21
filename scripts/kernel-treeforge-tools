@@ -8,6 +8,12 @@ import json
 import os
 import shutil
 import sys
+import time
+import tarfile
+import tempfile
+import urllib.error
+import urllib.parse
+import urllib.request
 from pathlib import Path
 
 
@@ -32,6 +38,13 @@ RESOLVED_FILE = (
     KERNEL_CACHE
     / "treeforge-tools.json"
 )
+
+REPOSITORY = "TreeForgeAOSP/treeforge_toolchain"
+ANDROID_RELEASE = "android-15.0.0_r36"
+
+HOST_PROVIDER_RELEASE_REVISIONS = {
+    "avbtool": 2,
+}
 
 TOOL_MAP = {
     "mkbootimg": (
@@ -350,28 +363,453 @@ def payload_state(
     return "MISSING", None
 
 
-def materialize_provider(
-    provider: str,
-    manifest: dict,
-) -> Path:
-    cache = cache_root(provider, manifest)
-
-    if cache.exists():
-        verify_payload(
-            provider=provider,
-            root=cache,
-            manifest=manifest,
-        )
-        return cache
-
-    stage = stage_root(provider, manifest)
-
-    verify_payload(
-        provider=provider,
-        root=stage,
-        manifest=manifest,
+def provider_release_tag(provider: str) -> str:
+    revision = HOST_PROVIDER_RELEASE_REVISIONS.get(
+        provider,
+        1,
     )
 
+    return (
+        f"{provider}/"
+        f"{ANDROID_RELEASE}-{revision}"
+    )
+
+
+def provider_asset_name(
+    provider: str,
+    manifest: dict,
+) -> str:
+    return (
+        f"{provider}-"
+        f"{manifest['release']}.tar.xz"
+    )
+
+
+def remove_path(path: Path) -> None:
+    if not path.exists() and not path.is_symlink():
+        return
+
+    if path.is_dir() and not path.is_symlink():
+        shutil.rmtree(path)
+    else:
+        path.unlink()
+
+
+def download_file(
+    url: str,
+    destination: Path,
+) -> None:
+    request = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "TreeForge-Provider-Resolver/1",
+            "Accept": "application/vnd.github+json",
+        },
+    )
+
+    attempts = 4
+
+    for attempt in range(1, attempts + 1):
+        try:
+            with urllib.request.urlopen(
+                request,
+                timeout=120,
+            ) as response:
+                with destination.open("wb") as output:
+                    shutil.copyfileobj(
+                        response,
+                        output,
+                    )
+
+            return
+
+        except urllib.error.HTTPError as exc:
+            retryable = (
+                exc.code == 429
+                or 500 <= exc.code <= 599
+            )
+
+            if (
+                not retryable
+                or attempt == attempts
+            ):
+                raise ToolError(
+                    f"provider download failed: "
+                    f"{url}: {exc}"
+                ) from exc
+
+        except (
+            urllib.error.URLError,
+            TimeoutError,
+        ) as exc:
+            if attempt == attempts:
+                raise ToolError(
+                    f"provider download failed: "
+                    f"{url}: {exc}"
+                ) from exc
+
+        delay = 2 ** (attempt - 1)
+
+        print(
+            f"  transient download failure; "
+            f"retrying in {delay}s "
+            f"({attempt}/{attempts})"
+        )
+
+        time.sleep(delay)
+
+
+def github_release_assets(
+    tag: str,
+) -> dict[str, str]:
+    encoded_tag = urllib.parse.quote(
+        tag,
+        safe="",
+    )
+
+    url = (
+        "https://api.github.com/repos/"
+        f"{REPOSITORY}/releases/tags/"
+        f"{encoded_tag}"
+    )
+
+    request = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "TreeForge-Provider-Resolver/1",
+            "Accept": "application/vnd.github+json",
+        },
+    )
+
+    try:
+        with urllib.request.urlopen(
+            request,
+            timeout=60,
+        ) as response:
+            release = json.loads(
+                response.read().decode("utf-8")
+            )
+    except (
+        urllib.error.HTTPError,
+        urllib.error.URLError,
+        TimeoutError,
+        json.JSONDecodeError,
+    ) as exc:
+        raise ToolError(
+            f"unable to resolve pinned release "
+            f"{tag}: {exc}"
+        ) from exc
+
+    if release.get("tag_name") != tag:
+        raise ToolError(
+            f"release tag identity mismatch: "
+            f"expected={tag} "
+            f"actual={release.get('tag_name')!r}"
+        )
+
+    assets: dict[str, str] = {}
+
+    for record in release.get("assets", []):
+        if not isinstance(record, dict):
+            continue
+
+        name = record.get("name")
+        asset_url = record.get(
+            "browser_download_url"
+        )
+
+        if (
+            isinstance(name, str)
+            and name
+            and isinstance(asset_url, str)
+            and asset_url
+        ):
+            assets[name] = asset_url
+
+    return assets
+
+
+def verify_sha256_sidecar(
+    *,
+    archive: Path,
+    sidecar: Path,
+    expected_name: str,
+) -> str:
+    words = sidecar.read_text(
+        encoding="utf-8",
+    ).strip().split()
+
+    if len(words) < 2:
+        raise ToolError(
+            "provider SHA-256 sidecar is invalid"
+        )
+
+    expected = words[0].lower()
+    recorded_name = words[-1]
+
+    if (
+        len(expected) != 64
+        or any(
+            character not in "0123456789abcdef"
+            for character in expected
+        )
+    ):
+        raise ToolError(
+            "provider archive SHA-256 is invalid"
+        )
+
+    if Path(recorded_name).name != expected_name:
+        raise ToolError(
+            "provider SHA-256 sidecar asset "
+            "identity mismatch"
+        )
+
+    actual = sha256(archive)
+
+    if actual != expected:
+        raise ToolError(
+            "provider archive SHA-256 mismatch\n"
+            f"expected={expected}\n"
+            f"actual={actual}"
+        )
+
+    return actual
+
+
+def safe_extract_release(
+    *,
+    archive: Path,
+    destination: Path,
+    expected_root: str,
+) -> Path:
+    with tarfile.open(
+        archive,
+        "r:xz",
+    ) as handle:
+        for member in handle.getmembers():
+            relative = Path(member.name)
+
+            if (
+                relative.is_absolute()
+                or ".." in relative.parts
+                or member.issym()
+                or member.islnk()
+            ):
+                raise ToolError(
+                    "unsafe provider archive member: "
+                    f"{member.name}"
+                )
+
+        handle.extractall(
+            destination,
+            filter="data",
+        )
+
+    roots = [
+        path
+        for path in destination.iterdir()
+        if path.is_dir()
+    ]
+
+    if len(roots) != 1:
+        raise ToolError(
+            "provider archive must contain "
+            "exactly one package root"
+        )
+
+    root = roots[0]
+
+    if root.name != expected_root:
+        raise ToolError(
+            "provider package root mismatch: "
+            f"expected={expected_root} "
+            f"actual={root.name}"
+        )
+
+    return root
+
+
+def verify_internal_sha256(
+    root: Path,
+) -> None:
+    ledger = root / "SHA256SUMS"
+
+    if not ledger.is_file():
+        raise ToolError(
+            f"provider SHA256SUMS missing: {ledger}"
+        )
+
+    checked = 0
+
+    for raw_line in ledger.read_text(
+        encoding="utf-8",
+    ).splitlines():
+        line = raw_line.strip()
+
+        if not line:
+            continue
+
+        fields = line.split(
+            None,
+            1,
+        )
+
+        if len(fields) != 2:
+            raise ToolError(
+                "invalid provider SHA256SUMS record"
+            )
+
+        expected = fields[0].lower()
+        relative_text = fields[1].strip()
+
+        if relative_text.startswith("*"):
+            relative_text = relative_text[1:]
+
+        relative = Path(relative_text)
+
+        if (
+            relative.is_absolute()
+            or ".." in relative.parts
+        ):
+            raise ToolError(
+                "unsafe SHA256SUMS path: "
+                f"{relative_text}"
+            )
+
+        path = root / relative
+
+        if not path.is_file():
+            raise ToolError(
+                "provider SHA256SUMS file missing: "
+                f"{relative_text}"
+            )
+
+        actual = sha256(path)
+
+        if actual != expected:
+            raise ToolError(
+                "provider internal SHA-256 mismatch: "
+                f"{relative_text}\n"
+                f"expected={expected}\n"
+                f"actual={actual}"
+            )
+
+        checked += 1
+
+    if checked == 0:
+        raise ToolError(
+            "provider SHA256SUMS contains no records"
+        )
+
+
+def verify_release_metadata(
+    *,
+    provider: str,
+    root: Path,
+    manifest: dict,
+    tag: str,
+    asset: str,
+) -> None:
+    release_path = root / "RELEASE.json"
+
+    if not release_path.is_file():
+        raise ToolError(
+            f"{provider}: RELEASE.json missing"
+        )
+
+    try:
+        release = json.loads(
+            release_path.read_text(
+                encoding="utf-8",
+            )
+        )
+    except Exception as exc:
+        raise ToolError(
+            f"{provider}: invalid RELEASE.json: "
+            f"{exc}"
+        ) from exc
+
+    expected = {
+        "provider": provider,
+        "release_tag": tag,
+        "asset_name": asset,
+    }
+
+    for key, value in expected.items():
+        if release.get(key) != value:
+            raise ToolError(
+                f"{provider}: RELEASE.json "
+                f"{key} mismatch: "
+                f"expected={value!r} "
+                f"actual={release.get(key)!r}"
+            )
+
+    embedded_repository = release.get("repository")
+
+    if (
+        embedded_repository is not None
+        and not isinstance(embedded_repository, str)
+    ):
+        raise ToolError(
+            f"{provider}: RELEASE.json repository "
+            "must be a string when present"
+        )
+
+    if (
+        embedded_repository
+        and embedded_repository != REPOSITORY
+    ):
+        print(
+            f"  historical repository metadata: "
+            f"{embedded_repository}"
+        )
+        print(
+            f"  acquisition repository:          "
+            f"{REPOSITORY}"
+        )
+
+    consumer_manifest = (
+        root
+        / "consumer"
+        / "manifest.json"
+    )
+
+    if not consumer_manifest.is_file():
+        raise ToolError(
+            f"{provider}: consumer manifest missing"
+        )
+
+    try:
+        consumer = json.loads(
+            consumer_manifest.read_text(
+                encoding="utf-8",
+            )
+        )
+    except Exception as exc:
+        raise ToolError(
+            f"{provider}: invalid consumer manifest: "
+            f"{exc}"
+        ) from exc
+
+    if (
+        consumer.get("schema") != 2
+        or consumer.get("name") != provider
+        or consumer.get("release")
+        != manifest.get("release")
+    ):
+        raise ToolError(
+            f"{provider}: consumer manifest "
+            "identity mismatch"
+        )
+
+
+def install_verified_provider(
+    *,
+    provider: str,
+    source: Path,
+    cache: Path,
+    manifest: dict,
+) -> Path:
     cache.parent.mkdir(
         parents=True,
         exist_ok=True,
@@ -381,14 +819,20 @@ def materialize_provider(
         f".{cache.name}.partial-{os.getpid()}"
     )
 
-    if temporary.exists():
-        shutil.rmtree(temporary)
+    replaced = cache.parent / (
+        f".{cache.name}.replaced-{os.getpid()}"
+    )
+
+    remove_path(temporary)
+    remove_path(replaced)
+
+    cache_moved = False
 
     try:
         shutil.copytree(
-            stage,
+            source,
             temporary,
-            symlinks=True,
+            symlinks=False,
         )
 
         verify_payload(
@@ -397,14 +841,215 @@ def materialize_provider(
             manifest=manifest,
         )
 
+        if cache.exists() or cache.is_symlink():
+            cache.rename(replaced)
+            cache_moved = True
+
         temporary.rename(cache)
 
+        if cache_moved:
+            remove_path(replaced)
+
     except Exception:
-        if temporary.exists():
-            shutil.rmtree(temporary)
+        remove_path(temporary)
+
+        if (
+            cache_moved
+            and replaced.exists()
+            and not cache.exists()
+        ):
+            replaced.rename(cache)
+
         raise
 
+    verify_payload(
+        provider=provider,
+        root=cache,
+        manifest=manifest,
+    )
+
     return cache
+
+
+def fetch_remote_provider(
+    *,
+    provider: str,
+    manifest: dict,
+) -> Path:
+    cache = cache_root(
+        provider,
+        manifest,
+    )
+
+    tag = provider_release_tag(
+        provider
+    )
+
+    asset = provider_asset_name(
+        provider,
+        manifest,
+    )
+
+    sidecar = asset + ".sha256"
+
+    assets = github_release_assets(tag)
+
+    if asset not in assets:
+        raise ToolError(
+            f"{provider}: pinned release "
+            f"{tag} has no asset {asset}"
+        )
+
+    if sidecar not in assets:
+        raise ToolError(
+            f"{provider}: pinned release "
+            f"{tag} has no SHA-256 sidecar "
+            f"{sidecar}"
+        )
+
+    print(
+        f"{provider}: fetching pinned "
+        f"TreeForge release"
+    )
+    print(f"  repository: {REPOSITORY}")
+    print(f"  tag:        {tag}")
+    print(f"  asset:      {asset}")
+
+    cache.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    with tempfile.TemporaryDirectory(
+        prefix=f".{provider}-download-",
+        dir=cache.parent,
+    ) as raw:
+        temporary = Path(raw)
+
+        archive = temporary / asset
+        checksum = temporary / sidecar
+        extracted = temporary / "extracted"
+
+        extracted.mkdir()
+
+        download_file(
+            assets[asset],
+            archive,
+        )
+
+        download_file(
+            assets[sidecar],
+            checksum,
+        )
+
+        archive_sha = verify_sha256_sidecar(
+            archive=archive,
+            sidecar=checksum,
+            expected_name=asset,
+        )
+
+        package_root = safe_extract_release(
+            archive=archive,
+            destination=extracted,
+            expected_root=(
+                f"{provider}-"
+                f"{manifest['release']}"
+            ),
+        )
+
+        verify_internal_sha256(
+            package_root
+        )
+
+        verify_release_metadata(
+            provider=provider,
+            root=package_root,
+            manifest=manifest,
+            tag=tag,
+            asset=asset,
+        )
+
+        verify_payload(
+            provider=provider,
+            root=package_root,
+            manifest=manifest,
+        )
+
+        print(
+            f"  archive_sha256: {archive_sha}"
+        )
+        print(
+            "  package verification: PASS"
+        )
+
+        return install_verified_provider(
+            provider=provider,
+            source=package_root,
+            cache=cache,
+            manifest=manifest,
+        )
+
+
+def materialize_provider(
+    provider: str,
+    manifest: dict,
+) -> Path:
+    cache = cache_root(
+        provider,
+        manifest,
+    )
+
+    if cache.exists():
+        try:
+            verify_payload(
+                provider=provider,
+                root=cache,
+                manifest=manifest,
+            )
+            return cache
+        except ToolError as exc:
+            print(
+                f"{provider}: cached provider "
+                f"is invalid; repairing"
+            )
+            print(f"  reason: {exc}")
+
+    stage = stage_root(
+        provider,
+        manifest,
+    )
+
+    if stage.is_dir():
+        try:
+            verify_payload(
+                provider=provider,
+                root=stage,
+                manifest=manifest,
+            )
+
+            print(
+                f"{provider}: materializing "
+                "verified local stage"
+            )
+
+            return install_verified_provider(
+                provider=provider,
+                source=stage,
+                cache=cache,
+                manifest=manifest,
+            )
+
+        except ToolError as exc:
+            print(
+                f"{provider}: local stage "
+                f"is invalid; using remote"
+            )
+            print(f"  reason: {exc}")
+
+    return fetch_remote_provider(
+        provider=provider,
+        manifest=manifest,
+    )
 
 
 def resolve_all(

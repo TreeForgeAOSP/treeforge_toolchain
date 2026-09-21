@@ -10,7 +10,7 @@
   "platform": "android",
   "release": "android-15.0.0_r36-arm64",
   "release_tag": "treeforge-fastbootd/android-15.0.0_r36-1",
-  "repository": "TreeForgeDEV/treeforge_toolchain",
+  "repository": "TreeForgeAOSP/treeforge_toolchain",
   "schema": 1,
   "source": {
     "platform": "android",

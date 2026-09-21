@@ -15,7 +15,7 @@
   "platform": "linux-arm64",
   "release": "android-15.0.0_r36-linux-arm64",
   "release_tag": "treeforge-busybox/android-15.0.0_r36-1",
-  "repository": "TreeForgeDEV/treeforge_toolchain",
+  "repository": "TreeForgeAOSP/treeforge_toolchain",
   "reproducibility": {
     "binary_rebuild_verified": true,
     "config_rebuild_verified": true,

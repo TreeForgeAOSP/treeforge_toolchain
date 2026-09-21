@@ -51,16 +51,21 @@ The final TreeForge consumer lock is generated only after the final toolchain co
 
 ## Source repository versus release repository
 
-The canonical private development/home repository is:
+The canonical source and public release repository is:
+
+TreeForgeAOSP/treeforge_toolchain
+
+The private backup mirror is:
 
 TreeForgeDEV/treeforge_toolchain
 
-The repository that eventually hosts public compiled provider assets is a
-separate identity. Release publication therefore requires an explicit
-destination using --repository OWNER/REPO or TREEFORGE_RELEASE_REPOSITORY.
+TreeForgeAOSP is the authoritative source repository and the home for
+published provider release assets. TreeForgeDEV is maintained only as a
+private backup mirror and is not a separate source authority.
 
-This permits private source development under TreeForgeDEV while a future
-public release repository can live under TreeForgeAOSP.
+Release publication may still use `--repository OWNER/REPO` or
+`TREEFORGE_RELEASE_REPOSITORY` when an explicit destination override is
+required.
 
 SOURCE-REBUILD.json is generated from the exact source commit at package time
 and is mandatory release metadata. It is verified independently rather than
