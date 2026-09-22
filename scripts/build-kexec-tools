@@ -1,0 +1,423 @@
+#!/usr/bin/env bash
+
+main() {
+    ROOT=/home/skelitonlord/development/treeforge_toolchain
+
+    VERSION=2.0.32
+    SOURCE_SHA256=8f81422a5fd2362cf6cb001b511e535565ed0f32c2f4451fb5eb68fed6710a5d
+    SOURCE_URL="https://kernel.org/pub/linux/utils/kernel/kexec/kexec-tools-${VERSION}.tar.xz"
+
+    TARGET=aarch64-linux-musl
+    JOBS="${TREEFORGE_JOBS:-4}"
+
+    DOWNLOADS="$ROOT/work/downloads"
+    ARCHIVE="$DOWNLOADS/kexec-tools-${VERSION}.tar.xz"
+
+    SRC="$ROOT/work/kexec-tools-${VERSION}"
+    BUILD="$ROOT/work/build-kexec-tools-${VERSION}-arm64"
+
+    TOOLCHAIN="$ROOT/out/toolchains/$TARGET"
+    CROSS="$TOOLCHAIN/bin/${TARGET}-"
+
+    BUILD_OUT="$ROOT/out/build/treeforge/kexec-tools/arm64"
+
+    BUSYBOX_PROVIDER="$ROOT/providers/treeforge-busybox/android-15.0.0_r36-linux-arm64"
+
+    fail() {
+        echo "ERROR: $*" >&2
+        return 1
+    }
+
+    for cmd in \
+        curl \
+        file \
+        gcc \
+        make \
+        python3 \
+        readelf \
+        sha256sum \
+        tar
+    do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            fail "required command missing: $cmd"
+            return 1
+        fi
+    done
+
+    mkdir -p \
+        "$DOWNLOADS" \
+        "$ROOT/work" \
+        "$ROOT/out/toolchains"
+
+    echo "=== TREEFORGE KEXEC-TOOLS BUILD ==="
+    echo "version=$VERSION"
+    echo "source_sha256=$SOURCE_SHA256"
+    echo "target=$TARGET"
+    echo "jobs=$JOBS"
+    echo
+
+    echo "===== TREEFORGE MUSL TOOLCHAIN ====="
+
+    if [ ! -x "${CROSS}gcc" ]; then
+        echo "canonical musl toolchain absent"
+        echo "bootstrapping through scripts/build-busybox"
+
+        if ! "$ROOT/scripts/build-busybox"; then
+            fail "unable to materialize canonical TreeForge musl toolchain"
+            return 1
+        fi
+    fi
+
+    for tool in \
+        "${CROSS}gcc" \
+        "${CROSS}ld" \
+        "${CROSS}as" \
+        "${CROSS}ar" \
+        "${CROSS}ranlib" \
+        "${CROSS}objcopy" \
+        "${CROSS}strip"
+    do
+        if [ ! -x "$tool" ]; then
+            fail "toolchain component missing: $tool"
+            return 1
+        fi
+    done
+
+    if [ "$("${CROSS}gcc" -dumpmachine)" != "$TARGET" ]; then
+        fail "unexpected compiler target"
+        return 1
+    fi
+
+    echo "compiler=$("${CROSS}gcc" --version | head -n 1)"
+    echo "linker=$("${CROSS}ld" --version | head -n 1)"
+    echo
+
+    echo "===== KEXEC-TOOLS SOURCE ====="
+
+    if [ ! -f "$ARCHIVE" ]; then
+        if ! curl \
+            -L \
+            --fail \
+            --show-error \
+            -o "$ARCHIVE" \
+            "$SOURCE_URL"
+        then
+            fail "kexec-tools source download failed"
+            return 1
+        fi
+    fi
+
+    ACTUAL_SOURCE_SHA="$(
+        sha256sum "$ARCHIVE" |
+            awk '{print $1}'
+    )"
+
+    echo "expected_source_sha256=$SOURCE_SHA256"
+    echo "actual_source_sha256=$ACTUAL_SOURCE_SHA"
+
+    if [ "$ACTUAL_SOURCE_SHA" != "$SOURCE_SHA256" ]; then
+        fail "kexec-tools source checksum mismatch"
+        return 1
+    fi
+
+    SOURCE_DATE_EPOCH="$(
+        TREEFORGE_KEXEC_ARCHIVE="$ARCHIVE" \
+        python3 - <<'PY'
+from pathlib import Path
+import os
+import tarfile
+
+archive = Path(os.environ["TREEFORGE_KEXEC_ARCHIVE"])
+
+with tarfile.open(archive, mode="r:xz") as tf:
+    members = tf.getmembers()
+
+root_name = "kexec-tools-2.0.32"
+
+root = next(
+    (
+        member
+        for member in members
+        if member.name.rstrip("/") == root_name
+    ),
+    None,
+)
+
+if root is not None:
+    epoch = int(root.mtime)
+else:
+    epoch = max(int(member.mtime) for member in members)
+
+print(epoch)
+PY
+    )"
+
+    if [ -z "$SOURCE_DATE_EPOCH" ]; then
+        fail "unable to derive SOURCE_DATE_EPOCH"
+        return 1
+    fi
+
+    export SOURCE_DATE_EPOCH
+    export TZ=UTC
+    export LC_ALL=C
+    export LANG=C
+
+    echo "source_date_epoch=$SOURCE_DATE_EPOCH"
+    echo
+
+    echo "===== CLEAN SOURCE EXTRACTION ====="
+
+    rm -rf "$SRC" "$BUILD"
+
+    if ! tar \
+        -xJf "$ARCHIVE" \
+        -C "$ROOT/work"
+    then
+        fail "kexec-tools extraction failed"
+        return 1
+    fi
+
+    if [ ! -d "$SRC" ]; then
+        fail "kexec-tools source directory missing after extraction"
+        return 1
+    fi
+
+    rm -f \
+        "$SRC/include/config.h" \
+        "$SRC/config.cache"
+
+    mkdir -p "$BUILD"
+
+    BUILD_CC="$(command -v gcc)"
+    BUILD_MACHINE="$("$BUILD_CC" -dumpmachine)"
+
+    PREFIX_MAP="-ffile-prefix-map=$ROOT=/usr/src/treeforge_toolchain"
+    DEBUG_MAP="-fdebug-prefix-map=$ROOT=/usr/src/treeforge_toolchain"
+    MACRO_MAP="-fmacro-prefix-map=$ROOT=/usr/src/treeforge_toolchain"
+
+    COMMON_CFLAGS="-O2 $PREFIX_MAP $DEBUG_MAP $MACRO_MAP"
+
+    echo
+    echo "===== CONFIGURE ====="
+
+    if ! (
+        cd "$BUILD" && \
+        PATH="$TOOLCHAIN/bin:$PATH" \
+        CC="${CROSS}gcc" \
+        LD="${CROSS}ld" \
+        AS="${CROSS}as" \
+        AR="${CROSS}ar" \
+        RANLIB="${CROSS}ranlib" \
+        OBJCOPY="${CROSS}objcopy" \
+        STRIP="${CROSS}strip" \
+        BUILD_CC="$BUILD_CC" \
+        TARGET_CC="${CROSS}gcc" \
+        TARGET_LD="${CROSS}ld" \
+        CFLAGS="$COMMON_CFLAGS" \
+        TARGET_CFLAGS="$COMMON_CFLAGS" \
+        LDFLAGS="-static" \
+        "$SRC/configure" \
+            --build="$BUILD_MACHINE" \
+            --host="$TARGET" \
+            --target="$TARGET" \
+            --without-zlib \
+            --without-lzma \
+            --without-zstd \
+            --without-xen
+    )
+    then
+        fail "kexec-tools configure failed"
+        return 1
+    fi
+
+    CONFIG_H="$BUILD/include/config.h"
+
+    if [ ! -f "$CONFIG_H" ]; then
+        fail "generated config.h missing"
+        return 1
+    fi
+
+    for macro in \
+        HAVE_LIBZ \
+        HAVE_LIBLZMA \
+        HAVE_LIBZSTD \
+        HAVE_LIBXENCTRL
+    do
+        if grep -Eq \
+            "^#define[[:space:]]+$macro[[:space:]]+1" \
+            "$CONFIG_H"
+        then
+            fail "unexpected optional dependency enabled: $macro"
+            return 1
+        fi
+
+        echo "$macro=DISABLED"
+    done
+
+    echo
+    echo "===== BUILD ====="
+
+    if ! PATH="$TOOLCHAIN/bin:$PATH" \
+        make \
+            -C "$BUILD" \
+            -j"$JOBS" \
+            build/sbin/kexec
+    then
+        fail "kexec build failed"
+        return 1
+    fi
+
+    BUILT="$BUILD/build/sbin/kexec"
+
+    if [ ! -f "$BUILT" ]; then
+        fail "kexec executable missing after build"
+        return 1
+    fi
+
+    echo
+    echo "===== MATERIALIZE OUTPUT ====="
+
+    rm -rf "$BUILD_OUT"
+
+    mkdir -p \
+        "$BUILD_OUT/payload/bin" \
+        "$BUILD_OUT/source" \
+        "$BUILD_OUT/legal/kexec-tools" \
+        "$BUILD_OUT/legal/musl" \
+        "$BUILD_OUT/legal/musl-cross-make"
+
+    install \
+        -m 0755 \
+        "$BUILT" \
+        "$BUILD_OUT/payload/bin/kexec"
+
+    "${CROSS}strip" \
+        --strip-unneeded \
+        "$BUILD_OUT/payload/bin/kexec"
+
+    cp \
+        "$ARCHIVE" \
+        "$BUILD_OUT/source/kexec-tools-${VERSION}.tar.xz"
+
+    cp \
+        "$SRC/COPYING" \
+        "$BUILD_OUT/legal/kexec-tools/COPYING"
+
+    if [ ! -f "$BUSYBOX_PROVIDER/legal/musl/COPYRIGHT" ]; then
+        fail "canonical musl legal material missing"
+        return 1
+    fi
+
+    cp \
+        "$BUSYBOX_PROVIDER/legal/musl/COPYRIGHT" \
+        "$BUILD_OUT/legal/musl/COPYRIGHT"
+
+    if [ -f "$BUSYBOX_PROVIDER/legal/musl-cross-make/COPYRIGHT" ]; then
+        cp \
+            "$BUSYBOX_PROVIDER/legal/musl-cross-make/COPYRIGHT" \
+            "$BUILD_OUT/legal/musl-cross-make/COPYRIGHT"
+    fi
+
+    if [ -f "$BUSYBOX_PROVIDER/legal/musl-cross-make/LICENSE" ]; then
+        cp \
+            "$BUSYBOX_PROVIDER/legal/musl-cross-make/LICENSE" \
+            "$BUILD_OUT/legal/musl-cross-make/LICENSE"
+    fi
+
+    cp \
+        "$CONFIG_H" \
+        "$BUILD_OUT/kexec-config.h"
+
+    (
+        cd "$BUILD" && \
+        ./config.status --config
+    ) > "$BUILD_OUT/kexec-configure.txt"
+
+    if [ -f "$BUSYBOX_PROVIDER/provenance/musl-cross-make.config" ]; then
+        cp \
+            "$BUSYBOX_PROVIDER/provenance/musl-cross-make.config" \
+            "$BUILD_OUT/musl-cross-make.config"
+    fi
+
+    if [ -f "$BUSYBOX_PROVIDER/provenance/musl-cross-make.revision" ]; then
+        cp \
+            "$BUSYBOX_PROVIDER/provenance/musl-cross-make.revision" \
+            "$BUILD_OUT/musl-cross-make.revision"
+    else
+        printf '%s\n' \
+            '227df8b99103f9c59f6570babf892978e293082f' \
+            > "$BUILD_OUT/musl-cross-make.revision"
+    fi
+
+    printf '%s\n' \
+        "$SOURCE_DATE_EPOCH" \
+        > "$BUILD_OUT/source-date-epoch"
+
+    echo
+    echo "===== STATIC ELF ACCEPTANCE ====="
+
+    KEXEC="$BUILD_OUT/payload/bin/kexec"
+
+    file "$KEXEC"
+
+    if ! readelf -h "$KEXEC" |
+        grep -q 'Machine:.*AArch64'
+    then
+        fail "kexec is not AArch64"
+        return 1
+    fi
+
+    if readelf -l "$KEXEC" |
+        grep -q 'INTERP'
+    then
+        fail "kexec unexpectedly has PT_INTERP"
+        return 1
+    fi
+
+    if readelf -d "$KEXEC" \
+        2>/dev/null |
+        grep -q '(NEEDED)'
+    then
+        fail "kexec unexpectedly has DT_NEEDED dependencies"
+        return 1
+    fi
+
+    if ! file "$KEXEC" |
+        grep -qi 'statically linked'
+    then
+        fail "kexec is not reported as statically linked"
+        return 1
+    fi
+
+    if ! strings "$KEXEC" |
+        grep -q 'kexec-tools 2.0.32'
+    then
+        fail "kexec version identity missing"
+        return 1
+    fi
+
+    echo "machine_aarch64=PASS"
+    echo "interpreter_absent=PASS"
+    echo "dt_needed_zero=PASS"
+    echo "static_linkage=PASS"
+    echo "version_identity=PASS"
+
+    echo
+    echo "===== FINAL OUTPUT ====="
+
+    sha256sum \
+        "$BUILD_OUT/payload/bin/kexec" \
+        "$BUILD_OUT/kexec-config.h" \
+        "$BUILD_OUT/source/kexec-tools-${VERSION}.tar.xz"
+
+    stat \
+        --printf='bytes=%s\nmode=%A\n' \
+        "$BUILD_OUT/payload/bin/kexec"
+
+    echo
+    echo "TREEFORGE KEXEC-TOOLS BUILD: PASS"
+
+    return 0
+}
+
+main "$@"

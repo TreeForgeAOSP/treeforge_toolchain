@@ -241,6 +241,23 @@ PROVIDERS = (
     ),
 
     Provider(
+        "kexec-tools",
+        "linux-arm64",
+        "treeforge",
+        "static-runtime",
+        "kexec",
+        (),
+        binary_name="kexec",
+        artifact_path=(
+            "out/build/treeforge/kexec-tools/arm64/"
+            "payload/bin/kexec"
+        ),
+        build_script="scripts/build-kexec-tools",
+        build_matrix=None,
+        source_inventory=None,
+    ),
+
+    Provider(
         "avbtool",
         "linux-x86_64",
         "treeforge",

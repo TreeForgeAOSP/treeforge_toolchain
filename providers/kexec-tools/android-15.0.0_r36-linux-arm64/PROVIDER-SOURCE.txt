@@ -1,0 +1,32 @@
+TreeForge kexec-tools provider
+
+Runtime payload:
+  bin/kexec
+
+Upstream:
+  kexec-tools 2.0.32
+  https://kernel.org/pub/linux/utils/kernel/kexec/kexec-tools-2.0.32.tar.xz
+
+Build:
+  scripts/build-kexec-tools
+
+Target:
+  aarch64-linux-musl
+
+Toolchain builder:
+  musl-cross-make
+  revision 227df8b99103f9c59f6570babf892978e293082f
+
+Build profile:
+  - static ARM64 executable
+  - zlib disabled
+  - lzma disabled
+  - zstd disabled
+  - Xen support disabled
+  - normalized build paths
+
+The release package carries the corresponding upstream source archive,
+license material, generated configure state, and reproducible build
+provenance.
+
+No Android/Bionic runtime libraries are required.

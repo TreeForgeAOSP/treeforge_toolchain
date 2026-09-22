@@ -1,0 +1,18 @@
+TreeForge does not patch the kexec-tools 2.0.32 source for this provider.
+
+The TreeForge delta consists of build configuration only:
+
+- target: aarch64-linux-musl
+- architecture: AArch64 / arm64
+- fully static linking
+- zlib disabled
+- liblzma disabled
+- libzstd disabled
+- Xen support disabled
+- deterministic source timestamp
+- normalized source/build paths
+- no dynamic ELF interpreter
+- no DT_NEEDED runtime dependencies
+
+Generated configure state is retained under:
+  provenance/

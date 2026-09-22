@@ -1,0 +1,30 @@
+{
+  "binary_rebuild_verified": true,
+  "binutils": "GNU ld (GNU Binutils) 2.44",
+  "canonical_build_script": "scripts/build-kexec-tools",
+  "config_rebuild_verified": true,
+  "config_sha256": "5ffa53f5c94a3175a2c4627071c74477269bc37cbdd48db9b454996d20eb0022",
+  "configure": [
+    "--host=aarch64-linux-musl",
+    "--target=aarch64-linux-musl",
+    "--without-zlib",
+    "--without-lzma",
+    "--without-zstd",
+    "--without-xen",
+    "LDFLAGS=-static"
+  ],
+  "dt_needed": 0,
+  "gcc": "aarch64-linux-musl-gcc (GCC) 9.4.0",
+  "interp_segments": 0,
+  "kexec_binary_sha256": "a25f447a29273b68bc1a4ee119a277b951ece8fbab4b0e90822ad3ee3c304a6d",
+  "kexec_source_sha256": "8f81422a5fd2362cf6cb001b511e535565ed0f32c2f4451fb5eb68fed6710a5d",
+  "kexec_version": "2.0.32",
+  "linkage": "static",
+  "musl_cross_make_revision": "227df8b99103f9c59f6570babf892978e293082f",
+  "musl_version": "1.2.6",
+  "normalized_build_paths": true,
+  "provider": "kexec-tools",
+  "schema": 1,
+  "source_date_epoch": 1760602625,
+  "target": "aarch64-linux-musl"
+}
