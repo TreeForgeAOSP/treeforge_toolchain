@@ -123,17 +123,6 @@
         }
       ]
     },
-    "pixel-partitioner-adbd": {
-      "distribution": "GITHUB_RELEASE_ASSET",
-      "releases": [
-        {
-          "consumer_bundle": false,
-          "manifest_schema": 1,
-          "metadata_root": "providers/pixel-partitioner-adbd/android-15.0.0_r36-arm64",
-          "release": "android-15.0.0_r36-arm64"
-        }
-      ]
-    },
     "snapuserd_ramdisk": {
       "distribution": "GITHUB_RELEASE_ASSET",
       "releases": [

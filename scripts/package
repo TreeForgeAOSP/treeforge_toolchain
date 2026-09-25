@@ -20,12 +20,14 @@ ROOT = Path(__file__).resolve().parents[1]
 ANDROID_RELEASE = "android-15.0.0_r36"
 RELEASE_REVISION = "1"
 
-RUNTIME_CONSUMER_REVISION_2_PROVIDERS = frozenset(
+REVISION_2_PROVIDERS = frozenset(
     {
         "aosp-adbd",
         "aosp-adbd-recovery",
         "aosp-fastbootd",
+        "avbtool",
         "snapuserd_ramdisk",
+        "treeforge-bootstrap-adbd",
         "treeforge-vabc-coordinator",
     }
 )
@@ -173,16 +175,6 @@ PROVIDERS = (
         "adbd.treeforge_recovery",
         ("packages/modules/adb",),
         binary_name="treeforge-adbd",
-    ),
-    Provider(
-        "pixel-partitioner-adbd",
-        "arm64",
-        "pixel-partitioner",
-        "runtime",
-        "adbd.pixel_partitioner",
-        ("packages/modules/adb",),
-        binary_name="pixel-partitioner-adbd",
-        prepare_source_script="scripts/prepare-source",
     ),
     Provider(
         "treeforge-bootstrap-adbd",
@@ -402,7 +394,7 @@ def release_revision(
 ) -> str:
     if (
         provider.provider_id
-        in RUNTIME_CONSUMER_REVISION_2_PROVIDERS
+        in REVISION_2_PROVIDERS
     ):
         return "2"
 
@@ -412,12 +404,7 @@ def release_revision(
 def release_tag(
     provider: Provider,
 ) -> str:
-    revision = (
-        2
-        if provider.provider_id
-        == "avbtool"
-        else 1
-    )
+    revision = release_revision(provider)
 
     return (
         f"{provider.provider_id}/"
@@ -823,6 +810,165 @@ def metadata_root(provider: Provider) -> Path | None:
         return candidates[0]
 
     return None
+
+
+def sync_tracked_provider_metadata(
+    provider: Provider,
+    payload: Path,
+) -> bool:
+    """
+    Synchronize an existing source-controlled provider metadata
+    root with the exact artifacts and canonical source delta that
+    are about to be packaged.
+
+    Providers without tracked metadata remain unchanged.
+    """
+    source = metadata_root(provider)
+
+    if source is None:
+        return False
+
+    manifest_path = source / "manifest.json"
+
+    if not manifest_path.is_file():
+        return False
+
+    manifest = json.loads(
+        manifest_path.read_text()
+    )
+
+    changed = False
+
+    canonical_payload = manifest.get(
+        "canonical_payload"
+    )
+
+    if isinstance(
+        canonical_payload,
+        str,
+    ):
+        payload_file = (
+            payload
+            / canonical_payload
+        )
+
+        require_file(
+            payload_file,
+            (
+                f"{provider.provider_id}: "
+                "canonical payload"
+            ),
+        )
+
+        payload_sha = sha256_file(
+            payload_file
+        )
+
+        if (
+            manifest.get(
+                "canonical_payload_sha256"
+            )
+            != payload_sha
+        ):
+            manifest[
+                "canonical_payload_sha256"
+            ] = payload_sha
+
+            changed = True
+
+    expected_tag = release_tag(
+        provider
+    )
+
+    if (
+        manifest.get("release_tag")
+        != expected_tag
+    ):
+        manifest["release_tag"] = (
+            expected_tag
+        )
+
+        changed = True
+
+    source_patch = manifest.get(
+        "source_patch"
+    )
+
+    if isinstance(
+        source_patch,
+        str,
+    ):
+        tracked_patch = (
+            source
+            / source_patch
+        )
+
+        patch_name = Path(
+            source_patch
+        ).name
+
+        canonical_candidates = sorted(
+            path
+            for path
+            in (ROOT / "tools").rglob(
+                patch_name
+            )
+            if path.is_file()
+        )
+
+        if len(
+            canonical_candidates
+        ) != 1:
+            die(
+                f"{provider.provider_id}: "
+                "expected exactly one canonical "
+                f"source patch named {patch_name}, "
+                "found "
+                f"{len(canonical_candidates)}"
+            )
+
+        canonical_patch = (
+            canonical_candidates[0]
+        )
+
+        tracked_bytes = (
+            tracked_patch.read_bytes()
+            if tracked_patch.is_file()
+            else None
+        )
+
+        canonical_bytes = (
+            canonical_patch.read_bytes()
+        )
+
+        if (
+            tracked_bytes
+            != canonical_bytes
+        ):
+            copy_file(
+                canonical_patch,
+                tracked_patch,
+            )
+
+            changed = True
+
+    if changed:
+        json_write(
+            manifest_path,
+            manifest,
+        )
+
+    print(
+        f"{provider.provider_id}: "
+        "tracked_metadata_sync="
+        + (
+            "UPDATED"
+            if changed
+            else "CURRENT"
+        )
+    )
+
+    return changed
 
 
 def copy_metadata(
@@ -1248,11 +1394,8 @@ def package_payload(
             )
         )
 
-        if provider.provider_id in (
-            "pixel-partitioner-adbd",
-            "treeforge-bootstrap-adbd",
-        ):
-            # EARLY_USERSPACE_ADBD_R36_1_SHELL_ROOTFS
+        if provider.provider_id == "treeforge-bootstrap-adbd":
+            # TREEFORGE_BOOTSTRAP_EARLY_USERSPACE_SHELL_ROOTFS
             busybox = (
                 ROOT
                 / "out"
@@ -1265,23 +1408,12 @@ def package_payload(
                 / "busybox"
             )
 
-            if (
-                provider.provider_id
-                == "pixel-partitioner-adbd"
-            ):
-                applet_filename = (
-                    "pixel-partitioner-busybox-applets.txt"
-                )
-                stager_filename = (
-                    "stage-pixel-partitioner-shell-rootfs.py"
-                )
-            else:
-                applet_filename = (
-                    "treeforge-bootstrap-busybox-applets.txt"
-                )
-                stager_filename = (
-                    "stage-treeforge-bootstrap-shell-rootfs.py"
-                )
+            applet_filename = (
+                "treeforge-bootstrap-busybox-applets.txt"
+            )
+            stager_filename = (
+                "stage-treeforge-bootstrap-shell-rootfs.py"
+            )
 
             applets = (
                 ROOT
@@ -1310,7 +1442,7 @@ def package_payload(
                 if not required.is_file():
                     die(
                         f"{provider.provider_id}: "
-                        "r36-1 shell dependency missing: "
+                        f"r36-{release_revision(provider)} shell dependency missing: "
                         f"{required}"
                     )
 
@@ -1638,6 +1770,11 @@ def main() -> int:
             payload,
         )
 
+        sync_tracked_provider_metadata(
+            provider,
+            payload,
+        )
+
         copy_metadata(provider, package)
 
         comparison_record = comparison(
@@ -1839,10 +1976,50 @@ def main() -> int:
     return 0
 
 
-if __name__ == "__main__":
-    _treeforge_package_result = main()
-    from package_consumer import (
-        finalize_consumer_manifests,
+def usage() -> None:
+    print(
+        """Usage:
+  ./scripts/package
+
+Package TreeForge providers from already-built artifacts.
+
+By default, all registered providers are packaged.
+
+To package one provider, use the existing maintainer interface:
+
+  TREEFORGE_PACKAGE_PROVIDER=<provider-id> ./scripts/package
+
+Example:
+
+  TREEFORGE_PACKAGE_PROVIDER=treeforge-bootstrap-adbd ./scripts/package
+
+Options:
+  -h, --help    Show this help and perform no packaging.
+
+This command does not build source or publish GitHub releases.
+"""
     )
-    finalize_consumer_manifests()
-    raise SystemExit(_treeforge_package_result)
+
+
+if __name__ == "__main__":
+    if sys.argv[1:] in (["-h"], ["--help"]):
+        usage()
+    elif len(sys.argv) != 1:
+        print(
+            "ERROR: unexpected arguments; "
+            "use --help for usage",
+            file=sys.stderr,
+        )
+        raise SystemExit(2)
+    else:
+        _treeforge_package_result = main()
+
+        from package_consumer import (
+            finalize_consumer_manifests,
+        )
+
+        finalize_consumer_manifests()
+
+        raise SystemExit(
+            _treeforge_package_result
+        )

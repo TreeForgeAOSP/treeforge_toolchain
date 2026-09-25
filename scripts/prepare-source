@@ -16,6 +16,44 @@ fail() {
     exit 1
 }
 
+usage() {
+    cat <<'EOF'
+Usage:
+  ./scripts/prepare-source
+
+Reconstruct the pinned TreeForge-modified Android 15 r36
+source tree.
+
+This command:
+  - verifies pinned AOSP source revisions
+  - recreates the prepared TreeForge source tree
+  - applies saved TreeForge patches
+  - writes the prepared-source rebuild record
+
+This command does not:
+  - build binaries
+  - package providers
+  - publish releases
+  - access a device
+
+Options:
+  -h, --help    Show this help and perform no reconstruction.
+EOF
+}
+
+TREEFORGE_PREPARE_RUN=YES
+
+if [[ $# -eq 1 ]] && {
+    [[ "$1" == "-h" ]] ||
+    [[ "$1" == "--help" ]]
+}; then
+    usage
+    TREEFORGE_PREPARE_RUN=NO
+elif [[ $# -ne 0 ]]; then
+    usage >&2
+    fail "unexpected arguments"
+fi
+
 require() {
     command -v "$1" >/dev/null 2>&1 ||
         fail "required command missing: $1"
@@ -43,6 +81,8 @@ verify_project() {
             --untracked-files=no
     )" || fail "AOSP project has tracked modifications: $path"
 }
+
+if [[ "$TREEFORGE_PREPARE_RUN" == YES ]]; then
 
 for command in git rsync patch sha256sum python3; do
     require "$command"
@@ -166,7 +206,7 @@ echo "===== APPLY SAVED TREEFORGE MODIFICATIONS ====="
 ADB_PATCHES=(
     "$ROOT/tools/adb/patches/treeforge-host-adb-identity.patch"
     "$ROOT/tools/adb/patches/treeforge-recovery-standalone-adbd.patch"
-    "$ROOT/tools/adb/patches/pixel-partitioner-early-userspace-adbd.patch"
+    "$ROOT/tools/adb/patches/treeforge-bootstrap-early-userspace-adbd.patch"
 )
 
 for adb_patch in "${ADB_PATCHES[@]}"; do
@@ -248,7 +288,7 @@ projects = [
 patches = [
     root / "tools/adb/patches/treeforge-host-adb-identity.patch",
     root / "tools/adb/patches/treeforge-recovery-standalone-adbd.patch",
-    root / "tools/adb/patches/pixel-partitioner-early-userspace-adbd.patch",
+    root / "tools/adb/patches/treeforge-bootstrap-early-userspace-adbd.patch",
     root / "tools/vabc/patches/treeforge-vabc-recovery.patch",
 ]
 
@@ -312,8 +352,8 @@ record = {
         "runtime":
             "module_arm64-trunk_staging-eng",
     },
-    "pixel_partitioner_build_module":
-        "adbd.pixel_partitioner",
+    "treeforge_bootstrap_build_module":
+        "adbd.treeforge_bootstrap",
 }
 
 marker = source / ".treeforge-source-ready.json"
@@ -336,3 +376,5 @@ echo "DEVICE TOUCHED: NO"
 echo "ADB INVOKED: NO"
 echo "FASTBOOT INVOKED: NO"
 echo "TERMINAL CLOSED: NO"
+
+fi

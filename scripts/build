@@ -33,7 +33,7 @@ Usage:
 Examples:
   ./scripts/build host adb
   ./scripts/build host fastboot
-  ./scripts/build runtime adbd.pixel_partitioner
+  ./scripts/build runtime adbd.treeforge_bootstrap
 
 This command ONLY builds.
 
@@ -114,7 +114,7 @@ case "$MODE" in
 
         DEFAULT_MODULES=(
             adbd.treeforge_recovery
-            adbd.pixel_partitioner
+            adbd.treeforge_bootstrap
             adbd_system_api_recovery
             fastbootd
             linker.recovery

@@ -1,6 +1,248 @@
-diff -ruN a/adb.cpp b/adb.cpp
---- a/adb.cpp	2026-09-16 23:07:15.344070882 -0400
-+++ b/adb.cpp	2026-09-16 23:07:15.391400545 -0400
+--- a/Android.bp
++++ b/Android.bp
+@@ -631,6 +631,92 @@
+     ],
+ }
+
++// TreeForge Bootstrap early-userspace core variant.
++//
++// The final adbd binary's cflags do not propagate into static
++// libraries. Compile the Bootstrap-owned libadbd_core sources
++// with the profile explicitly so adb.cpp, auth.cpp, USB and
++// FunctionFS policy use the intended early-userspace branches.
++cc_library_static {
++    name: "libadbd_core.treeforge_bootstrap",
++
++    cflags: [
++        "-DTREEFORGE_BOOTSTRAP_EARLY_USERSPACE=1",
++    ],
++    defaults: [
++        "adbd_defaults",
++        "host_adbd_supported",
++    ],
++    recovery_available: true,
++
++    // libminadbd wants both, as it's used to build native tests.
++    compile_multilib: "both",
++
++    srcs: libadb_srcs + libadb_linux_srcs + libadb_posix_srcs + [
++        "daemon/adb_wifi.cpp",
++        "daemon/auth.cpp",
++        "daemon/jdwp_service.cpp",
++        "daemon/logging.cpp",
++        "daemon/transport_socket_server.cpp",
++    ],
++
++    generated_headers: ["platform_tools_version"],
++
++    static_libs: [
++        "libdiagnose_usb",
++    ],
++
++    shared_libs: [
++        "libadb_crypto",
++        "libadb_pairing_connection",
++        "libadb_protos",
++        "libadb_tls_connection",
++        "libadbconnection_server",
++        "libadbd_auth",
++        "libapp_processes_protos_lite",
++        "libasyncio",
++        "libbase",
++        "libcrypto",
++        "libcrypto_utils",
++        "libcutils_sockets",
++        "liblog",
++    ],
++
++    proto: {
++        type: "lite",
++        static: true,
++        export_proto_headers: true,
++    },
++
++    target: {
++        android: {
++            srcs: [
++                "daemon/property_monitor.cpp",
++                "daemon/usb.cpp",
++                "daemon/usb_ffs.cpp",
++                "daemon/watchdog.cpp",
++            ],
++        },
++        recovery: {
++            exclude_shared_libs: [
++                "libadb_pairing_auth",
++                "libadb_pairing_connection",
++                "libapp_processes_protos_lite",
++            ],
++        },
++    },
++
++    min_sdk_version: "30",
++    apex_available: [
++        "//apex_available:platform",
++        "com.android.adbd",
++    ],
++    visibility: [
++        "//bootable/recovery/minadbd",
++        "//packages/modules/adb:__subpackages__",
++    ],
++}
++
+ cc_library {
+     name: "libadbd_services",
+     defaults: [
+@@ -659,6 +745,107 @@
+     static_libs: [
+         "libadbconnection_server",
+         "libadbd_core",
++        "libbrotli",
++        "libdiagnose_usb",
++        "liblz4",
++        "libprotobuf-cpp-lite",
++        "libzstd",
++    ],
++
++    shared_libs: [
++        "libadb_crypto",
++        "libadb_pairing_connection",
++        "libadb_protos",
++        "libadb_tls_connection",
++        "libapp_processes_protos_lite",
++        "libasyncio",
++        "libbase",
++        "libcrypto_utils",
++        "libcutils_sockets",
++
++        // APEX dependencies.
++        "libadbd_auth",
++        "libadbd_fs",
++        "libcrypto",
++        "liblog",
++    ],
++
++    target: {
++        android: {
++            srcs: [
++                "daemon/abb_service.cpp",
++                "daemon/framebuffer_service.cpp",
++                "daemon/mdns.cpp",
++                "daemon/restart_service.cpp",
++            ],
++            shared_libs: [
++                "libmdnssd",
++                "libselinux",
++            ],
++            static_libs: [
++                "android_trade_in_mode_flags_cc_lib",
++            ],
++        },
++        recovery: {
++            exclude_srcs: [
++                "daemon/abb_service.cpp",
++            ],
++            exclude_shared_libs: [
++                "libadb_pairing_auth",
++                "libadb_pairing_connection",
++            ],
++            exclude_static_libs: [
++                "android_trade_in_mode_flags_cc_lib",
++            ],
++        },
++    },
++
++    min_sdk_version: "30",
++    apex_available: [
++        "//apex_available:platform",
++        "com.android.adbd",
++    ],
++    visibility: [
++        "//packages/modules/adb",
++    ],
++
++}
++
++// TreeForge Bootstrap early-userspace services variant.
++//
++// daemon/services.cpp, file_sync_service.cpp and
++// shell_service.cpp live in libadbd_services, not in the final
++// adbd binary. They therefore require their own profiled library
++// variant for Bootstrap-specific behavior such as direct reboot.
++cc_library {
++    name: "libadbd_services.treeforge_bootstrap",
++    defaults: [
++        "adbd_defaults",
++        "host_adbd_supported",
++    ],
++    recovery_available: true,
++    compile_multilib: "both",
++
++    // avoid getting duplicate symbol of android::build::getbuildnumber().
++    use_version_lib: false,
++
++    srcs: [
++        "daemon/file_sync_service.cpp",
++        "daemon/services.cpp",
++        "daemon/shell_service.cpp",
++        "daemon/tradeinmode.cpp",
++        "shell_service_protocol.cpp",
++    ],
++
++    cflags: [
++        "-DTREEFORGE_BOOTSTRAP_EARLY_USERSPACE=1",
++        "-D_GNU_SOURCE",
++        "-Wno-deprecated-declarations",
++    ],
++
++    static_libs: [
++        "libadbconnection_server",
++        "libadbd_core.treeforge_bootstrap",
+         "libbrotli",
+         "libdiagnose_usb",
+         "liblz4",
+@@ -865,6 +1052,39 @@
+     cflags: [
+         "-DTREEFORGE_RECOVERY_STANDALONE=1",
+     ],
++}
++
++// TreeForge Bootstrap early-userspace daemon.
++//
++// This keeps the standard AOSP ADB protocol and FunctionFS transport,
++// while replacing Android runtime policy assumptions with an explicit
++// TreeForge early-userspace policy.
++//
++// Keep the normal and TreeForge Recovery daemons unchanged.
++cc_binary {
++    name: "adbd.treeforge_bootstrap",
++    defaults: [
++        "adbd_binary_defaults",
++    ],
++    recovery: true,
++    stem: "treeforge-bootstrap-adbd",
++    cflags: [
++        "-DTREEFORGE_BOOTSTRAP_EARLY_USERSPACE=1",
++    ],
++
++    target: {
++        recovery: {
++            exclude_static_libs: [
++                "libadbd",
++                "libadbd_core",
++                "libadbd_services",
++            ],
++            static_libs: [
++                "libadbd_core.treeforge_bootstrap",
++                "libadbd_services.treeforge_bootstrap",
++            ],
++        },
++    },
+ }
+
+ phony {
+--- a/adb.cpp
++++ b/adb.cpp
 @@ -192,7 +192,9 @@
  #if ADB_HOST
      t->SetConnectionEstablished(true);
@@ -63,9 +305,8 @@ diff -ruN a/adb.cpp b/adb.cpp
      }
  #endif
  
-diff -ruN a/adb.h b/adb.h
---- a/adb.h	2026-09-16 23:07:15.343872842 -0400
-+++ b/adb.h	2026-09-16 23:07:15.391202324 -0400
+--- a/adb.h
++++ b/adb.h
 @@ -203,6 +203,10 @@
  
  extern const char* adb_device_banner;
@@ -77,38 +318,8 @@ diff -ruN a/adb.h b/adb.h
  #define CHUNK_SIZE (64 * 1024)
  
  // Argument delimeter for adb abb command.
-diff -ruN a/Android.bp b/Android.bp
---- a/Android.bp	2026-09-16 23:07:15.343646228 -0400
-+++ b/Android.bp	2026-09-16 23:07:15.390940504 -0400
-@@ -867,6 +867,25 @@
-     ],
- }
- 
-+// TreeForge Bootstrap early-userspace daemon.
-+//
-+// This keeps the standard AOSP ADB protocol and FunctionFS transport,
-+// while replacing Android runtime policy assumptions with an explicit
-+// TreeForge early-userspace policy.
-+//
-+// Keep the normal and TreeForge Recovery daemons unchanged.
-+cc_binary {
-+    name: "adbd.treeforge_bootstrap",
-+    defaults: [
-+        "adbd_binary_defaults",
-+    ],
-+    recovery: true,
-+    stem: "treeforge-bootstrap-adbd",
-+    cflags: [
-+        "-DTREEFORGE_BOOTSTRAP_EARLY_USERSPACE=1",
-+    ],
-+}
-+
- phony {
-     // Interface between adbd in a module and the system.
-     name: "adbd_system_api",
-diff -ruN a/daemon/auth.cpp b/daemon/auth.cpp
---- a/daemon/auth.cpp	2026-09-16 23:07:15.344503803 -0400
-+++ b/daemon/auth.cpp	2026-09-16 23:07:15.391867549 -0400
+--- a/daemon/auth.cpp
++++ b/daemon/auth.cpp
 @@ -295,7 +295,20 @@
  }
  
@@ -131,9 +342,8 @@ diff -ruN a/daemon/auth.cpp b/daemon/auth.cpp
  }
  
  int adbd_tls_verify_cert(X509_STORE_CTX* ctx, std::string* auth_key) {
-diff -ruN a/daemon/file_sync_service.cpp b/daemon/file_sync_service.cpp
---- a/daemon/file_sync_service.cpp	2026-09-16 23:07:15.344643664 -0400
-+++ b/daemon/file_sync_service.cpp	2026-09-16 23:07:15.392015265 -0400
+--- a/daemon/file_sync_service.cpp
++++ b/daemon/file_sync_service.cpp
 @@ -70,6 +70,17 @@
  
  // TODO(b/346842318): Delete this function once we no longer need compatibility with < V.
@@ -189,9 +399,8 @@ diff -ruN a/daemon/file_sync_service.cpp b/daemon/file_sync_service.cpp
  #endif
  
              // fchown clears the setuid bit - restore it if present.
-diff -ruN a/daemon/main.cpp b/daemon/main.cpp
---- a/daemon/main.cpp	2026-09-16 23:07:15.344332392 -0400
-+++ b/daemon/main.cpp	2026-09-16 23:07:15.391695467 -0400
+--- a/daemon/main.cpp
++++ b/daemon/main.cpp
 @@ -59,11 +59,27 @@
  #include "daemon/transport_daemon.h"
  #include "daemon/watchdog.h"
@@ -284,9 +493,10 @@ diff -ruN a/daemon/main.cpp b/daemon/main.cpp
 +#if !defined(TREEFORGE_BOOTSTRAP_EARLY_USERSPACE)
 +    // Android init normally owns this authentication control socket.
      adbd_cloexec_auth_socket();
-+#endif
- 
+-
 -#if defined(__ANDROID__)
++#endif
++
 +#if defined(__ANDROID__) && \
 +        !defined(TREEFORGE_BOOTSTRAP_EARLY_USERSPACE)
      bool device_unlocked = android::base::GetProperty("ro.boot.verifiedbootstate", "") == "orange";
@@ -364,9 +574,79 @@ diff -ruN a/daemon/main.cpp b/daemon/main.cpp
  
      D("Handling main()");
      return adbd_main();
-diff -ruN a/daemon/shell_service.cpp b/daemon/shell_service.cpp
---- a/daemon/shell_service.cpp	2026-09-16 23:07:15.344806910 -0400
-+++ b/daemon/shell_service.cpp	2026-09-16 23:07:15.436317412 -0400
+--- a/daemon/services.cpp
++++ b/daemon/services.cpp
+@@ -19,6 +19,7 @@
+ #include "sysdeps.h"
+
+ #include <errno.h>
++#include <linux/reboot.h>
+ #include <netdb.h>
+ #include <netinet/in.h>
+ #include <stddef.h>
+@@ -26,7 +27,9 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <sys/ioctl.h>
++#include <sys/reboot.h>
+ #include <sys/socket.h>
++#include <sys/syscall.h>
+ #include <sys/un.h>
+ #include <termios.h>
+ #include <unistd.h>
+@@ -145,6 +148,50 @@
+ }
+
+ [[maybe_unused]] static unique_fd reboot_device(const std::string& name) {
++#if defined(TREEFORGE_BOOTSTRAP_EARLY_USERSPACE)
++    /*
++     * TreeForge Bootstrap has no Android property service and no
++     * /system/bin/reboot userspace helper.
++     *
++     * Perform the reboot directly. Named targets use Linux restart2
++     * so the kernel/boot chain receives values such as "bootloader".
++     */
++    auto reboot_service = [name](unique_fd fd) {
++        sync();
++
++        if (name.empty()) {
++            if (reboot(RB_AUTOBOOT) == -1) {
++                const int saved_errno = errno;
++                WriteFdFmt(
++                        fd.get(),
++                        "reboot failed: %s\n",
++                        strerror(saved_errno));
++            }
++
++            return;
++        }
++
++        if (syscall(
++                    __NR_reboot,
++                    LINUX_REBOOT_MAGIC1,
++                    LINUX_REBOOT_MAGIC2,
++                    LINUX_REBOOT_CMD_RESTART2,
++                    name.c_str()) == -1) {
++            const int saved_errno = errno;
++
++            WriteFdFmt(
++                    fd.get(),
++                    "reboot (%s) failed: %s\n",
++                    name.c_str(),
++                    strerror(saved_errno));
++        }
++    };
++
++    return create_service_thread(
++            "treeforge-reboot",
++            reboot_service);
++#endif
++
+ #if defined(__ANDROID_RECOVERY__)
+     if (!__android_log_is_debuggable()) {
+         auto reboot_service = [name](unique_fd fd) {
+--- a/daemon/shell_service.cpp
++++ b/daemon/shell_service.cpp
 @@ -229,6 +229,10 @@
      char buf[HOST_NAME_MAX];
      if (gethostname(buf, sizeof(buf)) != -1 && strcmp(buf, "localhost") != 0) return buf;
@@ -438,19 +718,15 @@ diff -ruN a/daemon/shell_service.cpp b/daemon/shell_service.cpp
 +                        LOG(FATAL) << "Could not set SELinux context for subprocess";
 +                    }
                  }
+-            }
+-            freecon(con);
 +                freecon(con);
 +            } else {
 +                LOG(FATAL) << "Failed to get SELinux context";
-             }
--            freecon(con);
--        } else {
--            LOG(FATAL) << "Failed to get SELinux context";
-         }
- #endif
- 
--        if (command_.empty()) {
--            // Spawn a login shell if we don't have a command.
--            execle(_PATH_BSHELL, "-" _PATH_BSHELL, nullptr, cenv.data());
++            }
++        }
++#endif
++
 +        if (adbd_is_treeforge_bootstrap_early_userspace()) {
 +            if (command_.empty()) {
 +                execle("/dev/treeforge-bootstrap-runtime/system/bin/busybox", "sh", nullptr, cenv.data());
@@ -461,7 +737,17 @@ diff -ruN a/daemon/shell_service.cpp b/daemon/shell_service.cpp
 +                    child_error_sfd,
 +                    "exec '/dev/treeforge-bootstrap-runtime/system/bin/busybox' failed: ");
          } else {
+-            LOG(FATAL) << "Failed to get SELinux context";
+-        }
+-#endif
+-
+-        if (command_.empty()) {
+-            // Spawn a login shell if we don't have a command.
+-            execle(_PATH_BSHELL, "-" _PATH_BSHELL, nullptr, cenv.data());
+-        } else {
 -            execle(_PATH_BSHELL, _PATH_BSHELL, "-c", command_.c_str(), nullptr, cenv.data());
+-        }
+-        WriteFdExactly(child_error_sfd, "exec '" _PATH_BSHELL "' failed: ");
 +            if (command_.empty()) {
 +                // Spawn a login shell if we don't have a command.
 +                execle(_PATH_BSHELL, "-" _PATH_BSHELL, nullptr, cenv.data());
@@ -469,14 +755,12 @@ diff -ruN a/daemon/shell_service.cpp b/daemon/shell_service.cpp
 +                execle(_PATH_BSHELL, _PATH_BSHELL, "-c", command_.c_str(), nullptr, cenv.data());
 +            }
 +            WriteFdExactly(child_error_sfd, "exec '" _PATH_BSHELL "' failed: ");
-         }
--        WriteFdExactly(child_error_sfd, "exec '" _PATH_BSHELL "' failed: ");
++        }
          WriteFdExactly(child_error_sfd, strerror(errno));
          child_error_sfd.reset(-1);
          _Exit(1);
-diff -ruN a/daemon/usb.cpp b/daemon/usb.cpp
---- a/daemon/usb.cpp	2026-09-16 23:07:15.344975726 -0400
-+++ b/daemon/usb.cpp	2026-09-16 23:07:15.392574542 -0400
+--- a/daemon/usb.cpp
++++ b/daemon/usb.cpp
 @@ -725,19 +725,10 @@
  static void usb_ffs_open_thread() {
      adb_thread_setname("usb ffs open");
@@ -532,9 +816,8 @@ diff -ruN a/daemon/usb.cpp b/daemon/usb.cpp
          }
  
          atransport* transport = new atransport(kTransportUsb);
-diff -ruN a/daemon/usb_ffs.cpp b/daemon/usb_ffs.cpp
---- a/daemon/usb_ffs.cpp	2026-09-16 23:07:15.345135986 -0400
-+++ b/daemon/usb_ffs.cpp	2026-09-16 23:07:15.392788833 -0400
+--- a/daemon/usb_ffs.cpp
++++ b/daemon/usb_ffs.cpp
 @@ -298,8 +298,12 @@
              PLOG(ERROR) << "failed to write USB strings";
              return false;

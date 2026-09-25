@@ -1,7 +1,7 @@
 {
   "architecture": "arm64",
   "canonical_payload": "rootfs/system/bin/treeforge-bootstrap-adbd",
-  "canonical_payload_sha256": "46ab32860fc78a7556c47b71e8f4a2089f43492fd78bc30727f94a3b466e4109",
+  "canonical_payload_sha256": "625fbc447f0f1f9490aa0b72f88dd34f0f7e84c93fe80484288336acda28d53a",
   "capabilities_document": "CAPABILITIES.md",
   "classification": "TREEFORGE_MODIFIED_AOSP_PROVIDER",
   "distribution": "GITHUB_RELEASE_ASSET",
@@ -10,7 +10,7 @@
   "name": "treeforge-bootstrap-adbd",
   "platform": "treeforge-bootstrap",
   "release": "android-15.0.0_r36-arm64",
-  "release_tag": "treeforge-bootstrap-adbd/android-15.0.0_r36-1",
+  "release_tag": "treeforge-bootstrap-adbd/android-15.0.0_r36-2",
   "repository": "TreeForgeAOSP/treeforge_toolchain",
   "runtime_profile": "TREEFORGE_BOOTSTRAP_EARLY_USERSPACE",
   "schema": 1,
