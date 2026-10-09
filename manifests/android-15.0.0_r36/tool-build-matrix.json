@@ -60,13 +60,25 @@
       "project": "platform/external/avb",
       "revision": "d289c2ba6de359471b23d594623b906876bc48a0"
     },
+    "external/e2fsprogs": {
+      "project": "platform/external/e2fsprogs",
+      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6"
+    },
     "external/f2fs-tools": {
       "project": "platform/external/f2fs-tools",
       "revision": "59bfda1f02d633cd6b8b69f31eee485d40f6eef6"
     },
+    "external/zlib": {
+      "project": "platform/external/zlib",
+      "revision": "86ee64e75fa5f8bce2c8c356138035642429cd05"
+    },
     "packages/modules/adb": {
       "project": "platform/packages/modules/adb",
       "revision": "a877adddefdf011bfb5d4045919c6df3d3727ed3"
+    },
+    "prebuilts/clang/host/linux-x86": {
+      "project": "platform/prebuilts/clang/host/linux-x86",
+      "revision": "96266255abde668f1bf100bf2c47363b96b7a21e"
     },
     "system/core": {
       "project": "platform/system/core",
@@ -76,17 +88,21 @@
       "project": "platform/system/extras",
       "revision": "288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5"
     },
+    "system/libbase": {
+      "project": "platform/system/libbase",
+      "revision": "8f0ba417480079999ba552f1087ae592091b9d02"
+    },
     "system/libufdt": {
       "project": "platform/system/libufdt",
       "revision": "13e8728f0cffde9369df671f7b293a048a99c7ed"
     },
+    "system/logging": {
+      "project": "platform/system/logging",
+      "revision": "598139dc91b21518d67c408eaea2644226490971"
+    },
     "system/tools/mkbootimg": {
       "project": "platform/system/tools/mkbootimg",
       "revision": "ca3fa710f8bcbb9d3e6a3929ba3ecc841aca0677"
-    },
-    "external/e2fsprogs": {
-      "project": "platform/external/e2fsprogs",
-      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6"
     }
   },
   "tools": {
@@ -120,6 +136,12 @@
       "class": "host",
       "source": "system/core",
       "treeforge_module": "create_snapshot"
+    },
+    "debugfs": {
+      "aosp_module": "debugfs",
+      "class": "host",
+      "source": "external/e2fsprogs",
+      "treeforge_module": "debugfs"
     },
     "fastboot": {
       "aosp_module": "fastboot",
@@ -175,6 +197,12 @@
       "source": "system/libufdt",
       "treeforge_module": "mkdtimg"
     },
+    "resize2fs": {
+      "aosp_module": "resize2fs",
+      "class": "host",
+      "source": "external/e2fsprogs",
+      "treeforge_module": "resize2fs"
+    },
     "simg2img": {
       "aosp_module": "simg2img",
       "class": "host",
@@ -198,12 +226,6 @@
       "class": "host",
       "source": "system/tools/mkbootimg",
       "treeforge_module": "unpack_bootimg"
-    },
-    "resize2fs": {
-      "aosp_module": "resize2fs",
-      "class": "host",
-      "source": "external/e2fsprogs",
-      "treeforge_module": "resize2fs"
     }
   },
   "treeforge_patches": [

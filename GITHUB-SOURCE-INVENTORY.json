@@ -54,13 +54,13 @@
     },
     {
       "path": "manifests/android-15.0.0_r36/tool-build-matrix.json",
-      "bytes": 5995,
-      "sha256": "a2a9a4ad98c99e50133a3d4091c5cefeae95507251635c5325e90e169074816d"
+      "bytes": 6722,
+      "sha256": "32a890e6aca311bb1ecf9f037b390b35f47e25b2f95fb90ea418ac7863f27e67"
     },
     {
       "path": "manifests/android-15.0.0_r36/tool-source-ownership.json",
-      "bytes": 1063,
-      "sha256": "24b24415205efe0a31e98974e1c3cac608e8dc8d399821f0abbab82900e71abc"
+      "bytes": 1082,
+      "sha256": "00e89d4ac0421568d714d52e377a8345223cf72213e0f244bd190c4073b89ece"
     },
     {
       "path": "manifests/kernel/android-15.0.0_r0.94/google-providers.json",
@@ -303,6 +303,106 @@
       "sha256": "db3282046c3db4bc51c7c4fd31baeb1b0f18a31d7b0c815b21176372ae1526b4"
     },
     {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/PAYLOAD-NOT-IN-GIT.md",
+      "bytes": 344,
+      "sha256": "4f9eefb4bde9575ccb1ceff18d6135d4b8e705472ea9a250f2c93a718bda66d1"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/SOURCE/SOURCE-SHARE.json",
+      "bytes": 2316,
+      "sha256": "e85a252becbda1731f33ec44c45c2fbebd73e61c09ccc717ca6513298d7471c9"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/SOURCE/SOURCE-SHARE.txt",
+      "bytes": 1442,
+      "sha256": "9fe728783c263688957e93ac0345cd9d4429bc595d5b5660d528e24b91e7d6fd"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/legal/LEGAL-SOURCES.json",
+      "bytes": 20650,
+      "sha256": "e7ebc2d9d006a461beb1a9f6c5c68b60f42ea2701f6c02f92019e3299ef81c8a"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/legal/NOTICE.txt",
+      "bytes": 353,
+      "sha256": "28ebd45a1c7fdcba75ef61b942426d5a2e23e2deb116918e97ff30f062b4ac84"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/legal/upstream/external/e2fsprogs/MODULE_LICENSE_GPL",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/legal/upstream/external/e2fsprogs/NOTICE",
+      "bytes": 44585,
+      "sha256": "5da5ef153e559c1d990d4c3eedbedd4442db892d37eae1f35fff069de8ec9020"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/legal/upstream/external/e2fsprogs/lib/uuid/COPYING",
+      "bytes": 1391,
+      "sha256": "9b718a9460fed5952466421235bc79eb49d4e9eacc920d7a9dd6285ab8fd6c6d"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/legal/upstream/external/zlib/LICENSE",
+      "bytes": 910,
+      "sha256": "e1cfcc55c325b3f78cf55df9664abaa066e2271dffe8213347d9fccdfbac8f2c"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/legal/upstream/external/zlib/MODULE_LICENSE_BSD_LIKE",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/legal/upstream/prebuilts/clang/host/linux-x86/clang-r536225/MODULE_LICENSE_APACHE2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/legal/upstream/prebuilts/clang/host/linux-x86/clang-r536225/MODULE_LICENSE_BSD_LIKE",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/legal/upstream/prebuilts/clang/host/linux-x86/clang-r536225/MODULE_LICENSE_MIT",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/legal/upstream/prebuilts/clang/host/linux-x86/clang-r536225/NOTICE",
+      "bytes": 130424,
+      "sha256": "f96f763beb66a7ba7a667647fc64c0226ace875e590c831fdd9579ec1c1d91e1"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/legal/upstream/system/core/MODULE_LICENSE_APACHE2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/legal/upstream/system/libbase/NOTICE",
+      "bytes": 12840,
+      "sha256": "e0afbb47be661ce2076d21a1d4dc02caa58b7c215ab7ff9d151b6724be341f77"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/legal/upstream/system/logging/liblog/NOTICE",
+      "bytes": 10695,
+      "sha256": "f09747e3bc87e0ec3bdea983b37e18eeda223e01e678f76418a8a731ed8f590f"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/manifest.json",
+      "bytes": 9566,
+      "sha256": "26c5f52a4be227a6503a9a48e4f70e9b802dff238e1d6a6517be545d201f974a"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/provenance/MODIFICATIONS.txt",
+      "bytes": 285,
+      "sha256": "9386c63e86bb8e86f47211dcef995bff57e43597dc2f9e31889260e6340c488e"
+    },
+    {
+      "path": "providers/debugfs/android-15.0.0_r36-linux-x86_64/provenance/PROVENANCE.json",
+      "bytes": 5082,
+      "sha256": "d60f74602c04c6d248c76295d5f71ebaef611a74631cebf3613ab32d655d487c"
+    },
+    {
       "path": "providers/ext4-tools/android-15.0.0_r36-linux-x86_64/PROVIDER-SOURCE.txt",
       "bytes": 304,
       "sha256": "c8679d5503373de9ba0e7eb9d95eb9b072a2dc0b3f48a40bfcb9b61d34e6a637"
@@ -374,8 +474,8 @@
     },
     {
       "path": "providers/index.json",
-      "bytes": 7438,
-      "sha256": "c09941e03f04147eb7df17fe2bff13361f09847d3c74a8a8166af5863c40873b"
+      "bytes": 7758,
+      "sha256": "23ef07ac4f3b8ae6214d235321d4882b954d3e4b2705dce4c73c2c0bd4378a39"
     },
     {
       "path": "providers/inspect_cow/android-15.0.0_r36-linux-x86_64/PAYLOAD-NOT-IN-GIT.md",
@@ -1139,8 +1239,8 @@
     },
     {
       "path": "scripts/package",
-      "bytes": 57003,
-      "sha256": "aa8b9404b22c7908dd45e59633236244e4f19d23143a90e0b53af885461cdc7d"
+      "bytes": 57919,
+      "sha256": "8b632c0a12f39993de5bea8a11cf914647ee68f86074486102b5c2c9005dd085"
     },
     {
       "path": "scripts/package_consumer.py",

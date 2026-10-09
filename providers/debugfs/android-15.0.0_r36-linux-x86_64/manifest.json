@@ -1,0 +1,280 @@
+{
+  "architecture": "x86_64",
+  "executables": [
+    {
+      "capabilities": [
+        "android-debugfs-host"
+      ],
+      "name": "debugfs",
+      "path": "bin/debugfs",
+      "sha256": "43c0f3838b01907ee99c49aa19aceb10c08605c4f01381bd99cebdbba8be85a1"
+    }
+  ],
+  "legal_files": [
+    {
+      "path": "legal/LEGAL-SOURCES.json",
+      "sha256": "e7ebc2d9d006a461beb1a9f6c5c68b60f42ea2701f6c02f92019e3299ef81c8a"
+    },
+    {
+      "path": "legal/NOTICE.txt",
+      "sha256": "28ebd45a1c7fdcba75ef61b942426d5a2e23e2deb116918e97ff30f062b4ac84"
+    },
+    {
+      "path": "legal/upstream/external/e2fsprogs/MODULE_LICENSE_GPL",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "legal/upstream/external/e2fsprogs/NOTICE",
+      "sha256": "5da5ef153e559c1d990d4c3eedbedd4442db892d37eae1f35fff069de8ec9020"
+    },
+    {
+      "path": "legal/upstream/external/e2fsprogs/lib/uuid/COPYING",
+      "sha256": "9b718a9460fed5952466421235bc79eb49d4e9eacc920d7a9dd6285ab8fd6c6d"
+    },
+    {
+      "path": "legal/upstream/external/zlib/LICENSE",
+      "sha256": "e1cfcc55c325b3f78cf55df9664abaa066e2271dffe8213347d9fccdfbac8f2c"
+    },
+    {
+      "path": "legal/upstream/external/zlib/MODULE_LICENSE_BSD_LIKE",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r536225/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r536225/MODULE_LICENSE_BSD_LIKE",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r536225/MODULE_LICENSE_MIT",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r536225/NOTICE",
+      "sha256": "f96f763beb66a7ba7a667647fc64c0226ace875e590c831fdd9579ec1c1d91e1"
+    },
+    {
+      "path": "legal/upstream/system/core/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "legal/upstream/system/libbase/NOTICE",
+      "sha256": "e0afbb47be661ce2076d21a1d4dc02caa58b7c215ab7ff9d151b6724be341f77"
+    },
+    {
+      "path": "legal/upstream/system/logging/liblog/NOTICE",
+      "sha256": "f09747e3bc87e0ec3bdea983b37e18eeda223e01e678f76418a8a731ed8f590f"
+    }
+  ],
+  "name": "debugfs",
+  "platform": "linux",
+  "provenance_files": [
+    {
+      "path": "provenance/MODIFICATIONS.txt",
+      "sha256": "9386c63e86bb8e86f47211dcef995bff57e43597dc2f9e31889260e6340c488e"
+    },
+    {
+      "path": "provenance/PROVENANCE.json",
+      "sha256": "d60f74602c04c6d248c76295d5f71ebaef611a74631cebf3613ab32d655d487c"
+    }
+  ],
+  "provider_sources": [
+    {
+      "module": "debugfs",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/external/e2fsprogs",
+      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "source_path": "external/e2fsprogs"
+    },
+    {
+      "module": "libbase",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/libbase",
+      "revision": "8f0ba417480079999ba552f1087ae592091b9d02",
+      "source_path": "system/libbase"
+    },
+    {
+      "module": "libc++",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/prebuilts/clang/host/linux-x86",
+      "revision": "96266255abde668f1bf100bf2c47363b96b7a21e",
+      "source_path": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "module": "libext2_blkid",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/external/e2fsprogs",
+      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "source_path": "external/e2fsprogs"
+    },
+    {
+      "module": "libext2_com_err",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/external/e2fsprogs",
+      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "source_path": "external/e2fsprogs"
+    },
+    {
+      "module": "libext2_e2p",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/external/e2fsprogs",
+      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "source_path": "external/e2fsprogs"
+    },
+    {
+      "module": "libext2_misc",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/external/e2fsprogs",
+      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "source_path": "external/e2fsprogs"
+    },
+    {
+      "module": "libext2_quota",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/external/e2fsprogs",
+      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "source_path": "external/e2fsprogs"
+    },
+    {
+      "module": "libext2_ss",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/external/e2fsprogs",
+      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "source_path": "external/e2fsprogs"
+    },
+    {
+      "module": "libext2_support",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/external/e2fsprogs",
+      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "source_path": "external/e2fsprogs"
+    },
+    {
+      "module": "libext2_uuid",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/external/e2fsprogs",
+      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "source_path": "external/e2fsprogs"
+    },
+    {
+      "module": "libext2fs",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/external/e2fsprogs",
+      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "source_path": "external/e2fsprogs"
+    },
+    {
+      "module": "liblog",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/logging",
+      "revision": "598139dc91b21518d67c408eaea2644226490971",
+      "source_path": "system/logging"
+    },
+    {
+      "module": "libsparse",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "source_path": "system/core"
+    },
+    {
+      "module": "libz",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/external/zlib",
+      "revision": "86ee64e75fa5f8bce2c8c356138035642429cd05",
+      "source_path": "external/zlib"
+    }
+  ],
+  "release": "android-15.0.0_r36-linux-x86_64",
+  "release_tag": "debugfs/android-15.0.0_r36-1",
+  "runtime_files": [
+    {
+      "name": "libbase.so",
+      "path": "lib64/libbase.so",
+      "sha256": "0ce4898c1151ff4684386d5322ddf4aed0dcaabe95e7084640de44492afe1d68"
+    },
+    {
+      "name": "libc++.so",
+      "path": "lib64/libc++.so",
+      "sha256": "5d61559447fac8eecc3d416479c5baee6c0b692d195939210eb0fcfe072286b9"
+    },
+    {
+      "name": "libext2_blkid-host.so",
+      "path": "lib64/libext2_blkid-host.so",
+      "sha256": "7b397b521cee1b4eb6d08add46d54eb64331b894033abb57e33a3bd12cceed2f"
+    },
+    {
+      "name": "libext2_com_err-host.so",
+      "path": "lib64/libext2_com_err-host.so",
+      "sha256": "21bc5eb626c30b90998e9e757d8535630e2a1d0123d531c1614d6e9c43957133"
+    },
+    {
+      "name": "libext2_e2p-host.so",
+      "path": "lib64/libext2_e2p-host.so",
+      "sha256": "73bd8553414e8a930a0e2f82042fe44549c018943b0952b6d172a0dc53827329"
+    },
+    {
+      "name": "libext2_misc.so",
+      "path": "lib64/libext2_misc.so",
+      "sha256": "50859efac7a954524cd7c6edb05576bc60b6dc50ff8dba79205a465fdc44da4d"
+    },
+    {
+      "name": "libext2_quota-host.so",
+      "path": "lib64/libext2_quota-host.so",
+      "sha256": "25c07f9f836da2eca9f495f5c50fca12f22baa966de362b2b7350189b8158feb"
+    },
+    {
+      "name": "libext2_ss-host.so",
+      "path": "lib64/libext2_ss-host.so",
+      "sha256": "25a3eef03c3e549455506bcadd384a2bf8ff01d420ebf64fd2d40208afb98e1b"
+    },
+    {
+      "name": "libext2_support.so",
+      "path": "lib64/libext2_support.so",
+      "sha256": "26b054bdf17d84bae74cffd3e7c4bf6d15748d9c9858909e561a49fa7360376d"
+    },
+    {
+      "name": "libext2_uuid-host.so",
+      "path": "lib64/libext2_uuid-host.so",
+      "sha256": "b47e3ba68fe7e7882e95704ea4456d0fdee0f68f55c3e811a00311880dafb578"
+    },
+    {
+      "name": "libext2fs-host.so",
+      "path": "lib64/libext2fs-host.so",
+      "sha256": "b9b5f029e1893c1c48f86d08a210a381b43a1b08c47526b20c96c37a6ecc4ab1"
+    },
+    {
+      "name": "liblog.so",
+      "path": "lib64/liblog.so",
+      "sha256": "10b9de8be1678680808fe65764b4127532b91d995691ac5537be1c9e1ef9f105"
+    },
+    {
+      "name": "libsparse-host.so",
+      "path": "lib64/libsparse-host.so",
+      "sha256": "0a8c88745576e56d4b15d55e2677c0d738795459ecfc3559da7d6fa6d381f5ea"
+    },
+    {
+      "name": "libz-host.so",
+      "path": "lib64/libz-host.so",
+      "sha256": "a458c4413f806e618fb154670c630cebf1a8946a1bbcd61612c7422de1ff2b5a"
+    }
+  ],
+  "schema": 2
+}

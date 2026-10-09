@@ -1,0 +1,34 @@
+TreeForge debugfs source share
+==============================
+
+Release: android-15.0.0_r36-linux-x86_64
+
+Project: platform/external/e2fsprogs
+Path: external/e2fsprogs
+Revision: 6a54128f25917bfc36a8a6e9d722c04a0b4641b6
+Source: https://android.googlesource.com/platform/external/e2fsprogs/+/6a54128f25917bfc36a8a6e9d722c04a0b4641b6/
+
+Project: platform/external/zlib
+Path: external/zlib
+Revision: 86ee64e75fa5f8bce2c8c356138035642429cd05
+Source: https://android.googlesource.com/platform/external/zlib/+/86ee64e75fa5f8bce2c8c356138035642429cd05/
+
+Project: platform/prebuilts/clang/host/linux-x86
+Path: prebuilts/clang/host/linux-x86
+Revision: 96266255abde668f1bf100bf2c47363b96b7a21e
+Source: https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+/96266255abde668f1bf100bf2c47363b96b7a21e/
+
+Project: platform/system/core
+Path: system/core
+Revision: 00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad
+Source: https://android.googlesource.com/platform/system/core/+/00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad/
+
+Project: platform/system/libbase
+Path: system/libbase
+Revision: 8f0ba417480079999ba552f1087ae592091b9d02
+Source: https://android.googlesource.com/platform/system/libbase/+/8f0ba417480079999ba552f1087ae592091b9d02/
+
+Project: platform/system/logging
+Path: system/logging
+Revision: 598139dc91b21518d67c408eaea2644226490971
+Source: https://android.googlesource.com/platform/system/logging/+/598139dc91b21518d67c408eaea2644226490971/

@@ -1,0 +1,429 @@
+{
+  "android_release": "android-15.0.0_r36",
+  "provider": "debugfs",
+  "records": [
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/external/e2fsprogs/MODULE_LICENSE_GPL",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "external/e2fsprogs/MODULE_LICENSE_GPL",
+      "source_project": "external/e2fsprogs"
+    },
+    {
+      "bytes": 44585,
+      "package_path": "legal/upstream/external/e2fsprogs/NOTICE",
+      "sha256": "5da5ef153e559c1d990d4c3eedbedd4442db892d37eae1f35fff069de8ec9020",
+      "source_path": "external/e2fsprogs/NOTICE",
+      "source_project": "external/e2fsprogs"
+    },
+    {
+      "bytes": 1391,
+      "package_path": "legal/upstream/external/e2fsprogs/lib/uuid/COPYING",
+      "sha256": "9b718a9460fed5952466421235bc79eb49d4e9eacc920d7a9dd6285ab8fd6c6d",
+      "source_path": "external/e2fsprogs/lib/uuid/COPYING",
+      "source_project": "external/e2fsprogs"
+    },
+    {
+      "bytes": 910,
+      "package_path": "legal/upstream/external/zlib/LICENSE",
+      "sha256": "e1cfcc55c325b3f78cf55df9664abaa066e2271dffe8213347d9fccdfbac8f2c",
+      "source_path": "external/zlib/LICENSE",
+      "source_project": "external/zlib"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/external/zlib/MODULE_LICENSE_BSD_LIKE",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "external/zlib/MODULE_LICENSE_BSD_LIKE",
+      "source_project": "external/zlib"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-3289846/MODULE_LICENSE_BSD_LIKE",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-3289846/MODULE_LICENSE_BSD_LIKE",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-3289846/MODULE_LICENSE_MIT",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-3289846/MODULE_LICENSE_MIT",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 32848,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-3289846/NOTICE",
+      "sha256": "fe585b9d2dc0984d7c01c8e4ae8689712d897465726647329866f14ecacd5598",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-3289846/NOTICE",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r522817/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r522817/MODULE_LICENSE_APACHE2",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r522817/MODULE_LICENSE_BSD_LIKE",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r522817/MODULE_LICENSE_BSD_LIKE",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r522817/MODULE_LICENSE_MIT",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r522817/MODULE_LICENSE_MIT",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 130424,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r522817/NOTICE",
+      "sha256": "f96f763beb66a7ba7a667647fc64c0226ace875e590c831fdd9579ec1c1d91e1",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r522817/NOTICE",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 15138,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r522817/python3/lib/python3.11/LICENSE.txt",
+      "sha256": "2d3de21bb0173e7ee49fc80f8fab52a0c55c690ff740bed77b6b8b4dd7641b81",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r522817/python3/lib/python3.11/LICENSE.txt",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 1093,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r522817/python3/lib/python3.11/site-packages/pip-23.1.2.dist-info/LICENSE.txt",
+      "sha256": "634300a669d49aeae65b12c6c48c924c51a4cdf3d1ff086dc3456dc8bcaa2104",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r522817/python3/lib/python3.11/site-packages/pip-23.1.2.dist-info/LICENSE.txt",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 1050,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r522817/python3/lib/python3.11/site-packages/setuptools-65.5.0.dist-info/LICENSE",
+      "sha256": "db3f0246b1f9278f15845b99fec478b8b506eb76487993722f8c6e254285faf8",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r522817/python3/lib/python3.11/site-packages/setuptools-65.5.0.dist-info/LICENSE",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r530567/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r530567/MODULE_LICENSE_APACHE2",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r530567/MODULE_LICENSE_BSD_LIKE",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r530567/MODULE_LICENSE_BSD_LIKE",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r530567/MODULE_LICENSE_MIT",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r530567/MODULE_LICENSE_MIT",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 130424,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r530567/NOTICE",
+      "sha256": "f96f763beb66a7ba7a667647fc64c0226ace875e590c831fdd9579ec1c1d91e1",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r530567/NOTICE",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 15138,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r530567/python3/lib/python3.11/LICENSE.txt",
+      "sha256": "2d3de21bb0173e7ee49fc80f8fab52a0c55c690ff740bed77b6b8b4dd7641b81",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r530567/python3/lib/python3.11/LICENSE.txt",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 1093,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r530567/python3/lib/python3.11/site-packages/pip-23.1.2.dist-info/LICENSE.txt",
+      "sha256": "634300a669d49aeae65b12c6c48c924c51a4cdf3d1ff086dc3456dc8bcaa2104",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r530567/python3/lib/python3.11/site-packages/pip-23.1.2.dist-info/LICENSE.txt",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 1050,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r530567/python3/lib/python3.11/site-packages/setuptools-65.5.0.dist-info/LICENSE",
+      "sha256": "db3f0246b1f9278f15845b99fec478b8b506eb76487993722f8c6e254285faf8",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r530567/python3/lib/python3.11/site-packages/setuptools-65.5.0.dist-info/LICENSE",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r530567b/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r530567b/MODULE_LICENSE_APACHE2",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r530567b/MODULE_LICENSE_BSD_LIKE",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r530567b/MODULE_LICENSE_BSD_LIKE",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r530567b/MODULE_LICENSE_MIT",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r530567b/MODULE_LICENSE_MIT",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 130424,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r530567b/NOTICE",
+      "sha256": "f96f763beb66a7ba7a667647fc64c0226ace875e590c831fdd9579ec1c1d91e1",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r530567b/NOTICE",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 15138,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r530567b/python3/lib/python3.11/LICENSE.txt",
+      "sha256": "2d3de21bb0173e7ee49fc80f8fab52a0c55c690ff740bed77b6b8b4dd7641b81",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r530567b/python3/lib/python3.11/LICENSE.txt",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 1093,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r530567b/python3/lib/python3.11/site-packages/pip-23.1.2.dist-info/LICENSE.txt",
+      "sha256": "634300a669d49aeae65b12c6c48c924c51a4cdf3d1ff086dc3456dc8bcaa2104",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r530567b/python3/lib/python3.11/site-packages/pip-23.1.2.dist-info/LICENSE.txt",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 1050,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r530567b/python3/lib/python3.11/site-packages/setuptools-65.5.0.dist-info/LICENSE",
+      "sha256": "db3f0246b1f9278f15845b99fec478b8b506eb76487993722f8c6e254285faf8",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r530567b/python3/lib/python3.11/site-packages/setuptools-65.5.0.dist-info/LICENSE",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r536225/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r536225/MODULE_LICENSE_APACHE2",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r536225/MODULE_LICENSE_BSD_LIKE",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r536225/MODULE_LICENSE_BSD_LIKE",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r536225/MODULE_LICENSE_MIT",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r536225/MODULE_LICENSE_MIT",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 130424,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r536225/NOTICE",
+      "sha256": "f96f763beb66a7ba7a667647fc64c0226ace875e590c831fdd9579ec1c1d91e1",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r536225/NOTICE",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 15138,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r536225/python3/lib/python3.11/LICENSE.txt",
+      "sha256": "2d3de21bb0173e7ee49fc80f8fab52a0c55c690ff740bed77b6b8b4dd7641b81",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r536225/python3/lib/python3.11/LICENSE.txt",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 1093,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r536225/python3/lib/python3.11/site-packages/pip-23.1.2.dist-info/LICENSE.txt",
+      "sha256": "634300a669d49aeae65b12c6c48c924c51a4cdf3d1ff086dc3456dc8bcaa2104",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r536225/python3/lib/python3.11/site-packages/pip-23.1.2.dist-info/LICENSE.txt",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 1050,
+      "package_path": "legal/upstream/prebuilts/clang/host/linux-x86/clang-r536225/python3/lib/python3.11/site-packages/setuptools-65.5.0.dist-info/LICENSE",
+      "sha256": "db3f0246b1f9278f15845b99fec478b8b506eb76487993722f8c6e254285faf8",
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r536225/python3/lib/python3.11/site-packages/setuptools-65.5.0.dist-info/LICENSE",
+      "source_project": "prebuilts/clang/host/linux-x86"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/core/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/core/MODULE_LICENSE_APACHE2",
+      "source_project": "system/core"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/core/debuggerd/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/core/debuggerd/MODULE_LICENSE_APACHE2",
+      "source_project": "system/core"
+    },
+    {
+      "bytes": 1267,
+      "package_path": "legal/upstream/system/core/fastboot/LICENSE",
+      "sha256": "1bc6c8aff995afb8905dce226367c3e564eb68e4969bfe491229b8b50f19ebe1",
+      "source_path": "system/core/fastboot/LICENSE",
+      "source_project": "system/core"
+    },
+    {
+      "bytes": 1075,
+      "package_path": "legal/upstream/system/core/fs_mgr/NOTICE",
+      "sha256": "79f4e3e40e233ecf37271aec00da77235f6528054d057208460a33f44848b23a",
+      "source_path": "system/core/fs_mgr/NOTICE",
+      "source_project": "system/core"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/core/init/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/core/init/MODULE_LICENSE_APACHE2",
+      "source_project": "system/core"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/core/init/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a",
+      "source_path": "system/core/init/NOTICE",
+      "source_project": "system/core"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/core/libcutils/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/core/libcutils/MODULE_LICENSE_APACHE2",
+      "source_project": "system/core"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/core/libcutils/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a",
+      "source_path": "system/core/libcutils/NOTICE",
+      "source_project": "system/core"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/core/libgrallocusage/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/core/libgrallocusage/MODULE_LICENSE_APACHE2",
+      "source_project": "system/core"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/core/libgrallocusage/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a",
+      "source_path": "system/core/libgrallocusage/NOTICE",
+      "source_project": "system/core"
+    },
+    {
+      "bytes": 1318,
+      "package_path": "legal/upstream/system/core/libkeyutils/NOTICE",
+      "sha256": "511ce23b36ca7dd3858570d8ee3054ceed18e12d284f96661d030a82590a5954",
+      "source_path": "system/core/libkeyutils/NOTICE",
+      "source_project": "system/core"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/core/libnetutils/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a",
+      "source_path": "system/core/libnetutils/NOTICE",
+      "source_project": "system/core"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/core/libsync/NOTICE",
+      "sha256": "efcb3b0d1a6686c84546d85d1ad53ae01b0535443972c1f33eb248ae24b8357d",
+      "source_path": "system/core/libsync/NOTICE",
+      "source_project": "system/core"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/core/libutils/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/core/libutils/MODULE_LICENSE_APACHE2",
+      "source_project": "system/core"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/core/libutils/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a",
+      "source_path": "system/core/libutils/NOTICE",
+      "source_project": "system/core"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/core/run-as/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a",
+      "source_path": "system/core/run-as/NOTICE",
+      "source_project": "system/core"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/core/toolbox/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/core/toolbox/MODULE_LICENSE_APACHE2",
+      "source_project": "system/core"
+    },
+    {
+      "bytes": 647,
+      "package_path": "legal/upstream/system/core/toolbox/NOTICE",
+      "sha256": "18506019bb1f7624acda78bb7122784c74dc3551d137df51e485818dd06c4c55",
+      "source_path": "system/core/toolbox/NOTICE",
+      "source_project": "system/core"
+    },
+    {
+      "bytes": 12840,
+      "package_path": "legal/upstream/system/libbase/NOTICE",
+      "sha256": "e0afbb47be661ce2076d21a1d4dc02caa58b7c215ab7ff9d151b6724be341f77",
+      "source_path": "system/libbase/NOTICE",
+      "source_project": "system/libbase"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/logging/liblog/NOTICE",
+      "sha256": "f09747e3bc87e0ec3bdea983b37e18eeda223e01e678f76418a8a731ed8f590f",
+      "source_path": "system/logging/liblog/NOTICE",
+      "source_project": "system/logging"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/logging/logcat/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/logging/logcat/MODULE_LICENSE_APACHE2",
+      "source_project": "system/logging"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/logging/logcat/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a",
+      "source_path": "system/logging/logcat/NOTICE",
+      "source_project": "system/logging"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/logging/logwrapper/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a",
+      "source_path": "system/logging/logwrapper/NOTICE",
+      "source_project": "system/logging"
+    }
+  ],
+  "schema": 1,
+  "source_projects": [
+    "external/e2fsprogs",
+    "external/zlib",
+    "prebuilts/clang/host/linux-x86",
+    "system/core",
+    "system/libbase",
+    "system/logging"
+  ],
+  "upstream_legal_files": 59
+}

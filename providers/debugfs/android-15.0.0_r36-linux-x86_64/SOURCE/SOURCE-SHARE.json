@@ -1,0 +1,49 @@
+{
+  "provider": "debugfs",
+  "release": "android-15.0.0_r36-linux-x86_64",
+  "schema": 1,
+  "sources": [
+    {
+      "project": "platform/external/e2fsprogs",
+      "remote": "https://android.googlesource.com/platform/external/e2fsprogs",
+      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "source_path": "external/e2fsprogs",
+      "source_url": "https://android.googlesource.com/platform/external/e2fsprogs/+/6a54128f25917bfc36a8a6e9d722c04a0b4641b6/"
+    },
+    {
+      "project": "platform/external/zlib",
+      "remote": "https://android.googlesource.com/platform/external/zlib",
+      "revision": "86ee64e75fa5f8bce2c8c356138035642429cd05",
+      "source_path": "external/zlib",
+      "source_url": "https://android.googlesource.com/platform/external/zlib/+/86ee64e75fa5f8bce2c8c356138035642429cd05/"
+    },
+    {
+      "project": "platform/prebuilts/clang/host/linux-x86",
+      "remote": "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86",
+      "revision": "96266255abde668f1bf100bf2c47363b96b7a21e",
+      "source_path": "prebuilts/clang/host/linux-x86",
+      "source_url": "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+/96266255abde668f1bf100bf2c47363b96b7a21e/"
+    },
+    {
+      "project": "platform/system/core",
+      "remote": "https://android.googlesource.com/platform/system/core",
+      "revision": "00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad",
+      "source_path": "system/core",
+      "source_url": "https://android.googlesource.com/platform/system/core/+/00c7fec1bb09f3284aad6a6f96d2f63dfc3650ad/"
+    },
+    {
+      "project": "platform/system/libbase",
+      "remote": "https://android.googlesource.com/platform/system/libbase",
+      "revision": "8f0ba417480079999ba552f1087ae592091b9d02",
+      "source_path": "system/libbase",
+      "source_url": "https://android.googlesource.com/platform/system/libbase/+/8f0ba417480079999ba552f1087ae592091b9d02/"
+    },
+    {
+      "project": "platform/system/logging",
+      "remote": "https://android.googlesource.com/platform/system/logging",
+      "revision": "598139dc91b21518d67c408eaea2644226490971",
+      "source_path": "system/logging",
+      "source_url": "https://android.googlesource.com/platform/system/logging/+/598139dc91b21518d67c408eaea2644226490971/"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+TreeForge debugfs provider
+==========================
+
+This provider redistributes an unchanged AOSP host build of
+debugfs and its required host runtime libraries from the pinned
+Android 15 r36 source baseline.
+
+Applicable upstream license and notice files are preserved under
+legal/upstream/.
+
+TreeForge does not modify the packaged upstream binaries.
