@@ -112,6 +112,17 @@
         }
       ]
     },
+    "fec": {
+      "distribution": "GITHUB_RELEASE_ASSET",
+      "releases": [
+        {
+          "consumer_bundle": false,
+          "manifest_schema": 1,
+          "metadata_root": "providers/fec/android-15.0.0_r36-linux-x86_64",
+          "release": "android-15.0.0_r36-linux-x86_64"
+        }
+      ]
+    },
     "inspect_cow": {
       "distribution": "GITHUB_RELEASE_ASSET",
       "releases": [

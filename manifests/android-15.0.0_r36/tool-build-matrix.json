@@ -33,6 +33,7 @@
     "inspect_cow",
     "android-image-tools",
     "snapuserd_ramdisk",
+    "fec",
     "resize2fs"
   ],
   "schema": 1,
@@ -226,6 +227,12 @@
       "class": "host",
       "source": "system/tools/mkbootimg",
       "treeforge_module": "unpack_bootimg"
+    },
+    "fec": {
+      "aosp_module": "fec",
+      "class": "host",
+      "source": "system/extras",
+      "treeforge_module": "fec"
     }
   },
   "treeforge_patches": [

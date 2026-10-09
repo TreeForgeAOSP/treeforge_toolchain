@@ -1,0 +1,29 @@
+{
+  "android_release": "android-15.0.0_r36",
+  "aosp_comparison": {
+    "status": "NOT_APPLICABLE"
+  },
+  "build_module": "fec",
+  "git_commit": "66b49cc9219bdc62c84415613f9bde720d9bd10c",
+  "payload_files": [
+    {
+      "bytes": 3282304,
+      "mode": "0o775",
+      "path": "bin/fec",
+      "sha256": "52d3bab953296640441db6b4020068de615da76844a905cda1f279d44d92ba00"
+    },
+    {
+      "bytes": 1673984,
+      "mode": "0o775",
+      "path": "lib64/libc++.so",
+      "sha256": "5d61559447fac8eecc3d416479c5baee6c0b692d195939210eb0fcfe072286b9"
+    }
+  ],
+  "platform": "linux-x86_64",
+  "provider": "fec",
+  "publish_state": "UNPUBLISHED",
+  "release_tag": "fec/android-15.0.0_r36-1",
+  "repository": "TreeForgeAOSP/treeforge_toolchain",
+  "schema": 1,
+  "source_line": "aosp"
+}

@@ -37,6 +37,15 @@
         "treeforge-fastboot",
         "treeforge-fastbootd"
       ]
+    },
+    "verity-fec": {
+      "aosp_providers": [
+        "fec"
+      ],
+      "project": "platform/system/extras",
+      "revision": "288bf5226967eb3dac5cce6c939ccc2a7f2b4fe5",
+      "source_path": "system/extras",
+      "treeforge_variants": []
     }
   },
   "schema": 1

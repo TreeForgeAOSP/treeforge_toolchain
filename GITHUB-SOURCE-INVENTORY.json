@@ -54,13 +54,13 @@
     },
     {
       "path": "manifests/android-15.0.0_r36/tool-build-matrix.json",
-      "bytes": 6722,
-      "sha256": "32a890e6aca311bb1ecf9f037b390b35f47e25b2f95fb90ea418ac7863f27e67"
+      "bytes": 6869,
+      "sha256": "c3bb8abbe29f95ef6e14c837999ca9ddb024de14675f554095a8e71296e38805"
     },
     {
       "path": "manifests/android-15.0.0_r36/tool-source-ownership.json",
-      "bytes": 1082,
-      "sha256": "00e89d4ac0421568d714d52e377a8345223cf72213e0f244bd190c4073b89ece"
+      "bytes": 1332,
+      "sha256": "b509c8da9a5592ef4c677dde9208eae8d2f9c3cdffa162274df6d8d7a71ae9a7"
     },
     {
       "path": "manifests/kernel/android-15.0.0_r0.94/google-providers.json",
@@ -473,9 +473,249 @@
       "sha256": "9a4f12d02f5c506e7613e6a09235bc2b80cdc8e23c6add28b41bd7d4fa078897"
     },
     {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/PAYLOAD-NOT-IN-GIT.md",
+      "bytes": 309,
+      "sha256": "b6151df6f1092bb0fa6e0311f3fa5c048aeee2cb68b241b26e3fb6fab5d69a9c"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/LEGAL-SOURCES.json",
+      "bytes": 13490,
+      "sha256": "138512f6f9906484e2490c4adf915f74a0d57768fa5a66d69c4dfdc96d69c521"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/external/libcxx/MODULE_LICENSE_BSD_LIKE",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/external/libcxx/utils/google-benchmark/LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/ANRdaemon/LICENSE",
+      "bytes": 1519,
+      "sha256": "8c57a24336704d5ce235a23b9a35126885e573b3db73291e8859aa2cbae49edf"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/boot_control_copy/NOTICE",
+      "bytes": 10690,
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/bootctl/NOTICE",
+      "bytes": 10690,
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/cpustats/NOTICE",
+      "bytes": 10690,
+      "sha256": "4cbc087e7a1a4fc86c0d12d4897d30b4daa0bcb6d52a51cdfcb318e0bd7c76f3"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/ext4_utils/MODULE_LICENSE_APACHE2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/ext4_utils/NOTICE",
+      "bytes": 10690,
+      "sha256": "a12819fdb7f46b425cb0bdb289c4c7d68d3c7a6f014a241bdaf59a214d72358b"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/f2fs_utils/MODULE_LICENSE_APACHE2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/f2fs_utils/NOTICE",
+      "bytes": 10690,
+      "sha256": "a12819fdb7f46b425cb0bdb289c4c7d68d3c7a6f014a241bdaf59a214d72358b"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/iotop/MODULE_LICENSE_APACHE2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/iotop/NOTICE",
+      "bytes": 10690,
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/kexec_tools/NOTICE",
+      "bytes": 10695,
+      "sha256": "9fb681201e95a82edf7d95847e682f5ee334e228122f404bec54de3405d232f9"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/latencytop/MODULE_LICENSE_APACHE2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/latencytop/NOTICE",
+      "bytes": 10695,
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/libfec/NOTICE",
+      "bytes": 10690,
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/libfscrypt/MODULE_LICENSE_APACHE2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/libfscrypt/NOTICE",
+      "bytes": 10690,
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/memory_replay/NOTICE",
+      "bytes": 10690,
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/memtrack/NOTICE",
+      "bytes": 10690,
+      "sha256": "3b435d55d06da866a23d1cfd0a7d85f1e69878540e413c8648544b6dd7acb8b8"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/mmap-perf/NOTICE",
+      "bytes": 10690,
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/module_ndk_libs/libnativehelper/NOTICE",
+      "bytes": 10695,
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/pagecache/MODULE_LICENSE_APACHE2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/pagecache/NOTICE",
+      "bytes": 10695,
+      "sha256": "0f91020d1135047c819cc6725348b456eff7cb1a22531f3a3fedacbf06505953"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/postinst/MODULE_LICENSE_APACHE2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/postinst/NOTICE",
+      "bytes": 10695,
+      "sha256": "0f91020d1135047c819cc6725348b456eff7cb1a22531f3a3fedacbf06505953"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/power_profile/camera_avg/LICENSE",
+      "bytes": 11309,
+      "sha256": "728dca0d960b394d97f9c4048045da49fad4ff6a8c4704a33c9440523aecaca0"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/profcollectd/MODULE_LICENSE_APACHE2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/profcollectd/NOTICE",
+      "bytes": 10690,
+      "sha256": "a0c35ca315cca5425758be40430378f7695203293e4b971dbc67cd749276e3ad"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/runconuid/MODULE_LICENSE_APACHE2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/runconuid/NOTICE",
+      "bytes": 10695,
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/sane_schedstat/NOTICE",
+      "bytes": 10690,
+      "sha256": "a12819fdb7f46b425cb0bdb289c4c7d68d3c7a6f014a241bdaf59a214d72358b"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/showslab/MODULE_LICENSE_APACHE2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/showslab/NOTICE",
+      "bytes": 10695,
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/simpleperf/NOTICE",
+      "bytes": 10690,
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/slideshow/NOTICE",
+      "bytes": 10690,
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/sound/NOTICE",
+      "bytes": 10690,
+      "sha256": "40e079e3e6141d2b7c0ef97c1d36af877fb6240bc5795358cc238a225b67019f"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/squashfs_utils/NOTICE",
+      "bytes": 10690,
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/su/MODULE_LICENSE_APACHE2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/su/NOTICE",
+      "bytes": 10695,
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/taskstats/MODULE_LICENSE_APACHE2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/taskstats/NOTICE",
+      "bytes": 10695,
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/tests/NOTICE",
+      "bytes": 10695,
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/tests/cpueater/NOTICE",
+      "bytes": 10695,
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/legal/upstream/system/extras/verity/NOTICE",
+      "bytes": 10695,
+      "sha256": "9fb681201e95a82edf7d95847e682f5ee334e228122f404bec54de3405d232f9"
+    },
+    {
+      "path": "providers/fec/android-15.0.0_r36-linux-x86_64/manifest.json",
+      "bytes": 782,
+      "sha256": "7220e70a8b19606a43557502ea35821071cd8c477ab34f53089a61ab63b5de92"
+    },
+    {
       "path": "providers/index.json",
-      "bytes": 7758,
-      "sha256": "23ef07ac4f3b8ae6214d235321d4882b954d3e4b2705dce4c73c2c0bd4378a39"
+      "bytes": 8071,
+      "sha256": "e1d2b218aa1b9da4332a7a6055d9d3dfc26ca3f4e254aca3c1c7067402f26108"
     },
     {
       "path": "providers/inspect_cow/android-15.0.0_r36-linux-x86_64/PAYLOAD-NOT-IN-GIT.md",
@@ -1199,8 +1439,8 @@
     },
     {
       "path": "scripts/build",
-      "bytes": 3795,
-      "sha256": "f15ae1784d848fbc3f52fd01bdb0dce79dfe4d9c35893f27354627ec9c1f29f7"
+      "bytes": 3811,
+      "sha256": "9bac6fe2d06ae53c718f291e7ee8acee9b2741b86c1dced9824483ae0da5f78f"
     },
     {
       "path": "scripts/build-busybox",
@@ -1239,8 +1479,8 @@
     },
     {
       "path": "scripts/package",
-      "bytes": 57919,
-      "sha256": "8b632c0a12f39993de5bea8a11cf914647ee68f86074486102b5c2c9005dd085"
+      "bytes": 58237,
+      "sha256": "56a0044419dedecf6df65a446309984ff98d640fa4e4d42eb31c215e749b3c6f"
     },
     {
       "path": "scripts/package_consumer.py",

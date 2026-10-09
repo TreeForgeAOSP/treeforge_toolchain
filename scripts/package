@@ -158,6 +158,20 @@ PROVIDERS = (
         binary_name="fastbootd",
     ),
     Provider(
+        "fec",
+        "linux-x86_64",
+        "aosp",
+        "host-single",
+        "fec",
+        (
+            "system/extras",
+            "external/libcxx",
+        ),
+        host_binary_name="fec",
+        host_runtime_files=("libc++.so",),
+        build_script="scripts/build-reference",
+    ),
+    Provider(
         "resize2fs",
         "linux-x86_64",
         "aosp",

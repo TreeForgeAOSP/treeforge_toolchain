@@ -98,6 +98,7 @@ case "$MODE" in
             adb
             fastboot
             avbtool
+            fec
             mkdtimg
             create_snapshot
             inspect_cow.treeforge

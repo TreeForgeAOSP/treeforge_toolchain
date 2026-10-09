@@ -1,0 +1,327 @@
+{
+  "android_release": "android-15.0.0_r36",
+  "provider": "fec",
+  "records": [
+    {
+      "bytes": 1519,
+      "package_path": "legal/upstream/system/extras/ANRdaemon/LICENSE",
+      "sha256": "8c57a24336704d5ce235a23b9a35126885e573b3db73291e8859aa2cbae49edf",
+      "source_path": "system/extras/ANRdaemon/LICENSE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10690,
+      "package_path": "legal/upstream/system/extras/boot_control_copy/NOTICE",
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d",
+      "source_path": "system/extras/boot_control_copy/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10690,
+      "package_path": "legal/upstream/system/extras/bootctl/NOTICE",
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d",
+      "source_path": "system/extras/bootctl/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10690,
+      "package_path": "legal/upstream/system/extras/cpustats/NOTICE",
+      "sha256": "4cbc087e7a1a4fc86c0d12d4897d30b4daa0bcb6d52a51cdfcb318e0bd7c76f3",
+      "source_path": "system/extras/cpustats/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/extras/ext4_utils/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/extras/ext4_utils/MODULE_LICENSE_APACHE2",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10690,
+      "package_path": "legal/upstream/system/extras/ext4_utils/NOTICE",
+      "sha256": "a12819fdb7f46b425cb0bdb289c4c7d68d3c7a6f014a241bdaf59a214d72358b",
+      "source_path": "system/extras/ext4_utils/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/extras/f2fs_utils/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/extras/f2fs_utils/MODULE_LICENSE_APACHE2",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10690,
+      "package_path": "legal/upstream/system/extras/f2fs_utils/NOTICE",
+      "sha256": "a12819fdb7f46b425cb0bdb289c4c7d68d3c7a6f014a241bdaf59a214d72358b",
+      "source_path": "system/extras/f2fs_utils/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/extras/iotop/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/extras/iotop/MODULE_LICENSE_APACHE2",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10690,
+      "package_path": "legal/upstream/system/extras/iotop/NOTICE",
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d",
+      "source_path": "system/extras/iotop/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/extras/kexec_tools/NOTICE",
+      "sha256": "9fb681201e95a82edf7d95847e682f5ee334e228122f404bec54de3405d232f9",
+      "source_path": "system/extras/kexec_tools/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/extras/latencytop/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/extras/latencytop/MODULE_LICENSE_APACHE2",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/extras/latencytop/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a",
+      "source_path": "system/extras/latencytop/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10690,
+      "package_path": "legal/upstream/system/extras/libfec/NOTICE",
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d",
+      "source_path": "system/extras/libfec/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/extras/libfscrypt/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/extras/libfscrypt/MODULE_LICENSE_APACHE2",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10690,
+      "package_path": "legal/upstream/system/extras/libfscrypt/NOTICE",
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d",
+      "source_path": "system/extras/libfscrypt/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10690,
+      "package_path": "legal/upstream/system/extras/memory_replay/NOTICE",
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d",
+      "source_path": "system/extras/memory_replay/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10690,
+      "package_path": "legal/upstream/system/extras/memtrack/NOTICE",
+      "sha256": "3b435d55d06da866a23d1cfd0a7d85f1e69878540e413c8648544b6dd7acb8b8",
+      "source_path": "system/extras/memtrack/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10690,
+      "package_path": "legal/upstream/system/extras/mmap-perf/NOTICE",
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d",
+      "source_path": "system/extras/mmap-perf/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/extras/module_ndk_libs/libnativehelper/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a",
+      "source_path": "system/extras/module_ndk_libs/libnativehelper/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/extras/pagecache/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/extras/pagecache/MODULE_LICENSE_APACHE2",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/extras/pagecache/NOTICE",
+      "sha256": "0f91020d1135047c819cc6725348b456eff7cb1a22531f3a3fedacbf06505953",
+      "source_path": "system/extras/pagecache/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/extras/postinst/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/extras/postinst/MODULE_LICENSE_APACHE2",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/extras/postinst/NOTICE",
+      "sha256": "0f91020d1135047c819cc6725348b456eff7cb1a22531f3a3fedacbf06505953",
+      "source_path": "system/extras/postinst/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 11309,
+      "package_path": "legal/upstream/system/extras/power_profile/camera_avg/LICENSE",
+      "sha256": "728dca0d960b394d97f9c4048045da49fad4ff6a8c4704a33c9440523aecaca0",
+      "source_path": "system/extras/power_profile/camera_avg/LICENSE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/extras/profcollectd/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/extras/profcollectd/MODULE_LICENSE_APACHE2",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10690,
+      "package_path": "legal/upstream/system/extras/profcollectd/NOTICE",
+      "sha256": "a0c35ca315cca5425758be40430378f7695203293e4b971dbc67cd749276e3ad",
+      "source_path": "system/extras/profcollectd/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/extras/runconuid/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/extras/runconuid/MODULE_LICENSE_APACHE2",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/extras/runconuid/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a",
+      "source_path": "system/extras/runconuid/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10690,
+      "package_path": "legal/upstream/system/extras/sane_schedstat/NOTICE",
+      "sha256": "a12819fdb7f46b425cb0bdb289c4c7d68d3c7a6f014a241bdaf59a214d72358b",
+      "source_path": "system/extras/sane_schedstat/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/extras/showslab/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/extras/showslab/MODULE_LICENSE_APACHE2",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/extras/showslab/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a",
+      "source_path": "system/extras/showslab/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10690,
+      "package_path": "legal/upstream/system/extras/simpleperf/NOTICE",
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d",
+      "source_path": "system/extras/simpleperf/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10690,
+      "package_path": "legal/upstream/system/extras/slideshow/NOTICE",
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d",
+      "source_path": "system/extras/slideshow/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10690,
+      "package_path": "legal/upstream/system/extras/sound/NOTICE",
+      "sha256": "40e079e3e6141d2b7c0ef97c1d36af877fb6240bc5795358cc238a225b67019f",
+      "source_path": "system/extras/sound/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10690,
+      "package_path": "legal/upstream/system/extras/squashfs_utils/NOTICE",
+      "sha256": "7b2b93d24efc2bd6f706209213997e300ff4dafa5c21371f1feb15fae05b418d",
+      "source_path": "system/extras/squashfs_utils/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/extras/su/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/extras/su/MODULE_LICENSE_APACHE2",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/extras/su/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a",
+      "source_path": "system/extras/su/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/system/extras/taskstats/MODULE_LICENSE_APACHE2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "system/extras/taskstats/MODULE_LICENSE_APACHE2",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/extras/taskstats/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a",
+      "source_path": "system/extras/taskstats/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/extras/tests/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a",
+      "source_path": "system/extras/tests/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/extras/tests/cpueater/NOTICE",
+      "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a",
+      "source_path": "system/extras/tests/cpueater/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/system/extras/verity/NOTICE",
+      "sha256": "9fb681201e95a82edf7d95847e682f5ee334e228122f404bec54de3405d232f9",
+      "source_path": "system/extras/verity/NOTICE",
+      "source_project": "system/extras"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/external/libcxx/MODULE_LICENSE_BSD_LIKE",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "external/libcxx/MODULE_LICENSE_BSD_LIKE",
+      "source_project": "external/libcxx"
+    },
+    {
+      "bytes": 11358,
+      "package_path": "legal/upstream/external/libcxx/utils/google-benchmark/LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "source_path": "external/libcxx/utils/google-benchmark/LICENSE",
+      "source_project": "external/libcxx"
+    }
+  ],
+  "schema": 1,
+  "source_projects": [
+    "system/extras",
+    "external/libcxx"
+  ],
+  "upstream_legal_files": 45
+}
