@@ -1,0 +1,8 @@
+TreeForge ext4-tools provider
+=============================
+
+This provider redistributes unchanged host-tool binaries acquired from Google's pinned kernel/prebuilts/build-tools repository.
+
+TreeForge does not compile or modify these provider binaries.
+
+The exact Google source manifest and applicable upstream legal notices are included with this release package.

@@ -90,6 +90,17 @@
         }
       ]
     },
+    "ext4-tools": {
+      "distribution": "GITHUB_RELEASE_ASSET",
+      "releases": [
+        {
+          "consumer_bundle": true,
+          "manifest_schema": 2,
+          "metadata_root": "providers/ext4-tools/android-15.0.0_r36-linux-x86_64",
+          "release": "android-15.0.0_r36-linux-x86_64"
+        }
+      ]
+    },
     "inspect_cow": {
       "distribution": "GITHUB_RELEASE_ASSET",
       "releases": [

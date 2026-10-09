@@ -302,6 +302,20 @@ PROVIDERS = (
         ),
     ),
     Provider(
+        "ext4-tools",
+        "linux-x86_64",
+        "google-prebuilt",
+        "google-prebuilt-host-tools",
+        "kernel-build-tools",
+        (),
+        build_script="NONE",
+        prepare_source_script=(
+            "scripts/ext4-tools-provider"
+        ),
+        build_matrix=None,
+        source_inventory=None,
+    ),
+    Provider(
         "snapuserd_ramdisk",
         "arm64",
         "treeforge",
@@ -1273,6 +1287,139 @@ def package_payload(
 
             source_files.append(direct)
 
+    elif provider.kind == "google-prebuilt-host-tools":
+        if provider.provider_id != "ext4-tools":
+            die(
+                "unsupported Google prebuilt host "
+                f"provider: {provider.provider_id}"
+            )
+
+        resolver = (
+            ROOT
+            / "scripts"
+            / "ext4-tools-provider"
+        )
+
+        contract_path = (
+            ROOT
+            / "manifests"
+            / ANDROID_RELEASE
+            / "ext4-tools-google.json"
+        )
+
+        require_file(
+            resolver,
+            "ext4-tools provider resolver",
+        )
+
+        require_file(
+            contract_path,
+            "ext4-tools provider contract",
+        )
+
+        subprocess.run(
+            [
+                str(resolver),
+                "prepare",
+            ],
+            cwd=ROOT,
+            check=True,
+        )
+
+        subprocess.run(
+            [
+                str(resolver),
+                "verify",
+            ],
+            cwd=ROOT,
+            check=True,
+        )
+
+        contract = json.loads(
+            contract_path.read_text()
+        )
+
+        if (
+            contract.get("provider")
+            != provider.provider_id
+        ):
+            die(
+                "ext4-tools contract provider "
+                "identity mismatch"
+            )
+
+        materialized = (
+            ROOT
+            / ".providers"
+            / provider.provider_id
+            / (
+                f"{ANDROID_RELEASE}-"
+                f"{provider.platform}"
+            )
+        )
+
+        require_dir(
+            materialized,
+            "verified ext4-tools materialization",
+        )
+
+        for record in contract["files"]:
+            relative = Path(
+                record["destination"]
+            )
+
+            if (
+                relative.is_absolute()
+                or ".." in relative.parts
+            ):
+                die(
+                    "unsafe ext4-tools destination: "
+                    f"{relative}"
+                )
+
+            source = materialized / relative
+
+            require_file(
+                source,
+                "ext4-tools materialized file",
+            )
+
+            actual_sha = sha256_file(
+                source
+            )
+
+            expected_sha = record[
+                "sha256"
+            ]
+
+            if actual_sha != expected_sha:
+                die(
+                    "ext4-tools payload SHA mismatch\n"
+                    f"path={relative}\n"
+                    f"expected={expected_sha}\n"
+                    f"actual={actual_sha}"
+                )
+
+            destination = (
+                payload / relative
+            )
+
+            copy_file(
+                source,
+                destination,
+            )
+
+            destination.chmod(
+                int(
+                    record["mode"],
+                    8,
+                )
+            )
+
+            source_files.append(
+                source
+            )
+
     elif provider.kind == "capex":
         source = find_capex(runtime_root(provider))
 
@@ -1558,6 +1705,52 @@ def payload_records(
     return records
 
 
+def copy_normalized_consumer_manifest(
+    provider: Provider,
+    package: Path,
+) -> bool:
+    source = metadata_root(
+        provider
+    )
+
+    if source is None:
+        return False
+
+    manifest_path = (
+        source / "manifest.json"
+    )
+
+    if not manifest_path.is_file():
+        return False
+
+    data = json.loads(
+        manifest_path.read_text()
+    )
+
+    release = (
+        f"{ANDROID_RELEASE}-"
+        f"{provider.platform}"
+    )
+
+    if (
+        data.get("schema") not in (1, 2)
+        or data.get("name")
+        != provider.provider_id
+        or data.get("release")
+        != release
+    ):
+        return False
+
+    copy_file(
+        manifest_path,
+        package
+        / "consumer"
+        / "manifest.json",
+    )
+
+    return True
+
+
 def source_rebuild_record(
     provider: Provider,
     git_commit: str,
@@ -1673,13 +1866,26 @@ def main() -> int:
     )
     print()
 
-    for path, description in (
-        (AOSP_HOST, "AOSP host build"),
-        (AOSP_RUNTIME, "AOSP runtime build"),
-        (TREEFORGE_HOST, "TreeForge host build"),
-        (TREEFORGE_RUNTIME, "TreeForge runtime build"),
-    ):
-        require_dir(path, description)
+    requested_provider_early = (
+        os.environ.get(
+            "TREEFORGE_PACKAGE_PROVIDER"
+        )
+    )
+
+    if requested_provider_early != "ext4-tools":
+        for path, description in (
+            (AOSP_HOST, "AOSP host build"),
+            (AOSP_RUNTIME, "AOSP runtime build"),
+            (TREEFORGE_HOST, "TreeForge host build"),
+            (TREEFORGE_RUNTIME, "TreeForge runtime build"),
+        ):
+            require_dir(path, description)
+    else:
+        print(
+            "build_output_preflight="
+            "SKIPPED_GOOGLE_PREBUILT"
+        )
+        print()
 
     require_file(
         TOOL_BUILD_MATRIX,
@@ -1777,6 +1983,13 @@ def main() -> int:
 
         copy_metadata(provider, package)
 
+        consumer_manifest = (
+            copy_normalized_consumer_manifest(
+                provider,
+                package,
+            )
+        )
+
         comparison_record = comparison(
             provider,
             source_files,
@@ -1853,6 +2066,7 @@ def main() -> int:
                 "archive_bytes": archive.stat().st_size,
                 "archive_sha256": archive_sha,
                 "payload_file_count": len(payload_info),
+                "consumer_manifest": consumer_manifest,
             }
         )
 
@@ -1981,7 +2195,7 @@ def usage() -> None:
         """Usage:
   ./scripts/package
 
-Package TreeForge providers from already-built artifacts.
+Package TreeForge providers from already-built or verified prebuilt artifacts.
 
 By default, all registered providers are packaged.
 

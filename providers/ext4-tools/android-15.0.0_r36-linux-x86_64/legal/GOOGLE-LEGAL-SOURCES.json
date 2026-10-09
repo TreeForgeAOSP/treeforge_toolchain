@@ -1,0 +1,71 @@
+{
+  "distribution": "GOOGLE_GIT_PINNED",
+  "provider": "ext4-tools",
+  "records": [
+    {
+      "bytes": 44585,
+      "package_path": "legal/upstream/platform/external/e2fsprogs/ee2a1486b2a05c3997bcaa3a7dc46dc5550aeb85/NOTICE",
+      "project": "platform/external/e2fsprogs",
+      "revision": "ee2a1486b2a05c3997bcaa3a7dc46dc5550aeb85",
+      "sha256": "5da5ef153e559c1d990d4c3eedbedd4442db892d37eae1f35fff069de8ec9020",
+      "source_path": "NOTICE"
+    },
+    {
+      "bytes": 1391,
+      "package_path": "legal/upstream/platform/external/e2fsprogs/ee2a1486b2a05c3997bcaa3a7dc46dc5550aeb85/lib/uuid/COPYING",
+      "project": "platform/external/e2fsprogs",
+      "revision": "ee2a1486b2a05c3997bcaa3a7dc46dc5550aeb85",
+      "sha256": "9b718a9460fed5952466421235bc79eb49d4e9eacc920d7a9dd6285ab8fd6c6d",
+      "source_path": "lib/uuid/COPYING"
+    },
+    {
+      "bytes": 10690,
+      "package_path": "legal/upstream/platform/system/extras/f0b091a8b2ca8d3a6d938e47e7eefe41481d4c99/ext4_utils/NOTICE",
+      "project": "platform/system/extras",
+      "revision": "f0b091a8b2ca8d3a6d938e47e7eefe41481d4c99",
+      "sha256": "a12819fdb7f46b425cb0bdb289c4c7d68d3c7a6f014a241bdaf59a214d72358b",
+      "source_path": "ext4_utils/NOTICE"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/platform/system/core/0b30e34a04b92b62907a84aeb492b629a8bed073/MODULE_LICENSE_APACHE2",
+      "project": "platform/system/core",
+      "revision": "0b30e34a04b92b62907a84aeb492b629a8bed073",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "MODULE_LICENSE_APACHE2"
+    },
+    {
+      "bytes": 12840,
+      "package_path": "legal/upstream/platform/system/libbase/442c19baacc86fe8ba0a2dfd5bd84dc273d14ea2/NOTICE",
+      "project": "platform/system/libbase",
+      "revision": "442c19baacc86fe8ba0a2dfd5bd84dc273d14ea2",
+      "sha256": "e0afbb47be661ce2076d21a1d4dc02caa58b7c215ab7ff9d151b6724be341f77",
+      "source_path": "NOTICE"
+    },
+    {
+      "bytes": 10695,
+      "package_path": "legal/upstream/platform/system/logging/91e88043a9c54309c8b4a745488bed6575675fc8/liblog/NOTICE",
+      "project": "platform/system/logging",
+      "revision": "91e88043a9c54309c8b4a745488bed6575675fc8",
+      "sha256": "f09747e3bc87e0ec3bdea983b37e18eeda223e01e678f76418a8a731ed8f590f",
+      "source_path": "liblog/NOTICE"
+    },
+    {
+      "bytes": 3493,
+      "package_path": "legal/upstream/platform/external/libcxx/d3d779a3ff888d72ee401bcfda78c10a9b8f1f28/LICENSE.TXT",
+      "project": "platform/external/libcxx",
+      "revision": "d3d779a3ff888d72ee401bcfda78c10a9b8f1f28",
+      "sha256": "c1938c0e9e90639d1e8f5a7f6bebaab83a3642e0ee44295a4c69934686d0bda8",
+      "source_path": "LICENSE.TXT"
+    },
+    {
+      "bytes": 910,
+      "package_path": "legal/upstream/platform/external/zlib/cfa5de0e204556eb3ab7c7fde29258329cd4ebb6/LICENSE",
+      "project": "platform/external/zlib",
+      "revision": "cfa5de0e204556eb3ab7c7fde29258329cd4ebb6",
+      "sha256": "e1cfcc55c325b3f78cf55df9664abaa066e2271dffe8213347d9fccdfbac8f2c",
+      "source_path": "LICENSE"
+    }
+  ],
+  "schema": 1
+}

@@ -1,0 +1,8 @@
+Provider: ext4-tools
+Release: android-15.0.0_r36-linux-x86_64
+Release tag: ext4-tools/android-15.0.0_r36-1
+Distribution: GOOGLE_GIT_PINNED
+Build performed: NO
+Google project: kernel/prebuilts/build-tools
+Google revision: e905be252a53d20c52bd9e59df3ff8fdd46b9eab
+Google provider tag: android-15.0.0_r0.94
