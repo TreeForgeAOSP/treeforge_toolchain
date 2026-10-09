@@ -98,6 +98,7 @@ class Provider:
     source_projects: tuple[str, ...]
     binary_name: str | None = None
     host_binary_name: str | None = None
+    host_runtime_files: tuple[str, ...] = ()
     comparison_name: str | None = None
     artifact_path: str | None = None
     build_script: str = "scripts/build"
@@ -155,6 +156,20 @@ PROVIDERS = (
         "fastbootd",
         ("system/core",),
         binary_name="fastbootd",
+    ),
+    Provider(
+        "resize2fs",
+        "linux-x86_64",
+        "aosp",
+        "host-single",
+        "resize2fs",
+        (
+            "external/e2fsprogs",
+            "external/libcxx",
+        ),
+        host_binary_name="resize2fs",
+        host_runtime_files=("libc++.so",),
+        build_script="scripts/build-reference",
     ),
 
     Provider(
@@ -1229,8 +1244,10 @@ def package_payload(
     elif provider.kind == "host-single":
         assert provider.host_binary_name is not None
 
+        root = host_root(provider)
+
         source = host_binary(
-            host_root(provider),
+            root,
             provider.host_binary_name,
         )
 
@@ -1240,6 +1257,38 @@ def package_payload(
         )
 
         source_files.append(source)
+
+        for name in provider.host_runtime_files:
+            direct = (
+                root
+                / "host"
+                / "linux-x86"
+                / "lib64"
+                / name
+            )
+
+            if not direct.is_file():
+                matches = sorted(
+                    path
+                    for path in root.rglob(name)
+                    if path.is_file()
+                )
+
+                if not matches:
+                    die(
+                        f"{provider.provider_id}: "
+                        "host runtime library missing: "
+                        f"{name}"
+                    )
+
+                direct = matches[0]
+
+            copy_file(
+                direct,
+                payload / "lib64" / name,
+            )
+
+            source_files.append(direct)
 
     elif provider.kind == "host-image-tools":
         root = host_root(provider)
@@ -1860,6 +1909,62 @@ def make_archive(
     return archive, digest
 
 
+
+def build_output_requirements(
+    provider: Provider,
+) -> tuple[tuple[Path, str], ...]:
+    """
+    Return only the already-built output roots required to package
+    this provider.
+
+    One-off provider packaging must not require unrelated host or
+    runtime build trees.
+    """
+
+    if provider.source_line == "aosp":
+        host_description = "AOSP host build"
+        runtime_description = "AOSP runtime build"
+    else:
+        host_description = "TreeForge host build"
+        runtime_description = "TreeForge runtime build"
+
+    if provider.kind in (
+        "host-single",
+        "host-image-tools",
+    ):
+        return (
+            (
+                host_root(provider),
+                host_description,
+            ),
+        )
+
+    if provider.kind in (
+        "runtime",
+        "capex",
+    ):
+        return (
+            (
+                runtime_root(provider),
+                runtime_description,
+            ),
+        )
+
+    if provider.kind in (
+        "host-python-source",
+        "google-prebuilt-host-tools",
+        "static-runtime",
+    ):
+        return ()
+
+    die(
+        f"{provider.provider_id}: "
+        "unknown build-output requirement for "
+        f"provider kind {provider.kind!r}"
+    )
+
+
+
 def main() -> int:
     print(
         "=== TREEFORGE PROVIDER PACKAGING ==="
@@ -1872,30 +1977,125 @@ def main() -> int:
         )
     )
 
-    if requested_provider_early != "ext4-tools":
+    if requested_provider_early:
+        selected_early = tuple(
+            provider
+            for provider in PROVIDERS
+            if provider.provider_id
+            == requested_provider_early
+        )
+
+        if not selected_early:
+            die(
+                "unknown TREEFORGE_PACKAGE_PROVIDER: "
+                f"{requested_provider_early}"
+            )
+
+        requirements: dict[Path, str] = {}
+
+        for provider in selected_early:
+            for path, description in (
+                build_output_requirements(provider)
+            ):
+                requirements[path] = description
+
+        for path, description in requirements.items():
+            require_dir(
+                path,
+                description,
+            )
+
+        if requirements:
+            print(
+                "build_output_preflight="
+                "SELECTED_PROVIDER"
+            )
+        else:
+            print(
+                "build_output_preflight="
+                "NO_BUILD_OUTPUT_REQUIRED"
+            )
+
+        print(
+            "build_output_provider="
+            f"{requested_provider_early}"
+        )
+
+        for path in requirements:
+            print(
+                "build_output_required="
+                f"{path}"
+            )
+
+        print()
+
+    else:
         for path, description in (
             (AOSP_HOST, "AOSP host build"),
             (AOSP_RUNTIME, "AOSP runtime build"),
-            (TREEFORGE_HOST, "TreeForge host build"),
-            (TREEFORGE_RUNTIME, "TreeForge runtime build"),
+            (
+                TREEFORGE_HOST,
+                "TreeForge host build",
+            ),
+            (
+                TREEFORGE_RUNTIME,
+                "TreeForge runtime build",
+            ),
         ):
-            require_dir(path, description)
-    else:
+            require_dir(
+                path,
+                description,
+            )
+
         print(
-            "build_output_preflight="
-            "SKIPPED_GOOGLE_PREBUILT"
+            "build_output_preflight=FULL_TREE"
         )
         print()
 
-    require_file(
-        TOOL_BUILD_MATRIX,
-        "tool build matrix",
-    )
+    metadata_requirements: dict[Path, str] = {}
 
-    require_file(
-        SOURCE_INVENTORY,
-        "source inventory",
-    )
+    if requested_provider_early:
+        for provider in selected_early:
+            if provider.build_matrix:
+                metadata_requirements[
+                    ROOT / provider.build_matrix
+                ] = "tool build matrix"
+
+            if provider.source_inventory:
+                metadata_requirements[
+                    ROOT / provider.source_inventory
+                ] = "source inventory"
+    else:
+        metadata_requirements[
+            TOOL_BUILD_MATRIX
+        ] = "tool build matrix"
+
+        metadata_requirements[
+            SOURCE_INVENTORY
+        ] = "source inventory"
+
+    for metadata_path, description in (
+        metadata_requirements.items()
+    ):
+        require_file(
+            metadata_path,
+            description,
+        )
+
+    if metadata_requirements:
+        print(
+            "metadata_preflight=SELECTED_REQUIREMENTS"
+            if requested_provider_early
+            else "metadata_preflight=FULL"
+        )
+
+        for metadata_path in metadata_requirements:
+            print(
+                "metadata_required="
+                f"{metadata_path}"
+            )
+
+        print()
 
     if shutil.which("readelf") is None:
         die("readelf is required")

@@ -134,6 +134,17 @@
         }
       ]
     },
+    "resize2fs": {
+      "distribution": "GITHUB_RELEASE_ASSET",
+      "releases": [
+        {
+          "consumer_bundle": true,
+          "manifest_schema": 2,
+          "metadata_root": "providers/resize2fs/android-15.0.0_r36-linux-x86_64",
+          "release": "android-15.0.0_r36-linux-x86_64"
+        }
+      ]
+    },
     "snapuserd_ramdisk": {
       "distribution": "GITHUB_RELEASE_ASSET",
       "releases": [

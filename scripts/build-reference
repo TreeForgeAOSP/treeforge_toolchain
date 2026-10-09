@@ -1,0 +1,221 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+SCRIPT_DIR="$(
+    cd "$(dirname "${BASH_SOURCE[0]}")" &&
+    pwd
+)"
+
+ROOT="$(
+    cd "$SCRIPT_DIR/.." &&
+    pwd
+)"
+
+WORKSPACE="$(
+    cd "$ROOT/.." &&
+    pwd
+)"
+
+TREEFORGE="${TREEFORGE_ROOT:-$WORKSPACE/treeforge}"
+AOSP="${TREEFORGE_AOSP_SOURCE:-$TREEFORGE/aosp}"
+
+RELEASE="android-15.0.0_r36"
+
+MATRIX="$ROOT/manifests/$RELEASE/tool-build-matrix.json"
+
+JOBS="${TREEFORGE_BUILD_JOBS:-2}"
+
+
+fail() {
+    printf 'ERROR: %s\n' "$*" >&2
+    exit 1
+}
+
+
+usage() {
+    cat <<'USAGE'
+Usage:
+  ./scripts/build-reference host <module>
+  ./scripts/build-reference runtime <module>
+
+Build an unmodified pinned AOSP reference module.
+
+This command:
+  - uses the pristine AOSP source checkout
+  - verifies the owning project revision
+  - refuses tracked source modifications
+  - builds only the requested module
+  - writes only to out/build/aosp
+
+It does not:
+  - reconstruct TreeForge source
+  - apply TreeForge patches
+  - package providers
+  - publish releases
+  - access a device
+USAGE
+}
+
+
+MODE="${1:-}"
+MODULE="${2:-}"
+
+if [[ "$MODE" == "-h" || "$MODE" == "--help" ]]; then
+    usage
+    exit 0
+fi
+
+[[ $# -eq 2 ]] || {
+    usage >&2
+    exit 2
+}
+
+[[ "$MODE" == host || "$MODE" == runtime ]] || {
+    fail "mode must be host or runtime"
+}
+
+test -f "$MATRIX" ||
+    fail "tool build matrix missing: $MATRIX"
+
+test -f "$AOSP/build/envsetup.sh" ||
+    fail "AOSP source missing: $AOSP"
+
+
+mapfile -t META < <(
+    python3 - "$MATRIX" "$MODE" "$MODULE" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+matrix = json.loads(
+    Path(sys.argv[1]).read_text()
+)
+
+mode = sys.argv[2]
+module = sys.argv[3]
+
+matches = []
+
+for tool_name, record in matrix["tools"].items():
+    if record.get("class") != mode:
+        continue
+
+    aosp = record.get("aosp_module")
+    modules = record.get("aosp_modules")
+
+    if aosp == module:
+        matches.append((tool_name, record))
+        continue
+
+    if isinstance(modules, list) and module in modules:
+        matches.append((tool_name, record))
+
+if len(matches) != 1:
+    raise SystemExit(
+        "expected exactly one matrix owner for "
+        f"{mode} module {module!r}; found {len(matches)}"
+    )
+
+tool_name, record = matches[0]
+
+source = record["source"]
+
+source_record = matrix["source_projects"].get(source)
+
+if source_record is None:
+    raise SystemExit(
+        f"source project is not pinned in build matrix: {source}"
+    )
+
+print(tool_name)
+print(source)
+print(source_record["project"])
+print(source_record["revision"])
+print(matrix["build_products"][mode])
+PY
+)
+
+[[ "${#META[@]}" -eq 5 ]] ||
+    fail "matrix metadata resolution failed"
+
+TOOL_NAME="${META[0]}"
+SOURCE_PATH="${META[1]}"
+SOURCE_PROJECT="${META[2]}"
+SOURCE_REVISION="${META[3]}"
+PRODUCT="${META[4]}"
+
+SOURCE_ROOT="$AOSP/$SOURCE_PATH"
+
+test -d "$SOURCE_ROOT" ||
+    fail "source project missing: $SOURCE_ROOT"
+
+ACTUAL_REVISION="$(
+    git -C "$SOURCE_ROOT" rev-parse HEAD
+)"
+
+[[ "$ACTUAL_REVISION" == "$SOURCE_REVISION" ]] ||
+    fail \
+        "source revision mismatch: $SOURCE_PATH; " \
+        "expected=$SOURCE_REVISION actual=$ACTUAL_REVISION"
+
+test -z "$(
+    git -C "$SOURCE_ROOT" status \
+        --porcelain \
+        --untracked-files=no
+)" || fail "source project has tracked modifications: $SOURCE_PATH"
+
+
+case "$MODE" in
+    host)
+        OUT="$ROOT/out/build/aosp/linux-x86_64"
+        ;;
+    runtime)
+        OUT="$ROOT/out/build/aosp/arm64"
+        ;;
+esac
+
+
+echo "=== TREEFORGE AOSP REFERENCE BUILD ==="
+date --iso-8601=seconds
+echo
+echo "android_release=$RELEASE"
+echo "mode=$MODE"
+echo "tool=$TOOL_NAME"
+echo "module=$MODULE"
+echo "source_path=$SOURCE_PATH"
+echo "source_project=$SOURCE_PROJECT"
+echo "source_revision=$SOURCE_REVISION"
+echo "product=$PRODUCT"
+echo "out=$OUT"
+echo "jobs=$JOBS"
+echo
+echo "source_line=AOSP_REFERENCE_PROVIDER"
+echo "treeforge_patches_applied=NO"
+echo "device_target_used=NO"
+echo
+
+mkdir -p "$OUT"
+
+(
+    cd "$AOSP" || exit 1
+
+    export OUT_DIR="$OUT"
+
+    # Android build helpers are not nounset-safe.
+    set +u
+
+    # shellcheck disable=SC1091
+    source "$AOSP/build/envsetup.sh"
+
+    lunch "$PRODUCT"
+
+    m -j"$JOBS" "$MODULE"
+)
+
+echo
+echo "TREEFORGE_REFERENCE_BUILD=PASS"
+echo "reference_builds=1"
+echo "treeforge_source_builds=0"
+echo "device_touched=NO"
+echo "adb_invoked=NO"
+echo "fastboot_invoked=NO"

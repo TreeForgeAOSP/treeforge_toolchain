@@ -1,0 +1,14 @@
+TreeForge resize2fs source share
+================================
+
+Release: android-15.0.0_r36-linux-x86_64
+
+Project: platform/external/e2fsprogs
+Path: external/e2fsprogs
+Revision: 6a54128f25917bfc36a8a6e9d722c04a0b4641b6
+Source: https://android.googlesource.com/platform/external/e2fsprogs/+/6a54128f25917bfc36a8a6e9d722c04a0b4641b6/
+
+Project: platform/external/libcxx
+Path: external/libcxx
+Revision: 58b9f456b02922dfdb1fad8a988d5fd8765ecb80
+Source: https://android.googlesource.com/platform/external/libcxx/+/58b9f456b02922dfdb1fad8a988d5fd8765ecb80/

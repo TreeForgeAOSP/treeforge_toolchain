@@ -1,0 +1,11 @@
+TreeForge resize2fs provider
+===========================
+
+This provider redistributes an unchanged host build of resize2fs
+and its required libc++.so runtime library from the pinned
+Android 15 r36 AOSP source baseline.
+
+Applicable upstream license and notice files are preserved under
+legal/upstream/.
+
+TreeForge does not modify the packaged upstream binaries.

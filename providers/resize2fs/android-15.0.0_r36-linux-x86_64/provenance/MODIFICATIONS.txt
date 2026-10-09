@@ -1,0 +1,10 @@
+TreeForge resize2fs provider
+============================
+
+This provider contains an untouched AOSP reference build.
+
+TreeForge does not modify resize2fs or libc++.so.
+
+The provider is built from the pinned Android 15 r36 source
+identity recorded by treeforge_toolchain and is packaged with
+the runtime library required by the host executable.

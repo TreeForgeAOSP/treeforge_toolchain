@@ -1,0 +1,47 @@
+{
+  "android_release": "android-15.0.0_r36",
+  "provider": "resize2fs",
+  "records": [
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/external/e2fsprogs/MODULE_LICENSE_GPL",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "external/e2fsprogs/MODULE_LICENSE_GPL",
+      "source_project": "external/e2fsprogs"
+    },
+    {
+      "bytes": 44585,
+      "package_path": "legal/upstream/external/e2fsprogs/NOTICE",
+      "sha256": "5da5ef153e559c1d990d4c3eedbedd4442db892d37eae1f35fff069de8ec9020",
+      "source_path": "external/e2fsprogs/NOTICE",
+      "source_project": "external/e2fsprogs"
+    },
+    {
+      "bytes": 1391,
+      "package_path": "legal/upstream/external/e2fsprogs/lib/uuid/COPYING",
+      "sha256": "9b718a9460fed5952466421235bc79eb49d4e9eacc920d7a9dd6285ab8fd6c6d",
+      "source_path": "external/e2fsprogs/lib/uuid/COPYING",
+      "source_project": "external/e2fsprogs"
+    },
+    {
+      "bytes": 0,
+      "package_path": "legal/upstream/external/libcxx/MODULE_LICENSE_BSD_LIKE",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "external/libcxx/MODULE_LICENSE_BSD_LIKE",
+      "source_project": "external/libcxx"
+    },
+    {
+      "bytes": 11358,
+      "package_path": "legal/upstream/external/libcxx/utils/google-benchmark/LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "source_path": "external/libcxx/utils/google-benchmark/LICENSE",
+      "source_project": "external/libcxx"
+    }
+  ],
+  "schema": 1,
+  "source_projects": [
+    "external/e2fsprogs",
+    "external/libcxx"
+  ],
+  "upstream_legal_files": 5
+}

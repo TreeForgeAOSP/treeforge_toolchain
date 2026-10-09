@@ -1,0 +1,83 @@
+{
+  "architecture": "x86_64",
+  "executables": [
+    {
+      "capabilities": [
+        "android-resize2fs-host"
+      ],
+      "name": "resize2fs",
+      "path": "bin/resize2fs",
+      "sha256": "3a9faca18473c9ea95ee74c06a57164fcbe0eb4c5cd5bfabba4331b7d659fed1"
+    }
+  ],
+  "legal_files": [
+    {
+      "path": "legal/LEGAL-SOURCES.json",
+      "sha256": "7415a50337781683c18cc7cda92fb1eb43c0ba76d71106a02227ecda6fcb474c"
+    },
+    {
+      "path": "legal/NOTICE.txt",
+      "sha256": "8480b3c870d986f1ee42a9fb8daeb97802cc1d088469c5348c698218fa8c6ea2"
+    },
+    {
+      "path": "legal/upstream/external/e2fsprogs/MODULE_LICENSE_GPL",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "legal/upstream/external/e2fsprogs/NOTICE",
+      "sha256": "5da5ef153e559c1d990d4c3eedbedd4442db892d37eae1f35fff069de8ec9020"
+    },
+    {
+      "path": "legal/upstream/external/e2fsprogs/lib/uuid/COPYING",
+      "sha256": "9b718a9460fed5952466421235bc79eb49d4e9eacc920d7a9dd6285ab8fd6c6d"
+    },
+    {
+      "path": "legal/upstream/external/libcxx/MODULE_LICENSE_BSD_LIKE",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "legal/upstream/external/libcxx/utils/google-benchmark/LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    }
+  ],
+  "name": "resize2fs",
+  "platform": "linux",
+  "provenance_files": [
+    {
+      "path": "provenance/MODIFICATIONS.txt",
+      "sha256": "b66a420154083e211ffa986b211e47682e7023d71016a459bb115b9e3e12b594"
+    },
+    {
+      "path": "provenance/PROVENANCE.json",
+      "sha256": "c8e12df7bfd9458e818eeab0ce8022ac8fe7563f4693fd148d9d07494df3fa2e"
+    }
+  ],
+  "provider_sources": [
+    {
+      "module": "resize2fs",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/external/e2fsprogs",
+      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "source_path": "external/e2fsprogs"
+    },
+    {
+      "module": "libc++",
+      "platform": "android",
+      "platform_release": "android-15.0.0_r36",
+      "project": "platform/external/libcxx",
+      "revision": "58b9f456b02922dfdb1fad8a988d5fd8765ecb80",
+      "source_path": "external/libcxx"
+    }
+  ],
+  "release": "android-15.0.0_r36-linux-x86_64",
+  "release_tag": "resize2fs/android-15.0.0_r36-1",
+  "runtime_files": [
+    {
+      "name": "libc++.so",
+      "path": "lib64/libc++.so",
+      "sha256": "5d61559447fac8eecc3d416479c5baee6c0b692d195939210eb0fcfe072286b9"
+    }
+  ],
+  "schema": 2
+}

@@ -1,0 +1,21 @@
+{
+  "provider": "resize2fs",
+  "release": "android-15.0.0_r36-linux-x86_64",
+  "schema": 1,
+  "sources": [
+    {
+      "project": "platform/external/e2fsprogs",
+      "remote": "https://android.googlesource.com/platform/external/e2fsprogs",
+      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "source_path": "external/e2fsprogs",
+      "source_url": "https://android.googlesource.com/platform/external/e2fsprogs/+/6a54128f25917bfc36a8a6e9d722c04a0b4641b6/"
+    },
+    {
+      "project": "platform/external/libcxx",
+      "remote": "https://android.googlesource.com/platform/external/libcxx",
+      "revision": "58b9f456b02922dfdb1fad8a988d5fd8765ecb80",
+      "source_path": "external/libcxx",
+      "source_url": "https://android.googlesource.com/platform/external/libcxx/+/58b9f456b02922dfdb1fad8a988d5fd8765ecb80/"
+    }
+  ]
+}

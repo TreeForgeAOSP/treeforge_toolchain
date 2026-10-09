@@ -27,6 +27,15 @@
         "treeforge-fastboot",
         "treeforge-fastbootd"
       ]
+    },
+    "e2fsprogs": {
+      "aosp_providers": [
+        "resize2fs"
+      ],
+      "project": "platform/external/e2fsprogs",
+      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6",
+      "source_path": "external/e2fsprogs",
+      "treeforge_variants": []
     }
   },
   "schema": 1

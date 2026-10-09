@@ -32,7 +32,8 @@
     "create_snapshot",
     "inspect_cow",
     "android-image-tools",
-    "snapuserd_ramdisk"
+    "snapuserd_ramdisk",
+    "resize2fs"
   ],
   "schema": 1,
   "source_model": {
@@ -82,6 +83,10 @@
     "system/tools/mkbootimg": {
       "project": "platform/system/tools/mkbootimg",
       "revision": "ca3fa710f8bcbb9d3e6a3929ba3ecc841aca0677"
+    },
+    "external/e2fsprogs": {
+      "project": "platform/external/e2fsprogs",
+      "revision": "6a54128f25917bfc36a8a6e9d722c04a0b4641b6"
     }
   },
   "tools": {
@@ -193,6 +198,12 @@
       "class": "host",
       "source": "system/tools/mkbootimg",
       "treeforge_module": "unpack_bootimg"
+    },
+    "resize2fs": {
+      "aosp_module": "resize2fs",
+      "class": "host",
+      "source": "external/e2fsprogs",
+      "treeforge_module": "resize2fs"
     }
   },
   "treeforge_patches": [
