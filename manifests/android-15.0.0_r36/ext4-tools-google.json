@@ -1,0 +1,122 @@
+{
+  "schema": 1,
+  "provider": "ext4-tools",
+  "platform_release": "android-15.0.0_r36",
+  "platform": "linux-x86_64",
+  "distribution": "GOOGLE_GIT_PINNED",
+  "source": {
+    "provider": "kernel-build-tools",
+    "project": "kernel/prebuilts/build-tools",
+    "url": "https://android.googlesource.com/kernel/prebuilts/build-tools",
+    "revision": "e905be252a53d20c52bd9e59df3ff8fdd46b9eab",
+    "tag": "android-15.0.0_r0.94",
+    "embedded_prebuilt_revision": "32bd1bbe88a3eee7300ffa3786d35bcb24fc656f"
+  },
+  "source_manifest_revisions": {
+    "external/e2fsprogs": "ee2a1486b2a05c3997bcaa3a7dc46dc5550aeb85",
+    "external/libcxx": "d3d779a3ff888d72ee401bcfda78c10a9b8f1f28",
+    "external/zlib": "cfa5de0e204556eb3ab7c7fde29258329cd4ebb6",
+    "system/core": "0b30e34a04b92b62907a84aeb492b629a8bed073",
+    "system/extras": "f0b091a8b2ca8d3a6d938e47e7eefe41481d4c99",
+    "system/libbase": "442c19baacc86fe8ba0a2dfd5bd84dc273d14ea2",
+    "system/logging": "91e88043a9c54309c8b4a745488bed6575675fc8"
+  },
+  "files": [
+    {
+      "source": "linux-x86/bin/e2fsck",
+      "destination": "bin/e2fsck",
+      "mode": "0755",
+      "sha256": "21757aa2f20e7003d9e6a73a43b943cfbfbd74875c54a0668cf2a4593eb537dd"
+    },
+    {
+      "source": "linux-x86/bin/e2fsdroid",
+      "destination": "bin/e2fsdroid",
+      "mode": "0755",
+      "sha256": "2ddac0b7c197ca9c2aa3d44d9d3eb43b028719d55d17ae10cc06f195f350bc97"
+    },
+    {
+      "source": "linux-x86/bin/mke2fs",
+      "destination": "bin/mke2fs",
+      "mode": "0755",
+      "sha256": "8d87cec9afd22ec4109be235e1633bf3101e8804eda4adc9d6a4e23582a29695"
+    },
+    {
+      "source": "linux-x86/bin/mkuserimg_mke2fs",
+      "destination": "bin/mkuserimg_mke2fs",
+      "mode": "0755",
+      "sha256": "7fa8bb461d68f6c6c1a41a99aa3190aedfd55e8f46b5b9582306e3bbbd66262d"
+    },
+    {
+      "source": "linux-x86/bin/tune2fs",
+      "destination": "bin/tune2fs",
+      "mode": "0755",
+      "sha256": "a048f45ffddd3b1da6e631a5614a0d587ba05ba64cb97eacba17573884182b16"
+    },
+    {
+      "source": "linux-x86/lib64/libext2fs-host.so",
+      "destination": "lib64/libext2fs-host.so",
+      "mode": "0644",
+      "sha256": "5f47f2d455c8cebc2534424c218235dd751cf8302af8860a1a06da4fab08c1b0"
+    },
+    {
+      "source": "linux-x86/lib64/libext2_blkid-host.so",
+      "destination": "lib64/libext2_blkid-host.so",
+      "mode": "0644",
+      "sha256": "b6372679187806c5f67a22d256ef071609c0531717116ad884e11a0ef4b2472d"
+    },
+    {
+      "source": "linux-x86/lib64/libext2_com_err-host.so",
+      "destination": "lib64/libext2_com_err-host.so",
+      "mode": "0644",
+      "sha256": "4e1dcd3c2a4b5444849ad3b7d2d55ebe4e44fac76fc6fa4370cd168fd81b3f54"
+    },
+    {
+      "source": "linux-x86/lib64/libext2_uuid-host.so",
+      "destination": "lib64/libext2_uuid-host.so",
+      "mode": "0644",
+      "sha256": "975fb18540eae8780b98ceb446cf3dfa34b2120024680d3fc3196fe8b84b4885"
+    },
+    {
+      "source": "linux-x86/lib64/libext2_quota-host.so",
+      "destination": "lib64/libext2_quota-host.so",
+      "mode": "0644",
+      "sha256": "4b72557567f50585f6fcfd8e43fd3344fc6558377343d29fb98d7490071110fd"
+    },
+    {
+      "source": "linux-x86/lib64/libext2_e2p-host.so",
+      "destination": "lib64/libext2_e2p-host.so",
+      "mode": "0644",
+      "sha256": "28c0b6e7d3f766ee358889af7ac4c0f368841a76213b4cb5915cdfe00b87f0d0"
+    },
+    {
+      "source": "linux-x86/lib64/libsparse-host.so",
+      "destination": "lib64/libsparse-host.so",
+      "mode": "0644",
+      "sha256": "3e93331ce9a38b7eebcdc201674b1bc9a330f9955b2d6dd558fe95802baa0942"
+    },
+    {
+      "source": "linux-x86/lib64/libz-host.so",
+      "destination": "lib64/libz-host.so",
+      "mode": "0644",
+      "sha256": "fe9b1538bc8850387d751c80d596133fdffd9735099545f16166dd8629d7fdfb"
+    },
+    {
+      "source": "linux-x86/lib64/libbase.so",
+      "destination": "lib64/libbase.so",
+      "mode": "0644",
+      "sha256": "7b50d32ed89906d264723500b6d1bbbf6aa4a82feca58fb2ba938aa05f8974fd"
+    },
+    {
+      "source": "linux-x86/lib64/liblog.so",
+      "destination": "lib64/liblog.so",
+      "mode": "0644",
+      "sha256": "86eb4de4b8718569b4520c1b002cba50090905bb1d138e7fe225f4cc29317872"
+    },
+    {
+      "source": "linux-x86/lib64/libc++.so",
+      "destination": "lib64/libc++.so",
+      "mode": "0644",
+      "sha256": "51e403f6b471dc79c548f9d8f8d09d999b3857c55f21800efab52cf77187653d"
+    }
+  ]
+}

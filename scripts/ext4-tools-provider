@@ -1,0 +1,631 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import shutil
+import subprocess
+import tempfile
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+CONTRACT = (
+    ROOT
+    / "manifests"
+    / "android-15.0.0_r36"
+    / "ext4-tools-google.json"
+)
+
+KERNEL_RELEASE = "android-15.0.0_r0.94"
+
+DEFAULT_CACHE_ROOT = (
+    Path.home()
+    / ".cache"
+    / "treeforge"
+    / "providers"
+    / "kernel"
+)
+
+DEFAULT_PROVIDER_ROOT = ROOT / ".providers"
+
+
+def fail(message: str) -> None:
+    raise SystemExit(f"ERROR: {message}")
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+
+    with path.open("rb") as handle:
+        for chunk in iter(
+            lambda: handle.read(1024 * 1024),
+            b"",
+        ):
+            digest.update(chunk)
+
+    return digest.hexdigest()
+
+
+def load_contract() -> dict:
+    if not CONTRACT.is_file():
+        fail(f"provider contract missing: {CONTRACT}")
+
+    data = json.loads(CONTRACT.read_text())
+
+    if data.get("schema") != 1:
+        fail("unsupported ext4-tools provider schema")
+
+    if data.get("provider") != "ext4-tools":
+        fail("provider identity mismatch")
+
+    if data.get("distribution") != "GOOGLE_GIT_PINNED":
+        fail("provider distribution mismatch")
+
+    return data
+
+
+def source_root(
+    data: dict,
+    cache_root: Path,
+) -> Path:
+    provider = data["source"]["provider"]
+
+    return (
+        cache_root
+        / KERNEL_RELEASE
+        / provider
+    )
+
+
+def target_root(
+    data: dict,
+    provider_root: Path,
+) -> Path:
+    return (
+        provider_root
+        / data["provider"]
+        / (
+            f"{data['platform_release']}-"
+            f"{data['platform']}"
+        )
+    )
+
+
+def run_google_resolver(
+    action: str,
+    data: dict,
+    cache_root: Path,
+) -> None:
+    resolver = ROOT / "scripts" / "kernel-provider-cache"
+
+    if not resolver.is_file():
+        fail(f"Google provider resolver missing: {resolver}")
+
+    command = [
+        str(resolver),
+        "--release",
+        KERNEL_RELEASE,
+        "--cache-root",
+        str(cache_root),
+        action,
+        data["source"]["provider"],
+    ]
+
+    completed = subprocess.run(
+        command,
+        cwd=ROOT,
+        check=False,
+    )
+
+    if completed.returncode != 0:
+        fail(
+            "Google provider resolver failed: "
+            + " ".join(command)
+        )
+
+
+def verify_source_identity(
+    data: dict,
+    source: Path,
+) -> None:
+    if not source.is_dir():
+        fail(f"Google provider cache missing: {source}")
+
+    head = subprocess.check_output(
+        [
+            "git",
+            "-C",
+            str(source),
+            "rev-parse",
+            "HEAD",
+        ],
+        text=True,
+    ).strip()
+
+    expected = data["source"]["revision"]
+
+    if head != expected:
+        fail(
+            "Google provider revision mismatch\n"
+            f"expected={expected}\n"
+            f"actual={head}"
+        )
+
+    dirty = subprocess.check_output(
+        [
+            "git",
+            "-C",
+            str(source),
+            "status",
+            "--porcelain",
+            "--untracked-files=no",
+        ],
+        text=True,
+    ).strip()
+
+    if dirty:
+        fail("Google provider cache has tracked modifications")
+
+    manifest = source / "manifest.xml"
+
+    if not manifest.is_file():
+        fail(f"Google embedded manifest missing: {manifest}")
+
+    root = ET.parse(manifest).getroot()
+
+    projects = {
+        project.attrib["path"]: project.attrib.get(
+            "revision",
+            "",
+        )
+        for project in root.findall("project")
+        if "path" in project.attrib
+    }
+
+    embedded = projects.get(
+        "prebuilts/kernel-build-tools"
+    )
+
+    expected_embedded = data["source"][
+        "embedded_prebuilt_revision"
+    ]
+
+    if embedded != expected_embedded:
+        fail(
+            "embedded build-tools revision mismatch\n"
+            f"expected={expected_embedded}\n"
+            f"actual={embedded or 'missing'}"
+        )
+
+    for path, expected_revision in (
+        data["source_manifest_revisions"].items()
+    ):
+        actual = projects.get(path)
+
+        if actual != expected_revision:
+            fail(
+                "Google source-manifest revision mismatch: "
+                f"{path}\n"
+                f"expected={expected_revision}\n"
+                f"actual={actual or 'missing'}"
+            )
+
+
+def verify_source_files(
+    data: dict,
+    source: Path,
+) -> None:
+    for record in data["files"]:
+        path = source / record["source"]
+
+        if not path.is_file():
+            fail(f"Google provider file missing: {path}")
+
+        actual = sha256_file(path)
+        expected = record["sha256"]
+
+        if actual != expected:
+            fail(
+                "Google provider file hash mismatch\n"
+                f"path={path}\n"
+                f"expected={expected}\n"
+                f"actual={actual}"
+            )
+
+
+def verify_materialized(
+    data: dict,
+    source: Path,
+    target: Path,
+) -> None:
+    if not target.is_dir():
+        fail(f"ext4-tools provider missing: {target}")
+
+    expected_files = {
+        record["destination"]: record
+        for record in data["files"]
+    }
+
+    for relative, record in expected_files.items():
+        path = target / relative
+
+        if not path.is_file():
+            fail(f"materialized file missing: {path}")
+
+        actual = sha256_file(path)
+
+        if actual != record["sha256"]:
+            fail(
+                "materialized file hash mismatch\n"
+                f"path={path}\n"
+                f"expected={record['sha256']}\n"
+                f"actual={actual}"
+            )
+
+        expected_mode = int(
+            record["mode"],
+            8,
+        )
+
+        actual_mode = path.stat().st_mode & 0o777
+
+        if actual_mode != expected_mode:
+            fail(
+                "materialized file mode mismatch\n"
+                f"path={path}\n"
+                f"expected={record['mode']}\n"
+                f"actual={actual_mode:04o}"
+            )
+
+    provenance = (
+        target
+        / "provenance"
+        / "GOOGLE-MANIFEST.xml"
+    )
+
+    if not provenance.is_file():
+        fail(
+            "materialized Google provenance manifest missing"
+        )
+
+    source_manifest = source / "manifest.xml"
+
+    if (
+        sha256_file(provenance)
+        != sha256_file(source_manifest)
+    ):
+        fail(
+            "materialized Google provenance manifest "
+            "does not match source"
+        )
+
+    manifest_path = target / "manifest.json"
+
+    if not manifest_path.is_file():
+        fail("materialized provider manifest missing")
+
+    manifest = json.loads(
+        manifest_path.read_text()
+    )
+
+    if manifest.get("schema") != 1:
+        fail("materialized provider schema mismatch")
+
+    if manifest.get("provider") != "ext4-tools":
+        fail("materialized provider identity mismatch")
+
+    if (
+        manifest.get("source_revision")
+        != data["source"]["revision"]
+    ):
+        fail("materialized source revision mismatch")
+
+
+def materialize(
+    data: dict,
+    source: Path,
+    target: Path,
+) -> None:
+    target.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    with tempfile.TemporaryDirectory(
+        prefix=".ext4-tools-",
+        dir=target.parent,
+    ) as temp_name:
+        temporary = Path(temp_name)
+
+        for record in data["files"]:
+            source_path = source / record["source"]
+            destination = (
+                temporary / record["destination"]
+            )
+
+            destination.parent.mkdir(
+                parents=True,
+                exist_ok=True,
+            )
+
+            shutil.copyfile(
+                source_path,
+                destination,
+            )
+
+            destination.chmod(
+                int(record["mode"], 8)
+            )
+
+        provenance = temporary / "provenance"
+
+        provenance.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        shutil.copyfile(
+            source / "manifest.xml",
+            provenance / "GOOGLE-MANIFEST.xml",
+        )
+
+        materialized_manifest = {
+            "schema": 1,
+            "provider": "ext4-tools",
+            "platform_release": data[
+                "platform_release"
+            ],
+            "platform": data["platform"],
+            "distribution": data[
+                "distribution"
+            ],
+            "source_project": data[
+                "source"
+            ]["project"],
+            "source_url": data[
+                "source"
+            ]["url"],
+            "source_revision": data[
+                "source"
+            ]["revision"],
+            "source_tag": data[
+                "source"
+            ]["tag"],
+            "google_manifest_sha256": (
+                sha256_file(
+                    source / "manifest.xml"
+                )
+            ),
+            "files": [
+                {
+                    "path": record[
+                        "destination"
+                    ],
+                    "sha256": record[
+                        "sha256"
+                    ],
+                    "mode": record[
+                        "mode"
+                    ],
+                }
+                for record in data["files"]
+            ],
+        }
+
+        (
+            temporary / "manifest.json"
+        ).write_text(
+            json.dumps(
+                materialized_manifest,
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n"
+        )
+
+        if target.exists():
+            shutil.rmtree(target)
+
+        os.replace(
+            temporary,
+            target,
+        )
+
+
+def command_status(
+    data: dict,
+    cache_root: Path,
+    provider_root: Path,
+) -> None:
+    source = source_root(
+        data,
+        cache_root,
+    )
+
+    target = target_root(
+        data,
+        provider_root,
+    )
+
+    print("TreeForge ext4-tools provider")
+    print()
+    print(f"Source: {source}")
+    print(f"Target: {target}")
+    print()
+
+    print(
+        "SOURCE="
+        + (
+            "READY"
+            if source.is_dir()
+            else "MISSING"
+        )
+    )
+
+    print(
+        "MATERIALIZED="
+        + (
+            "READY"
+            if target.is_dir()
+            else "MISSING"
+        )
+    )
+
+
+def command_prepare(
+    data: dict,
+    cache_root: Path,
+    provider_root: Path,
+) -> None:
+    run_google_resolver(
+        "fetch",
+        data,
+        cache_root,
+    )
+
+    run_google_resolver(
+        "verify",
+        data,
+        cache_root,
+    )
+
+    source = source_root(
+        data,
+        cache_root,
+    )
+
+    target = target_root(
+        data,
+        provider_root,
+    )
+
+    verify_source_identity(
+        data,
+        source,
+    )
+
+    verify_source_files(
+        data,
+        source,
+    )
+
+    materialize(
+        data,
+        source,
+        target,
+    )
+
+    verify_materialized(
+        data,
+        source,
+        target,
+    )
+
+    print()
+    print("EXT4_TOOLS_PREPARE=PASS")
+    print(f"provider={target}")
+
+
+def command_verify(
+    data: dict,
+    cache_root: Path,
+    provider_root: Path,
+) -> None:
+    run_google_resolver(
+        "verify",
+        data,
+        cache_root,
+    )
+
+    source = source_root(
+        data,
+        cache_root,
+    )
+
+    target = target_root(
+        data,
+        provider_root,
+    )
+
+    verify_source_identity(
+        data,
+        source,
+    )
+
+    verify_source_files(
+        data,
+        source,
+    )
+
+    verify_materialized(
+        data,
+        source,
+        target,
+    )
+
+    print("EXT4_TOOLS_VERIFY=PASS")
+    print(f"provider={target}")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Resolve pinned Google ext4 host tools "
+            "for TreeForge."
+        )
+    )
+
+    parser.add_argument(
+        "--cache-root",
+        type=Path,
+        default=DEFAULT_CACHE_ROOT,
+    )
+
+    parser.add_argument(
+        "--provider-root",
+        type=Path,
+        default=DEFAULT_PROVIDER_ROOT,
+    )
+
+    parser.add_argument(
+        "command",
+        choices=(
+            "status",
+            "prepare",
+            "verify",
+        ),
+    )
+
+    args = parser.parse_args()
+
+    data = load_contract()
+
+    if args.command == "status":
+        command_status(
+            data,
+            args.cache_root,
+            args.provider_root,
+        )
+    elif args.command == "prepare":
+        command_prepare(
+            data,
+            args.cache_root,
+            args.provider_root,
+        )
+    elif args.command == "verify":
+        command_verify(
+            data,
+            args.cache_root,
+            args.provider_root,
+        )
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
